@@ -1,0 +1,82 @@
+version: "3.3"
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./logs/nginx:/var/log/nginx
+
+  db:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./_db:/docker-entrypoint-initdb.d/
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress:
+    image: ideasonpurpose/wordpress
+    depends_on:
+      - db
+    restart: always
+    expose:
+      - 80
+    ports:
+      - 80
+    volumes:
+      - wp_data:/var/www/html
+      - ./wp-content/:/var/www/html/wp-content/
+      - ./logs/apache:/var/log/apache
+    environment:
+      VIRTUAL_HOST: ${npm_package_name:-iopdev}.test
+      XDEBUG_CONFIG: remote_host=host.docker.internal
+
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+
+      WORDPRESS_DEBUG: 1
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'http://${npm_package_name:-iopdev}.test');
+        define('WP_SITEURL', 'http://${npm_package_name:-iopdev}.test');
+
+  wp-cli:
+    image: wordpress:cli
+    user: xfs
+    depends_on:
+      - wordpress
+      - db
+    volumes:
+      - wp_data:/var/www/html
+      - ./wp-content/:/var/www/html/wp-content/
+    # TODO: can this get shoved into a file somewhere?
+    command: bash -c "while ! mysqladmin ping -u root -h db --silent; do echo 'Waiting for db...'; sleep 1; done; wp theme activate ${npm_package_name:-iopdev}"
+
+  composer:
+    image: composer
+    volumes:
+      - ./:/app
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 80
+    expose:
+      - 80
+    depends_on:
+      - db
+    environment:
+      PMA_USER: wordpress
+      PMA_PASSWORD: wordpress
+      VIRTUAL_HOST: phpmyadmin.${npm_package_name:-iopdev}.test
+
+volumes:
+  db_data:
+  wp_data:

@@ -1,0 +1,6 @@
+node_modules
+logs
+wp-content
+!wp-content/themes
+wp-content/themes/twenty*
+*.sql
