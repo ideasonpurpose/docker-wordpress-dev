@@ -1,0 +1,21 @@
+{
+  "name": "docker-wordpress-dev",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Was Vagrant, now Docker",
+  "license": "MIT",
+  "author": "Ideas On Purpose (https://www.ideasonpurpose.com/)",
+  "contributors": [
+    "Joe Maller <joe@ideasonpurpose.com>"
+  ],
+  "scripts": {
+    "down": " npx hostile remove ${npm_package_name}.test",
+    "test": "cross-env-shell echo \"Error: no test specified\" && exit 1",
+    "up": "cross-env DEV_DOMAIN=${npm_package_name}.test docker-compose up -d",
+    "postup": " npx hostile set 127.0.0.1 ${npm_package_name}.test"
+  },
+  "dependencies": {
+    "cross-env": "^5.2.0",
+    "hostile": "^1.3.2"
+  }
+}

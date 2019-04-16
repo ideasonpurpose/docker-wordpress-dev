@@ -6,19 +6,36 @@ This project replaces both the [basic-wordpress-vagrant][] and [basic-wordpress-
 
 ## Goals
 
-Local development and maintenance. After reviewing dozens of WordPress-Docker projects, one featrure always seemed to be missing: How to use these projects to maintain an existing site
+Local development and maintenance. After reviewing dozens of WordPress-Docker projects, one feature always seemed to be missing: How to use these projects to maintain an existing site
 
-Starting a vanilla WordPress project on Docker is not difficult, but apparently setting up a local development mirror is. This project aims to chainge that. Our primary use case is to enable fast iteration for exisitng sites. With cached docker images, we should be able to go from a database dump and cloned codebase to a complete, portable and cross-platform development environment in a few seconds.
+Starting a vanilla WordPress project on Docker is not difficult, but apparently setting up a populated local development environment is. This project aims to chainge that. Our primary use case is to enable fast iteration for exisitng sites. With cached docker images, we should be able to go from a database dump and cloned codebase to a complete, portable and cross-platform development environment in a few seconds.
 
 ## Usage
 
-For now, copy the docker-compose.yml file to the root of the project. If not running from npm scripts, create an [.env][] containing the following:
+For now, copy the `docker-compose.yml` file to the root of the project. If not running from npm scripts, create a `.env` file containing the following:
 
 ```env
 npm_package_name=project-name
 ```
 
-Using npm's naming conventions means scripts will work by default, this should match the "name" property of package.json.
+Using npm's naming conventions means npm scripts work by default, the value should match the "name" property of package.json.
+
+Get running in three steps:
+
+1. Copy your database dumpfile into a top-level `_db` directory, be sure the file has a `.sql` extension.
+
+2. Clone your theme files into `./wp-content/themes/project-name`
+
+3. Run the following:
+   ```
+   docker-compose run -p 8080:8080  --rm tools npm run devserver
+   ```
+
+When it finishes, you'll have a Webpack DevServer running at [localhost:8080](http://localhost:8080)
+
+The first run make take some time as Docker downloads the necessary images. Subsequent runs will only take a few seconds.
+
+To stop the server type **control-c**. To stop docker, run `docker-compose down` which will teardown the virtual network and stop any active containers.
 
 <!--
 We're also watching the [Docker app](https://github.com/docker/app) project and may be able to further simplifiy this by wrapping this project in an app description later on.
@@ -30,13 +47,15 @@ The Dockerfile is based on the official WordPress image. We add [Xdebug](https:/
 
 ## Docker-compose
 
-The docker-compose.yml file builds on our Dockerfile, adds a name-based reverse-proxy, configures WordPress for development (all debugging enabled), enables the default theme links Composer and wp-cli then optionally pre-loads the database from a dumpfile.
+The `docker-compose.yml` file builds on our Dockerfile, adds a name-based reverse-proxy, configures WordPress for development (all debugging enabled), enables the default theme links Composer and wp-cli then optionally pre-loads the database from a dumpfile.
 
 ## Package.json scripts (TODO)
 
 Launching Docker with package.json scripts wraps up several docker configuratiojns and enables ome nice lifeccyle add-ons like package-named test domains, post-launch /etc/hosts rewrites and some post-instanciation confgurations like setting the theme and adding default users.
 
+<!--
 This also alloows for specifying the [project name](https://docs.docker.com/compose/reference/envvars/#compose_project_name), which is very nice to have down the road when sorting through Docker's leftovers. We set this to match the package's `name`.
+-->
 
 ## Conventions
 
@@ -44,9 +63,11 @@ Whenever possible, named settings are derived from the `name` property in packag
 
 ### Database dumpfiles
 
-Put MySQL dumpfiles in a top-level `_db` directory to populate the development database on `docker-compose up`. The [MySQL Docker image](https://hub.docker.com/_/mysql#initializing-a-fresh-instance) will load all `*.sql` files from that directory in alphabetical order.
+Put MySQL dumpfiles in a top-level `_db` directory to populate the development database on `docker-compose up`. The [MySQL Docker image](https://hub.docker.com/_/mysql#initializing-a-fresh-instance) will load all `*.sql` files from that directory in alphabetical order. Later files will overwrite earlier ones.
 
 ## Included Tools, Commands, etc.
+
+Calling `docker-compose up -d` will run everything. To discover ports afterwards, run `docker-compose ps`. To clean up and deactivate any active containers, run `docker-compose down`.
 
 ### MySQL
 
@@ -64,7 +85,7 @@ WP-cli doesn't run as a sevice, but the imasge is pre-configured by the compose 
 $ docker-compose run --rm wp-cli user list
 ```
 
-### Compose
+### Composer
 
 Similar to wp-cli, [Composer][] is available as a pre-configiured image.
 Common commands like `require`, `install` or `update` can be run directly on the project's root directory like:

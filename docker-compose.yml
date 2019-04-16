@@ -22,9 +22,9 @@ services:
       MYSQL_PASSWORD: wordpress
 
   wordpress:
-    image: ideasonpurpose/wordpress
     depends_on:
       - db
+    image: ideasonpurpose/wordpress
     restart: always
     expose:
       - 80
@@ -46,6 +46,19 @@ services:
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_HOME', 'http://${npm_package_name:-iopdev}.test');
         define('WP_SITEURL', 'http://${npm_package_name:-iopdev}.test');
+    networks:
+      default:
+        aliases:
+          - ${npm_package_name:-iopdev}.test
+  tools:
+    image: ideasonpurpose/docker-build
+    depends_on:
+      - nginx-proxy
+      - wordpress
+    environment:
+      NAME: ${npm_package_name:-iopdev}
+    volumes:
+      - ./:/usr/src/site/
 
   wp-cli:
     image: wordpress:cli
@@ -57,6 +70,7 @@ services:
       - wp_data:/var/www/html
       - ./wp-content/:/var/www/html/wp-content/
     # TODO: can this get shoved into a file somewhere?
+    # Try to activate the a theme named to match the name property in package.json
     command: bash -c "while ! mysqladmin ping -u root -h db --silent; do echo 'Waiting for db...'; sleep 1; done; wp theme activate ${npm_package_name:-iopdev}"
 
   composer:
