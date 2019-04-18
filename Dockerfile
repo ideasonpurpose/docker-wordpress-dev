@@ -28,7 +28,7 @@ RUN pecl install "xdebug" \
 # https://github.com/docker-library/php/issues/105#issuecomment-421081065
 RUN export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
     && apt-get update \
-    && apt-get install -y --no-install-recommends libmagickwand-dev \
+    && apt-get install -y --no-install-recommends libmagickwand-dev mysql-client \
     && apt-get install vim -y \
     && rm -rf /var/lib/apt/lists/* \
     && pecl install imagick-3.4.3 \

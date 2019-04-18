@@ -2,7 +2,6 @@
 
 # If this is not a default run (matches known command) then exec the
 # args and exit.
-
 if [ $1 != "apache2-foreground" ];  then
   exec $@
   exit 0
@@ -19,7 +18,7 @@ echo 'removed!'
 echo
 
 # pause to make sure we don't race
-sleep 1
+# sleep 1
 
 # Our wp-config.php additions
 WP_EXTRA_DEBUG=$( cat <<'EOF'
@@ -58,12 +57,15 @@ if  [[ "$(< wp-config.php)" != *"Extra ideasonpurpose dev settings"* ]]; then
   awk -v wp="$WP_EXTRA_DEBUG\n" '/^\/\*.*stop editing.*\*\/$/ && c == 0 {c=1; print wp}{print}' wp-config.php > wp-config.tmp
   mv wp-config.tmp wp-config.php
 
-  # # TODO: This seems tightly coupled. Suddenly the entrypoint knows about the environment and the dockerfile DB hostname??!
-  # while ! mysqladmin ping -u root -h db --silent; do echo "Waiting for db..."; sleep 2; done
-  # #
-  # # Set the active theme to the project name
-  # MYSQL_SET_THEME='UPDATE wp_options SET option_value = "iop12" WHERE option_name IN ("template", "stylesheet")' wordpress
-  # mysql -h db -u root wordpress -e $MYSQL_SET_THEME
+  # Set the active theme to $WORDPRESS_ACTIVE_THEME if variable is set and not empty
+  if [ ! -z "$WORDPRESS_ACTIVE_THEME" ]; then
+      while ! mysqladmin ping -u root -h db --silent; do echo "Waiting for db..."; sleep 1; done
+      MYSQL_SET_THEME="UPDATE wp_options \
+                       SET option_value = '$WORDPRESS_ACTIVE_THEME' \
+                       WHERE option_name IN ('template', 'stylesheet');"
+      mysql wordpress -h db -u root -e "$MYSQL_SET_THEME"
+  fi
+
 else
   echo "Config already has dev additions"
 fi
