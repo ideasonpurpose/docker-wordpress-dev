@@ -1,5 +1,27 @@
 #!/bin/bash
 
+# If this is not a default run (matches known command) then exec the
+# args and exit.
+
+if [ $1 != "apache2-foreground" ];  then
+  exec $@
+  exit 0
+fi
+
+# Otherwise, add our extras to wp-config.php and pass the args to
+# the parent entrypoint script.
+
+# Remove wp-config.php so we start fresh every time
+echo
+echo 'Removing existing wp-config.php file'
+rm -f wp-config.php
+echo 'removed!'
+echo
+
+# pause to make sure we don't race
+sleep 1
+
+# Our wp-config.php additions
 WP_EXTRA_DEBUG=$( cat <<'EOF'
 /**
   * Extra ideasonpurpose dev settings
