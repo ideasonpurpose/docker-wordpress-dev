@@ -1,14 +1,18 @@
-version: "3.3"
+version: "3.4"
+
+# Note about devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61
+# Since the proxy will be rewriting everytihng and replacing the default hostname,
+# we needed a unique value to search for. I couldn't find a way to access a 
+# hash ID from the docker-compose file, so we're using this pseudo-unique 
+# identifier instead. Docker seems to choke on long hostnames, so this is kept to
+# about 40 characters
+
+# Docker also appears to normalize hostnames to lowercase, and fails silently when trying to 
+# access mixed-case domains. 
+#
+# TODO: pull something from the environment (somehow?) to make this more unique
 
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    ports:
-      - "80:80"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./logs/nginx:/var/log/nginx
-
   db:
     image: mysql:5.7
     restart: always
@@ -26,37 +30,35 @@ services:
       - db
     image: ideasonpurpose/wordpress
     restart: always
-    expose:
-      - 80
-    ports:
-      - 80
     volumes:
       - wp_data:/var/www/html
       - ./wp-content/:/var/www/html/wp-content/
       - ./logs/apache:/var/log/apache
     environment:
-      VIRTUAL_HOST: ${npm_package_name:-iopdev}.test
       XDEBUG_CONFIG: remote_host=host.docker.internal
 
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
 
+      WORDPRESS_ACTIVE_THEME: ${npm_package_name}
+
       WORDPRESS_DEBUG: 1
       WORDPRESS_CONFIG_EXTRA: |
-        define('WP_HOME', 'http://${npm_package_name:-iopdev}.test');
-        define('WP_SITEURL', 'http://${npm_package_name:-iopdev}.test');
+        define('WP_HOME', 'http://devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61');
+        define('WP_SITEURL', 'http://devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61');
     networks:
       default:
         aliases:
-          - ${npm_package_name:-iopdev}.test
+          - devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61
+
   tools:
     image: ideasonpurpose/docker-build
     depends_on:
-      - nginx-proxy
       - wordpress
     environment:
       NAME: ${npm_package_name:-iopdev}
+      VM: devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61
     volumes:
       - ./:/usr/src/site/
 
@@ -64,14 +66,11 @@ services:
     image: wordpress:cli
     user: xfs
     depends_on:
-      - wordpress
       - db
+      - wordpress
     volumes:
       - wp_data:/var/www/html
       - ./wp-content/:/var/www/html/wp-content/
-    # TODO: can this get shoved into a file somewhere?
-    # Try to activate the a theme named to match the name property in package.json
-    command: bash -c "while ! mysqladmin ping -u root -h db --silent; do echo 'Waiting for db...'; sleep 1; done; wp theme activate ${npm_package_name:-iopdev}"
 
   composer:
     image: composer
@@ -82,14 +81,11 @@ services:
     image: phpmyadmin/phpmyadmin
     ports:
       - 80
-    expose:
-      - 80
     depends_on:
       - db
     environment:
       PMA_USER: wordpress
       PMA_PASSWORD: wordpress
-      VIRTUAL_HOST: phpmyadmin.${npm_package_name:-iopdev}.test
 
 volumes:
   db_data:
