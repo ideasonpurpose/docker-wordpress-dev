@@ -1,0 +1,21 @@
+/**
+ * Useful idea from https://roots.io/
+ */
+define('WP_ENV', 'development');
+
+/**
+ * Enable all WordPress debugging constants
+ * https://codex.wordpress.org/Debugging_in_WordPress
+ */
+define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_DISPLAY', false);
+define('SCRIPT_DEBUG', true);
+define('SAVEQUERIES', true);
+
+/**
+ * Include the Kint PHP debugging helper
+ * http://kint-php.github.io/kint/
+ */
+if (file_exists('/var/www/lib/kint/kint.phar')) {
+    require('/var/www/lib/kint/kint.phar');
+}

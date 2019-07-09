@@ -5,7 +5,13 @@ ENV WORDPRESS_DEBUG 1
 
 RUN echo "display_errors = on" > /usr/local/etc/php/conf.d/z_iop-debug.ini \
     && echo "display_startup_errors =  on" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
-    && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/z_iop-debug.ini
+    && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
+    && echo "html_errors = on" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
+    && echo "error_log = /dev/stderr" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
+    && echo "ignore_repeated_errors = on" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
+    && echo "max_execution_time = 30" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
+    && echo "output_buffering = off" >> /usr/local/etc/php/conf.d/z_iop-debug.ini
+# TODO: Is disabling output_buffering a good idea?
 
 RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
@@ -21,16 +27,12 @@ RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
 ENV XDEBUG_PORT 9000
 ENV XDEBUG_IDEKEY docker
 RUN pecl install "xdebug" \
-    && docker-php-ext-enable xdebug \
-    && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_autostart=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_port=${XDEBUG_PORT}" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.idekey=${XDEBUG_IDEKEY}" >> /usr/local/etc/php/conf.d/xdebug.ini
-
-# TODO: remove this, move into https://github.com/ideasonpurpose/wp-theme-init
-# # Install the Kint debugger
-# RUN mkdir -p /var/www/lib/kint \
-#     && curl -L https://raw.githubusercontent.com/kint-php/kint/master/build/kint.phar > /var/www/lib/kint/kint.phar
+    && docker-php-ext-enable xdebug
+    # && docker-php-ext-enable xdebug \
+    # && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    # && echo "xdebug.remote_autostart=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    # && echo "xdebug.remote_port=${XDEBUG_PORT}" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    # && echo "xdebug.idekey=${XDEBUG_IDEKEY}" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 # Install the PHP Imagick extension, solution found here:
 # https://github.com/docker-library/php/issues/105#issuecomment-421081065
@@ -63,6 +65,9 @@ RUN export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" 
 #     && echo 'tideways.auto_prepend_library=0' >> /usr/local/etc/php/conf.d/tideways.ini \
 #     && echo 'xhprof.output_dir="/tmp/xhprof"' >> /usr/local/etc/php/conf.d/tideways.ini
 
+# TODO: Does this work?
+# TODO: Confirm the path is correct, should be in site root
+RUN echo '<?php phpinfo();' > /var/www/html/info.php
 
 COPY docker-entrypoint-iop.sh /usr/local/bin/
 

@@ -90,14 +90,14 @@ $ docker-compose run --rm wp-cli user list
 Similar to wp-cli, [Composer][] is available as a pre-configiured image.
 Common commands like `require`, `install` or `update` can be run directly on the project's root directory like:
 
-```sh
-$ docker-compose run --rm composer update
+```bash
+docker-compose run --rm composer update
 ```
 
 For an interactive shell, call `bash` instead:
 
 ```sh
-$ docker-compose run --rm composer bash
+docker-compose run --rm composer bash
 ```
 
 ### phpMyAdmin
@@ -129,6 +129,17 @@ VirtualBox and Docker [can not be installed simultaneously on Windows](https://t
 - [x] Can some of our wp-config add-ons be baked into the wordpress Dockerfile? Specifically the general debug stuff that gets repeated without changing.
 
 - [ ] We probably need to build a dockerfile around wp-cli. This would include the theme setting command as well as migrating the install-missing-plugin code from the old Vagrant projects.
+
+---
+
+commands?
+
+```
+docker-compose exec db mysql -e 'UPDATE wordpress.wp_options SET option_value = "iop12" WHERE option_name IN ("template", "stylesheet")'
+
+```
+
+---
 
 <!-- --- -->
 

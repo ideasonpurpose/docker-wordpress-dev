@@ -4,8 +4,7 @@ version: "3.4"
 # Since the proxy will be rewriting everytihng and replacing the default hostname,
 # we needed a unique value to search for. I couldn't find a way to access a 
 # hash ID from the docker-compose file, so we're using this pseudo-unique 
-# identifier instead. Docker seems to choke on long hostnames, so this is kept to
-# about 40 characters
+# identifier instead.
 
 # Docker also appears to normalize hostnames to lowercase, and fails silently when trying to 
 # access mixed-case domains. 
