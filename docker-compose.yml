@@ -4,8 +4,7 @@ version: "3.4"
 # Since the proxy will be rewriting everytihng and replacing the default hostname,
 # we needed a unique value to search for. I couldn't find a way to access a 
 # hash ID from the docker-compose file, so we're using this pseudo-unique 
-# identifier instead. Docker seems to choke on long hostnames, so this is kept to
-# about 40 characters
+# identifier instead. 
 
 # Docker also appears to normalize hostnames to lowercase, and fails silently when trying to 
 # access mixed-case domains. 
@@ -41,7 +40,7 @@ services:
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
 
-      WORDPRESS_ACTIVE_THEME: ${npm_package_name}
+      WORDPRESS_ACTIVE_THEME: ${npm_package_name:-iopdev}
 
       WORDPRESS_DEBUG: 1
       WORDPRESS_CONFIG_EXTRA: |
@@ -54,13 +53,19 @@ services:
 
   tools:
     image: ideasonpurpose/docker-build
+    # user: www-data
+    user: "1000"
     depends_on:
       - wordpress
+    ports:
+      - "8080:8080"
     environment:
       NAME: ${npm_package_name:-iopdev}
       VM: devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61
     volumes:
       - ./:/usr/src/site/
+    entrypoint: npm run
+    command: build
 
   wp-cli:
     image: wordpress:cli

@@ -110,11 +110,25 @@ A phpMyAdmin installation is available on port `13306` of `localhost` or the loc
 This project also bundles in our [docker-build toolchain][docker-build]. This has a number of advantages over including a gulpfile or webpack config in the project root. First and foremost, it encapsulates all the node dependencies, leaving only what's relevant to the projec tin niode_modules, instead of several thousand tool-related dependencies.
 -->
 
-## Notes
+## Windows Notes
 
-VirtualBox and Docker [can not be installed simultaneously on Windows](https://technology.amis.nl/2017/07/17/virtualization-on-windows-10-with-virtual-box-hyper-v-and-docker-containers/).
+VirtualBox and earlier versions of Docker [can not be installed simultaneously on Windows](https://technology.amis.nl/2017/07/17/virtualization-on-windows-10-with-virtual-box-hyper-v-and-docker-containers/).
 
 > And the one finding that took longest to realize: Virtual Box will not work if Hyper-V is enabled. So the system at any one time can only run Virtual Box or Hyper-V (and Docker for Windows), not both. Switching Hyper-V support on and off is fairly easy, but it does require a reboot
+
+## No more hostnames
+
+When working with Vagrant, we used the vagrant hostmanager plugin to set up and point a project-name.test domain at our dev site. This was nice whjen working on one computer, but the reality bnow is that we're working on many all the time. Whatever the site is being developed on, it's likely being previewed on a handful of different desktop and mobile devices where that lovely development domain is irrelevant.
+
+So, despite fantastic, cross-platform solutions like [Hostile](https://www.npmjs.com/package/hostile), we're dropping `*.test` development domains in favor of proxying through the Webpack DevServer.
+
+## Notes
+
+> todo: move these somewhere
+
+- The wp-content/debug.log file should be writeable by the web user. If logs aren't being written, try `chmod a+w wp-content/debug.log`.
+
+- All scripts are assumed to require jQuery and will include jQuery as a dependency. It's very difficult to get jQuery _out_ or WordPress, so instead of bundling in a second copy of the library, we just use what's there and assume it will already have been required by something else. (TODO: check this)
 
 ## Questions, todos and known issues
 
@@ -129,6 +143,8 @@ VirtualBox and Docker [can not be installed simultaneously on Windows](https://t
 - [x] Can some of our wp-config add-ons be baked into the wordpress Dockerfile? Specifically the general debug stuff that gets repeated without changing.
 
 - [ ] We probably need to build a dockerfile around wp-cli. This would include the theme setting command as well as migrating the install-missing-plugin code from the old Vagrant projects.
+
+- [ ] How to get a MySQL shell?
 
 <!-- --- -->
 

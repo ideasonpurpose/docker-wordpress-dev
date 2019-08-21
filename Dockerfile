@@ -34,15 +34,15 @@ RUN pecl install "xdebug" \
 
 # Install the PHP Imagick extension, solution found here:
 # https://github.com/docker-library/php/issues/105#issuecomment-421081065
-RUN export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
-      libmagickwand-dev \
-      mysql-client \
-      # vim \
-    && rm -rf /var/lib/apt/lists/* \
-    && pecl install imagick-3.4.3 \
-    && docker-php-ext-enable imagick
+# RUN export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
+#     && apt-get update \
+#     && apt-get install -y --no-install-recommends \
+#       libmagickwand-dev \
+#       mysql-client \
+#       # vim \
+#     && rm -rf /var/lib/apt/lists/* \
+#     && pecl install imagick-3.4.3 \
+#     && docker-php-ext-enable imagick
 
 # TODO: Is imageMagick installed? Got this mesage:
 #    > Installing '/usr/local/include/php/ext/imagick/php_imagick_shared.h'
@@ -67,5 +67,7 @@ RUN export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" 
 COPY docker-entrypoint-iop.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint-iop.sh"]
+# ENTRYPOINT ["docker-entrypoint-test.sh"]
 
 CMD ["apache2-foreground"]
+# CMD ["apache2ctl"]
