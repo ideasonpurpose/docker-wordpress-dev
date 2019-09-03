@@ -10,16 +10,16 @@ fi
 # Otherwise, add our extras to wp-config.php and pass the args to
 # the parent entrypoint script.
 
-# Remove wp-config.php so we start fresh every time
-# echo 'Removing existing wp-config.php file'
+# # Remove wp-config.php so we start fresh every time
+# # echo 'Removing existing wp-config.php file'
 
-# rm -f wp-config.php
-if [ -f wp-config.php ]; then
-    echo
-    echo 'Rename existing wp-config.php file'
-    mv wp-config.php $(mktemp wp-config.php.XXXX)
-    echo
-fi
+# # rm -f wp-config.php
+# if [ -f wp-config.php ]; then
+#     echo
+#     echo 'Rename existing wp-config.php file'
+#     mv wp-config.php $(mktemp wp-config.php.XXXX)
+#     echo
+# fi
 
 # pause to make sure we don't race
 # sleep 1
@@ -32,6 +32,7 @@ WP_EXTRA_DEBUG=$( cat <<'EOF'
   * Enable all WordPress debugging constants
   * https://codex.wordpress.org/Debugging_in_WordPress
   */
+define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
 define('WP_DEBUG_DISPLAY', true);
 define('SCRIPT_DEBUG', true);
@@ -52,9 +53,20 @@ EOF
 #
 # note: If this breaks in the future, rename /usr/local/bin/apache-foreground
 # and replace it with a dummy script.
-
 /usr/local/bin/docker-entrypoint.sh apache2ctl -v
-
+# echo 'we are here.'
+# echo '.'
+# echo $@
+# echo '.'
+# env
+# echo '.'
+# echo '.'
+# /bin/bash /usr/local/bin/entry-test.sh apachectl -v
+# /bin/bash /usr/local/bin/docker-entrypoint.sh apache2ctl -v
+# echo '.'
+# echo '.'
+# echo '.'
+# echo ' and now we are here.'
 
 
 # The default WordPress entrypoint needs to run before this, but it never exits
@@ -89,4 +101,4 @@ fi
 
 
 # Finally, we run the original endpoint, as intended, to kickoff the sever
-/usr/local/bin/docker-entrypoint.sh $1
+exec /usr/local/bin/docker-entrypoint.sh $@

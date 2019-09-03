@@ -1,7 +1,7 @@
 FROM wordpress:latest
 
 # Overload the environment in the default image (instead of docker-compose)
-ENV WORDPRESS_DEBUG 1
+# ENV WORDPRESS_DEBUG 1
 
 RUN echo "display_errors = on" > /usr/local/etc/php/conf.d/z_iop-debug.ini \
     && echo "display_startup_errors =  on" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
