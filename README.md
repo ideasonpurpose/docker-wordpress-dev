@@ -1,5 +1,7 @@
 # WordPress local development with Docker
 
+[![dockeri.co](http://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)
+
 This project replaces both the [basic-wordpress-vagrant][] and [basic-wordpress-box][] projects with a Docker-based workflow. It's much lighter than Vagrant, faster to spin up and inherently cross-platform.
 
 > ### _Please note: This project is a work in progress and changing rapidly_
@@ -145,6 +147,12 @@ So, despite fantastic, cross-platform solutions like [Hostile](https://www.npmjs
 - [ ] We probably need to build a dockerfile around wp-cli. This would include the theme setting command as well as migrating the install-missing-plugin code from the old Vagrant projects.
 
 - [ ] How to get a MySQL shell?
+
+## Default ports:
+
+For a basic up, the raw WordPress host should be available at port 8001
+The build tools proxyt should be available at port 8080
+PHP MyAdmin should be available at port 8002
 
 <!-- --- -->
 
