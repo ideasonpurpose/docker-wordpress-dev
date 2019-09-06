@@ -4,7 +4,7 @@ FROM wordpress:latest
 # ENV WORDPRESS_DEBUG 1
 
 RUN echo "display_errors = on" > /usr/local/etc/php/conf.d/z_iop-debug.ini \
-    && echo "display_startup_errors =  on" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
+    && echo "display_startup_errors = on" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
     && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/z_iop-debug.ini
 
 RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
@@ -18,19 +18,18 @@ RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
 
 # Install XDebug, largly copied from:
 # https://github.com/andreccosta/wordpress-xdebug-dockerbuild
-ENV XDEBUG_PORT 9000
-ENV XDEBUG_IDEKEY docker
 RUN pecl install "xdebug" \
     && docker-php-ext-enable xdebug \
-    && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_autostart=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_port=${XDEBUG_PORT}" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.idekey=${XDEBUG_IDEKEY}" >> /usr/local/etc/php/conf.d/xdebug.ini
+    && echo "xdebug.profiler_enable_trigger = 1" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo "xdebug.profiler_output_dir = /tmp/xdebug_profiler" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini
+    # && echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini
+    # && echo "xdebug.remote_autostart=0" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    # && echo "xdebug.remote_port=${XDEBUG_PORT}" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    # && echo "xdebug.idekey=${XDEBUG_IDEKEY}" >> /usr/local/etc/php/conf.d/xdebug.ini
 
-# TODO: remove this, move into https://github.com/ideasonpurpose/wp-theme-init
-# # Install the Kint debugger
-# RUN mkdir -p /var/www/lib/kint \
-#     && curl -L https://raw.githubusercontent.com/kint-php/kint/master/build/kint.phar > /var/www/lib/kint/kint.phar
+# Make sure the profiler directory exists and is writable by www-data
+RUN mkdir /tmp/xdebug_profiler \
+    && chown www-data:www-data /tmp/xdebug_profiler
 
 # Install the PHP Imagick extension, solution found here:
 # https://github.com/docker-library/php/issues/105#issuecomment-421081065
