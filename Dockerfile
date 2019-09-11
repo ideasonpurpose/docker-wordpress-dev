@@ -64,8 +64,9 @@ RUN mkdir /tmp/xdebug_profiler \
 
 
 COPY docker-entrypoint-iop.sh /usr/local/bin/
+COPY docker-wordpress-init.php /usr/local/bin/
 COPY docker-compose*.yml /usr/src/
-COPY Dockerfile /usr/src/
+COPY package.json /usr/src/
 
 ENTRYPOINT ["docker-entrypoint-iop.sh"]
 # ENTRYPOINT ["docker-entrypoint-test.sh"]

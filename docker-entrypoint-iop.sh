@@ -2,11 +2,8 @@
 
 # TODO: What should this command be named? Install? Init? Bootstrap?
 if [[ "$1" == init ]]; then
-
-    echo 'run init!!'
-    echo "TODO: Copy docker-compose*.yml files to project root"
+    echo "Copy docker-compose files to project root"
     cp /usr/src/docker-compose*.yml /usr/src/site/
-    echo "TODO: parse existing package.json, inject scripts"
     php /usr/local/bin/docker-wordpress-init.php
     exit 0
 fi
