@@ -1,20 +1,74 @@
 # WordPress local development with Docker
 
-[![dockeri.co](http://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)
+[![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)
 
 This project replaces both the [basic-wordpress-vagrant][] and [basic-wordpress-box][] projects with a Docker-based workflow. It's much lighter than Vagrant, faster to spin up and inherently cross-platform.
 
-> ### _Please note: This project is a work in progress and changing rapidly_
+> ### _Note: This project is a work in progress and changing rapidly_
 
 ## Goals
 
-Local development and maintenance. After reviewing dozens of WordPress-Docker projects, one feature always seemed to be missing: How to use these projects to maintain an existing site
+### Local development and maintenance
 
-Starting a vanilla WordPress project on Docker is not difficult, but apparently setting up a populated local development environment is. This project aims to chainge that. Our primary use case is to enable fast iteration for exisitng sites. With cached docker images, we should be able to go from a database dump and cloned codebase to a complete, portable and cross-platform development environment in a few seconds.
+All sorts of WordPress-Docker projects show how to set up a fresh environment for developing a new site. But these rarely cover using Docker to maintain an existing site.
 
-## Usage
+_Existing site maintenance is the main goal of this project._
 
-For now, copy the `docker-compose.yml` file to the root of the project. If not running from npm scripts, create a `.env` file containing the following:
+Starting a vanilla WordPress project on Docker is not difficult, but apparently setting up a populated local development environment is. This project aims to change that.
+
+Our primary use case is to enable fast iteration for existing sites. With a cloned codebase, a database dump and cached Docker images, a cross-platform development environment can be spuin up in a few seconds.
+
+## Getting Started
+
+### Requirements
+
+Existing WordPress sites have three highly portable components contained in `wp-content`:
+
+1. **A theme directory**  
+   All files related to appearance and non-plugin functionality live here.
+2. **A MySQL dumpfile**
+   All the user-authored content and settings from the site
+3. **The uploads directory**  
+   A copy of all the user-uploaded imagery used on the site.
+4. **The Plugins directory**  
+   A blob of plugin files. Most of these can be pulled from [wordpress.org/plugins](https://wordpress.org/plugins/) but it's often faster to copy the whole `wp-content/plugins` directory to dev sites.
+
+Docker Desktop should be installed. Development of this project began on macOS then moved to Windows with a focus on WSL 2. The tools should work equally well on any platform that can run Docker.
+
+### Project Directory Stucture
+
+Non-wordpress project files should be parallel to the wp-content directory. Something like this:
+
+```
+Project Root
+├─┬ _db
+│ └── project.sql
+├─┬ wp-content
+│ ├─┬ themes
+│ │ └── project-theme-directory
+│ ├─┬ plugins
+│ │ └── ...
+│ └─┬ uploads
+│   └── ...
+├── composer.json
+├── package.json
+└── docker-compose.yml
+```
+
+### Manual Setup
+
+Copy your dumpfile to the top-level `_db` directory.
+Copy the three docker-compose files to the project root.
+Merge the scripts section of package.json onto your project's package.json file.
+Call `npm run bootstrap`
+
+### _WIP installer_
+
+Run this command in your project root:
+
+```sh
+docker run --rm -v $PWD:/usr/src/site ideasonpurpose/wordpress init
+```
 
 ```env
 npm_package_name=project-name
@@ -22,16 +76,23 @@ npm_package_name=project-name
 
 Using npm's naming conventions means npm scripts work by default, the value should match the "name" property of package.json.
 
-Get running in three steps:
+Get running in a few easy steps:
 
 1. Copy your database dumpfile into a top-level `_db` directory, be sure the file has a `.sql` extension.
 
 2. Clone your theme files into `./wp-content/themes/project-name`
 
-3. Run the following:
-   ```
-   docker-compose run -p 8080:8080  --rm tools npm run devserver
-   ```
+3. Copy the Uploads and Plugins folders into wp-content
+
+4. Copy the three docker-compose files to the project root
+
+5. Finally, run the following:
+
+```
+npm run docker:start
+// -- or
+docker-compose run --rm -p 8080:8080 tools
+```
 
 When it finishes, you'll have a Webpack DevServer running at [localhost:8080](http://localhost:8080)
 
@@ -43,25 +104,32 @@ To stop the server type **control-c**. To stop docker, run `docker-compose down`
 We're also watching the [Docker app](https://github.com/docker/app) project and may be able to further simplifiy this by wrapping this project in an app description later on.
 -->
 
+### New Site?
+
+Copy the docker-compose files or Run the init command (or manually copy the docker-compose files and package.json scripts) then just run `npm run docker:start`.
+
 ## Dockerfile
 
 The Dockerfile is based on the official WordPress image. We add [Xdebug](https://xdebug.org/), the [ImageMagick](http://www.imagemagick.org/) PHP extension and enable all PHP debug settings.
 
 ## Docker-compose
 
-The `docker-compose.yml` file builds on our Dockerfile, adds a name-based reverse-proxy, configures WordPress for development (all debugging enabled), enables the default theme links Composer and wp-cli then optionally pre-loads the database from a dumpfile.
+The `docker-compose.yml` files build on our Dockerfile, adding some utilities, diagnostic tools and helper apps.
 
 ## Package.json scripts (TODO)
 
-Launching Docker with package.json scripts wraps up several docker configuratiojns and enables ome nice lifeccyle add-ons like package-named test domains, post-launch /etc/hosts rewrites and some post-instanciation confgurations like setting the theme and adding default users.
+Launching Docker with package.json scripts wraps up several docker configurations and enables ome nice lifeccyle add-ons like package-named test domains, post-launch /etc/hosts rewrites and some post-instantiation configurations like setting the theme and adding default users.
 
 <!--
-This also alloows for specifying the [project name](https://docs.docker.com/compose/reference/envvars/#compose_project_name), which is very nice to have down the road when sorting through Docker's leftovers. We set this to match the package's `name`.
+This also allows for specifying the [project name](https://docs.docker.com/compose/reference/envvars/#compose_project_name), which is very nice to have down the road when sorting through Docker's leftovers. We set this to match the package's `name`.
 -->
 
 ## Conventions
 
-Whenever possible, named settings are derived from the `name` property in package.json. The docker-compose file contains sensible defaults, but taking advantage of the package.json scripts provides an even smoother developer experience.
+_TODO: switching to `.env` files as the source of truth_  
+_TODO: start using dotenv library_
+
+~~Whenever possible, named settings are derived from the `name` property in package.json. The docker-compose file contains sensible defaults, but taking advantage of the package.json scripts provides an even smoother developer experience.~~
 
 ### Database dumpfiles
 
@@ -106,6 +174,14 @@ $ docker-compose run --rm composer bash
 
 A phpMyAdmin installation is available on port `13306` of `localhost` or the local `[project-name].test` domain.
 
+### Xdebug Profiles & The WebGrind Viewer
+
+To profile a request with Xdebug, add `?XDEBUG_PROFILE=1` to the url.
+
+[WebGrind](https://github.com/jokkedk/webgrind/) is included in the utility docker compose file to help view results and identify slow code. Call `npm run webgrind` then visit [localhost:9001](http://localhost:9001) and select a profile from the top menu.
+
+Profiler files will be in a top-level directory named `_profiler`. These can be viewed with a tool like KCacheGrind, QCacheGrind, WinCacheGrind
+
 <!--
 ## Advantages
 
@@ -146,13 +222,19 @@ So, despite fantastic, cross-platform solutions like [Hostile](https://www.npmjs
 
 - [ ] We probably need to build a dockerfile around wp-cli. This would include the theme setting command as well as migrating the install-missing-plugin code from the old Vagrant projects.
 
-- [ ] How to get a MySQL shell?
+- [x] How to get a MySQL shell? (`docker ps` find the name of the database container, then `docker exec -it example_db_1 mysql`)
 
 ## Default ports:
 
 For a basic up, the raw WordPress host should be available at port 8001
 The build tools proxyt should be available at port 8080
 PHP MyAdmin should be available at port 8002
+
+## A Few Useful Docker commands
+
+`docker-compose-down` tears down the containers
+`docker system prune` Clean up unused containers and images
+`docker exec -it <container> bash` Open a shell on a running container
 
 <!-- --- -->
 
