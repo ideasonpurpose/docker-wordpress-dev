@@ -64,9 +64,12 @@ RUN mkdir /tmp/xdebug_profiler \
 
 
 COPY docker-entrypoint-iop.sh /usr/local/bin/
+COPY docker-compose*.yml /usr/src/
+COPY Dockerfile /usr/src/
 
 ENTRYPOINT ["docker-entrypoint-iop.sh"]
 # ENTRYPOINT ["docker-entrypoint-test.sh"]
 
 CMD ["apache2-foreground"]
 # CMD ["apache2ctl"]
+

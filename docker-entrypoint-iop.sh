@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# TODO: What should this command be named? Install? Init? Bootstrap?
+if [[ "$1" == init ]]; then
+
+    echo 'run init!!'
+    echo "TODO: Copy docker-compose*.yml files to project root"
+    cp /usr/src/docker-compose*.yml /usr/src/site/
+    echo "TODO: parse existing package.json, inject scripts"
+    php /usr/local/bin/docker-wordpress-init.php
+    exit 0
+fi
+
 # If this is not a default run (matches known command) then exec the
 # args and exit.
 if [[ "$1" != apache2* ]] && [ "$1" != php-fpm ]; then
