@@ -1,0 +1,57 @@
+version: "3.7"
+
+services:
+  permissions:
+    image: alpine
+    volumes:
+      - ./wp-content/:/var/www/html/wp-content/
+
+    # command: sh -c "chmod -R 0755 /var/www/html/wp-content/ && chown -R 33:33 /var/www/html/wp-content/"
+
+  wp-cli-theme:
+    image: wordpress:cli
+    # user: xfs
+    # user: "1000"
+    user: "33:33"
+    depends_on:
+      - db
+      - wordpress
+    volumes:
+      - wp_data:/var/www/html
+      - ./wp-content/:/var/www/html/wp-content/
+    command: wp theme activate ${THEME_NAME:-iopdev}
+
+  wp-cli-plugin:
+    image: wordpress:cli
+    # user: xfs
+    # user: "1000"
+    user: "33:33"
+    # user: "0:0"
+    depends_on:
+      - db
+      - wordpress
+    environment:
+      WP_CLI_CACHE_DIR: /tmp/wp-cli
+    volumes:
+      - wp_data:/var/www/html
+      - ./wp-content/:/var/www/html/wp-content/
+    command: |
+      bash -c  "wp plugin install --force \
+          $$( wp option get active_plugins --format=yaml |  \
+              sed -rn 's%^.+ ([^/]+)/.*$$%\1%p' | tr '\n' ' ')"
+
+  npm-install:
+    image: ideasonpurpose/docker-build
+    user: "1000"
+    volumes:
+      - ./:/usr/src/
+    working_dir: /usr/src
+    command: npm clean-install
+
+  composer-install:
+    image: composer
+    user: "1000"
+    # user: "33"
+    volumes:
+      - ./:/app
+    command: install

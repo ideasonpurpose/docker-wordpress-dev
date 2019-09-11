@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+  wp-cli:
+    image: wordpress:cli
+    user: xfs
+    depends_on:
+      - db
+      - wordpress
+    environment:
+      WP_CLI_CACHE_DIR: /tmp/wp-cli
+    volumes:
+      - wp_data:/var/www/html
+      - ./wp-content/:/var/www/html/wp-content/
+    entrypoint: wp
+    command: theme activate ${npm_package_name:-iopdev}
+
+  composer:
+    image: composer
+    volumes:
+      - ./:/app
+    command: install
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 80
+    depends_on:
+      - db
+    environment:
+      PMA_USER: wordpress
+      PMA_PASSWORD: wordpress
+
+  webgrind:
+    # user: "33" # www-date on alpine
+    image: creativeprojects/webgrind
+    volumes:
+      - ./_profiler:/tmp/xdebug
+      - wp_data:/var/www/html
+      - ./wp-content/:/var/www/html/wp-content/
