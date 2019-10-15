@@ -2,10 +2,10 @@
 
 # TODO: What should this command be named? Install? Init? Bootstrap?
 if [[ "$1" == init ]]; then
-    echo "Copy docker-compose files to project root"
-    cp /usr/src/docker-compose*.yml /usr/src/site/
-    php /usr/local/bin/docker-wordpress-init.php
-    exit 0
+  echo "Copy docker-compose files to project root"
+  cp /usr/src/docker-compose*.yml /usr/src/site/
+  php /usr/local/bin/docker-wordpress-init.php
+  exit 0
 fi
 
 # If this is not a default run (matches known command) then exec the
@@ -17,20 +17,6 @@ fi
 
 # Otherwise, add our extras to wp-config.php and pass the args to
 # the parent entrypoint script.
-
-# # Remove wp-config.php so we start fresh every time
-# # echo 'Removing existing wp-config.php file'
-
-# # rm -f wp-config.php
-# if [ -f wp-config.php ]; then
-#     echo
-#     echo 'Rename existing wp-config.php file'
-#     mv wp-config.php $(mktemp wp-config.php.XXXX)
-#     echo
-# fi
-
-# pause to make sure we don't race
-# sleep 1
 
 # Our wp-config.php additions
 WP_EXTRA_DEBUG=$( cat <<'EOF'
@@ -54,7 +40,6 @@ define('WP_ENV', 'development');
 EOF
 );
 
-
 # Thanks to a loose match in the base entrypoint, we can "trick" the script
 # into configuring WordPress without starting Apache. Then we run our own script
 # to modify wp-config.php and finally launch the original endpoint.
@@ -62,25 +47,7 @@ EOF
 # note: If this breaks in the future, rename /usr/local/bin/apache-foreground
 # and replace it with a dummy script.
 /usr/local/bin/docker-entrypoint.sh apache2ctl -v
-# echo 'we are here.'
-# echo '.'
-# echo $@
-# echo '.'
-# env
-# echo '.'
-# echo '.'
-# /bin/bash /usr/local/bin/entry-test.sh apachectl -v
-# /bin/bash /usr/local/bin/docker-entrypoint.sh apache2ctl -v
-# echo '.'
-# echo '.'
-# echo '.'
-# echo ' and now we are here.'
 
-
-# The default WordPress entrypoint needs to run before this, but it never exits
-# So, we throw our functions into a background job and call the parent entrypoint
-# {
-# while [ ! -s wp-config.php ]; do echo "Waiting for WordPress setup..."; sleep 1; done
 
 if  [[ "$(< wp-config.php)" != *"Extra ideasonpurpose dev settings"* ]]; then
 
@@ -105,8 +72,6 @@ if  [[ "$(< wp-config.php)" != *"Extra ideasonpurpose dev settings"* ]]; then
 else
   echo "Config already has dev additions"
 fi
-# } &
-
 
 # Finally, we run the original endpoint, as intended, to kickoff the sever
 exec /usr/local/bin/docker-entrypoint.sh $@

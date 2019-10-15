@@ -53,24 +53,11 @@ RUN mkdir /tmp/xdebug_profiler \
 # TODO: This looks easier?
 # https://ourcodeworld.com/articles/read/645/how-to-install-imagick-for-php-7-in-ubuntu-16-04
 
-
-# TODO: Is TideWays XHProf worth bothering with? Other options?
-# run apt-get install -qq php-tideways graphviz \
-#     && mkdir -p /var/www/lib/xhprof \
-#     && echo 'extension=tideways.so' >> /usr/local/etc/php/conf.d/tideways.ini \
-#     && echo 'tideways.framework=wordpress' >> /usr/local/etc/php/conf.d/tideways.ini \
-#     && echo 'tideways.auto_prepend_library=0' >> /usr/local/etc/php/conf.d/tideways.ini \
-#     && echo 'xhprof.output_dir="/tmp/xhprof"' >> /usr/local/etc/php/conf.d/tideways.ini
-
-
+COPY package.json /usr/src/
+COPY docker-compose*.yml /usr/src/
 COPY docker-entrypoint-iop.sh /usr/local/bin/
 COPY docker-wordpress-init.php /usr/local/bin/
-COPY docker-compose*.yml /usr/src/
-COPY package.json /usr/src/
 
 ENTRYPOINT ["docker-entrypoint-iop.sh"]
-# ENTRYPOINT ["docker-entrypoint-test.sh"]
 
 CMD ["apache2-foreground"]
-# CMD ["apache2ctl"]
-
