@@ -1,10 +1,36 @@
 #!/bin/bash
 
-# TODO: What should this command be named? Install? Init? Bootstrap?
+# TODO: Should this have a different name? Install? Init? Bootstrap?
 if [[ "$1" == init ]]; then
-  echo "Copy docker-compose files to project root"
-  cp /usr/src/docker-compose*.yml /usr/src/site/
-  php /usr/local/bin/docker-wordpress-init.php
+  echo "Copy docker-compose and tooling files to project root"
+  cp /usr/src/boilerplate-tooling/* /usr/src/site/
+
+  # Merge scripts into package.json
+  php /usr/local/bin/update-package-json-scripts.php
+
+  # load .env vars
+  . ./.env
+
+  # Get theme name
+  DEFAULT_NAME=theme-name
+  THEME_NAME=${NAME:-${npm_package_name:-${DEFAULT_NAME}}}
+
+
+
+
+  # TODO:
+  
+  # 2. Create theme directory
+  cp -r /usr/src/boilerplate-theme/ /usr/src/site/wp-content/themes/${THEME_NAME}/
+
+  # 3. Create src/dist directories
+  # 4. Ensure src/dist,sass,js,etc theme directories exist
+  mkdir -p /usr/src/site/wp-content/themes/${THEME_NAME}/src/{js,sass,blocks,fonts,favicon,images}
+  mkdir -p /usr/src/site/wp-content/themes/${THEME_NAME}/dist
+
+  # 1. Copy ideasonpurpose.config.js file
+  cp /usr/src/default.config.js /usr/src/site/ideasonpurpose.config.js
+  
   exit 0
 fi
 

@@ -54,7 +54,8 @@ RUN mkdir /tmp/xdebug_profiler \
 # https://ourcodeworld.com/articles/read/645/how-to-install-imagick-for-php-7-in-ubuntu-16-04
 
 COPY package.json /usr/src/
-COPY docker-compose*.yml /usr/src/
+# COPY docker-compose*.yml /usr/src/
+COPY boilerplate/* /usr/src/
 COPY docker-entrypoint-iop.sh /usr/local/bin/
 COPY docker-wordpress-init.php /usr/local/bin/
 

@@ -48,11 +48,16 @@ Call `npm run bootstrap`
 For starting a new site, this will get a basic WordPress server running locally. 
 
 1. Create a project folder and `cd` into it: `mkdir my-wp-site && cd $_`
-2. Run `docker run --rm -v $PWD:/usr/src/site ideasonpurpose/wordpress init`
-3. Run `npm init`
+2. Run `npm init`. Note the project `name` will also be used for the theme directory
+3. Run `docker run --rm -v $PWD:/usr/src/site ideasonpurpose/wordpress init`
 4. (create a bunch of files, set up config, some other stuff... this isn't working yet)
 5. Run `npm run docker:start`
 6. Profit! 
+
+Notes:  Theme name will be set from this list, using the first found:
+1. `NAME` environment variable
+2. package.json `name` property (or `npm_package_name` env var)
+3. `"theme-name"`
 
 
 ### Project Directory Stucture
