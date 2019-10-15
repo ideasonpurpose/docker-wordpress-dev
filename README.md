@@ -16,11 +16,11 @@ _Existing site maintenance is the main goal of this project._
 
 Starting a vanilla WordPress project on Docker is not difficult, but apparently setting up a populated local development environment is. This project aims to change that.
 
-Our primary use case is to enable fast iteration for existing sites. With a cloned codebase, a database dump and cached Docker images, a cross-platform development environment can be spuin up in a few seconds.
+Our primary use case is to enable fast iteration for existing sites. With a cloned codebase, a database dump and cached Docker images, a cross-platform development environment can be spun up in a few seconds.
 
 ## Getting Started
 
-### Requirements
+### Existing Projects
 
 Existing WordPress sites have three highly portable components contained in `wp-content`:
 
@@ -34,6 +34,26 @@ Existing WordPress sites have three highly portable components contained in `wp-
    A blob of plugin files. Most of these can be pulled from [wordpress.org/plugins](https://wordpress.org/plugins/) but it's often faster to copy the whole `wp-content/plugins` directory to dev sites.
 
 Docker Desktop should be installed. Development of this project began on macOS then moved to Windows with a focus on WSL 2. The tools should work equally well on any platform that can run Docker.
+
+
+#### Manual Setup
+
+Copy your dumpfile to the top-level `_db` directory.
+Copy the three docker-compose files to the project root.
+Merge the scripts section of package.json onto your project's package.json file.
+Call `npm run bootstrap`
+
+### Clean Start
+
+For starting a new site, this will get a basic WordPress server running locally. 
+
+1. Create a project folder and `cd` into it: `mkdir my-wp-site && cd $_`
+2. Run `docker run --rm -v $PWD:/usr/src/site ideasonpurpose/wordpress init`
+3. Run `npm init`
+4. (create a bunch of files, set up config, some other stuff... this isn't working yet)
+5. Run `npm run docker:start`
+6. Profit! 
+
 
 ### Project Directory Stucture
 
@@ -51,24 +71,14 @@ Project Root
 │ └─┬ uploads
 │   └── ...
 ├── composer.json
-├── package.json
-└── docker-compose.yml
+├── docker-compose-bootstrap.yml
+├── docker-compose-util.yml
+├── docker-compose.yml
+└── package.json
 ```
 
-### Manual Setup
+<!--
 
-Copy your dumpfile to the top-level `_db` directory.
-Copy the three docker-compose files to the project root.
-Merge the scripts section of package.json onto your project's package.json file.
-Call `npm run bootstrap`
-
-### _WIP installer_
-
-Run this command in your project root:
-
-```sh
-docker run --rm -v $PWD:/usr/src/site ideasonpurpose/wordpress init
-```
 
 ```env
 npm_package_name=project-name
@@ -93,6 +103,7 @@ npm run docker:start
 // -- or
 docker-compose run --rm -p 8080:8080 tools
 ```
+-->
 
 When it finishes, you'll have a Webpack DevServer running at [localhost:8080](http://localhost:8080)
 
@@ -104,9 +115,6 @@ To stop the server type **control-c**. To stop docker, run `docker-compose down`
 We're also watching the [Docker app](https://github.com/docker/app) project and may be able to further simplifiy this by wrapping this project in an app description later on.
 -->
 
-### New Site?
-
-Copy the docker-compose files or Run the init command (or manually copy the docker-compose files and package.json scripts) then just run `npm run docker:start`.
 
 ## Dockerfile
 
