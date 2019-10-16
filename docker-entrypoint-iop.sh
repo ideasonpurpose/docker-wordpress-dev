@@ -1,15 +1,29 @@
 #!/bin/bash
 
-# TODO: Should this have a different name? Install? Init? Bootstrap?
+# load .env vars
+if [[ -f /usr/src/site/.env ]]; then
+  . ./.env
+fi
+
+
+
+# TODO: Should this script command be something different?  `init`? `install`? `bootstrap`?
 if [[ "$1" == init ]]; then
-  echo "Copy docker-compose and tooling files to project root"
-  cp /usr/src/boilerplate-tooling/* /usr/src/site/
+  /usr/local/bin/wp-init.sh
+  # style helpers
+  # RESET="\033[0m"
+  # BOLD="\033[1m"
+  # CYAN="\033[36m"
+  # GOLD="\033[33m"
+
+  # echo "Copy docker-compose and tooling files to project root"
+  # cp -R /usr/src/boilerplate-tooling/* /usr/src/site/
+
+exit 0;
 
   # Merge scripts into package.json
   php /usr/local/bin/update-package-json-scripts.php
 
-  # load .env vars
-  . ./.env
 
   # Get theme name
   DEFAULT_NAME=theme-name
@@ -99,5 +113,5 @@ else
   echo "Config already has dev additions"
 fi
 
-# Finally, we run the original endpoint, as intended, to kickoff the sever
+# Finally, we run the original endpoint, as intended, to kickoff the server
 exec /usr/local/bin/docker-entrypoint.sh $@

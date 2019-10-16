@@ -53,11 +53,20 @@ RUN mkdir /tmp/xdebug_profiler \
 # TODO: This looks easier?
 # https://ourcodeworld.com/articles/read/645/how-to-install-imagick-for-php-7-in-ubuntu-16-04
 
+
+# Install jq for merging package.json files
+RUN apt-get update -qq \
+    && apt-get install -y --no-install-recommends \
+      jq \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY package.json /usr/src/
-# COPY docker-compose*.yml /usr/src/
-COPY boilerplate/* /usr/src/
-COPY docker-entrypoint-iop.sh /usr/local/bin/
-COPY docker-wordpress-init.php /usr/local/bin/
+COPY default.config.js /usr/src/
+COPY boilerplate-theme/ /usr/src/boilerplate-theme
+COPY boilerplate-tooling/ /usr/src/boilerplate-tooling
+
+COPY *.sh /usr/local/bin/
+# COPY update-package-json-scripts.php /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint-iop.sh"]
 
