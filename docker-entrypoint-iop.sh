@@ -9,6 +9,10 @@ fi
 
 # TODO: Should this script command be something different?  `init`? `install`? `bootstrap`?
 if [[ "$1" == init ]]; then
+  # pwd
+  # echo $0;
+  # echo `dirname "$0"`
+  # ./wp-init.sh
   /usr/local/bin/wp-init.sh
   # style helpers
   # RESET="\033[0m"
@@ -33,7 +37,7 @@ exit 0;
 
 
   # TODO:
-  
+
   # 2. Create theme directory
   cp -r /usr/src/boilerplate-theme/ /usr/src/site/wp-content/themes/${THEME_NAME}/
 
@@ -44,7 +48,7 @@ exit 0;
 
   # 1. Copy ideasonpurpose.config.js file
   cp /usr/src/default.config.js /usr/src/site/ideasonpurpose.config.js
-  
+
   exit 0
 fi
 

@@ -17,8 +17,6 @@ GOLD="\033[33m"
 
 echo -e ">>>  ${BOLD}${GOLD}IN WP-INIT.SH script${RESET}"
 
-echo "Copy docker-compose and tooling files to project root"
-cp -R /usr/src/boilerplate-tooling/* /usr/src/site/
 
 # Try to set NAME to either NAME or npm_package_name (if run from an npm script)
 NAME=${NAME:-${npm_package_name}}
@@ -31,11 +29,11 @@ if [[ -z $NAME ]]; then
         exit 1
     else
         # No .env file, prompt for a name and write the file!
-        
+
         # Check if we're in a TTY then prompt for a name
-        if [ -t 0 ]; then
+        if [[ ! -t 1 ]]; then
             echo 'This script is not running in a TTY terminal, please add `-t` if running from Docker'
-            exit 0
+            exit 1
         fi
 
         while true; do
@@ -43,8 +41,8 @@ if [[ -z $NAME ]]; then
             echo -e -n $RESET
 
             if [[ "$INPUT" =~ ^[-_a-zA-Z0-9]+$ ]]; then
-                # echo "'${INPUT}' is clean! (length ${#INPUT})"
-                NAME=${INPUT}
+                echo "'${INPUT}' is clean! (length ${#INPUT})"
+                NAME=${INPUT};
                 break
             fi
 
@@ -53,6 +51,12 @@ if [[ -z $NAME ]]; then
         done
     fi
 fi
+
+echo "DONE"
+exit 0;
+
+echo "Copy docker-compose and tooling files to project root"
+cp -R /usr/src/boilerplate-tooling/* /usr/src/site/
 
 echo "Creating theme directories in wp-content/themes/${NAME}"
 mkdir -p /usr/src/site/wp-content/themes/${NAME}/src/{js,sass,blocks,fonts,favicon,images}
