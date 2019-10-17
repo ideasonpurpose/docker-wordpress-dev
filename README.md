@@ -35,7 +35,6 @@ Existing WordPress sites have three highly portable components contained in `wp-
 
 Docker Desktop should be installed. Development of this project began on macOS then moved to Windows with a focus on WSL 2. The tools should work equally well on any platform that can run Docker.
 
-
 #### Manual Setup
 
 Copy your dumpfile to the top-level `_db` directory.
@@ -45,20 +44,20 @@ Call `npm run bootstrap`
 
 ### Clean Start
 
-For starting a new site, this will get a basic WordPress server running locally. 
+For starting a new site, this will get a basic WordPress server running locally.
 
 1. Create a project folder and `cd` into it: `mkdir my-wp-site && cd $_`
 2. Run `npm init`. Note the project `name` will also be used for the theme directory
 3. Run `docker run --rm -v $PWD:/usr/src/site ideasonpurpose/wordpress init`
 4. (create a bunch of files, set up config, some other stuff... this isn't working yet)
 5. Run `npm run docker:start`
-6. Profit! 
+6. Profit!
 
-Notes:  Theme name will be set from this list, using the first found:
+Notes: Theme name will be set from this list, using the first found:
+
 1. `NAME` environment variable
 2. package.json `name` property (or `npm_package_name` env var)
 3. `"theme-name"`
-
 
 ### Project Directory Stucture
 
@@ -119,7 +118,6 @@ To stop the server type **control-c**. To stop docker, run `docker-compose down`
 <!--
 We're also watching the [Docker app](https://github.com/docker/app) project and may be able to further simplifiy this by wrapping this project in an app description later on.
 -->
-
 
 ## Dockerfile
 
@@ -220,6 +218,10 @@ So, despite fantastic, cross-platform solutions like [Hostile](https://www.npmjs
 - The wp-content/debug.log file should be writeable by the web user. If logs aren't being written, try `chmod a+w wp-content/debug.log`.
 
 - All scripts are assumed to require jQuery and will include jQuery as a dependency. It's very difficult to get jQuery _out_ or WordPress, so instead of bundling in a second copy of the library, we just use what's there and assume it will already have been required by something else. (TODO: check this)
+
+### Permissions
+
+The `wp-content` directory must be writable by the www-data user.
 
 ## Questions, todos and known issues
 
