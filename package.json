@@ -17,5 +17,8 @@
         "composer:update": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer update",
         "phpmyadmin": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 8002:80 phpmyadmin",
         "webgrind": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 9001:80 webgrind"
+    },
+    "devDependencies": {
+        "dotenv": "^8.2.0"
     }
 }
