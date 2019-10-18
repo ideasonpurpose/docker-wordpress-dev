@@ -1,54 +1,14 @@
 #!/bin/bash
 
 # load .env vars
+# TODO: Don't think we need this in here...
 if [[ -f /usr/src/site/.env ]]; then
-  . ./.env
+  . /usr/src/site/.env
 fi
-
-
 
 # TODO: Should this script command be something different?  `init`? `install`? `bootstrap`?
 if [[ "$1" == init ]]; then
-  # pwd
-  # echo $0;
-  # echo `dirname "$0"`
-  # ./wp-init.sh
   /usr/local/bin/wp-init.sh
-  # style helpers
-  # RESET="\033[0m"
-  # BOLD="\033[1m"
-  # CYAN="\033[36m"
-  # GOLD="\033[33m"
-
-  # echo "Copy docker-compose and tooling files to project root"
-  # cp -R /usr/src/boilerplate-tooling/* /usr/src/site/
-
-exit 0;
-
-  # Merge scripts into package.json
-  php /usr/local/bin/update-package-json-scripts.php
-
-
-  # Get theme name
-  DEFAULT_NAME=theme-name
-  THEME_NAME=${NAME:-${npm_package_name:-${DEFAULT_NAME}}}
-
-
-
-
-  # TODO:
-
-  # 2. Create theme directory
-  cp -r /usr/src/boilerplate-theme/ /usr/src/site/wp-content/themes/${THEME_NAME}/
-
-  # 3. Create src/dist directories
-  # 4. Ensure src/dist,sass,js,etc theme directories exist
-  mkdir -p /usr/src/site/wp-content/themes/${THEME_NAME}/src/{js,sass,blocks,fonts,favicon,images}
-  mkdir -p /usr/src/site/wp-content/themes/${THEME_NAME}/dist
-
-  # 1. Copy ideasonpurpose.config.js file
-  cp /usr/src/default.config.js /usr/src/site/ideasonpurpose.config.js
-
   exit 0
 fi
 
@@ -63,7 +23,8 @@ fi
 # the parent entrypoint script.
 
 # Our wp-config.php additions
-WP_EXTRA_DEBUG=$( cat <<'EOF'
+WP_EXTRA_DEBUG=$(
+  cat <<'EOF'
 /**
   * Extra ideasonpurpose dev settings
   *
@@ -82,7 +43,7 @@ define('SAVEQUERIES', true);
 define('WP_ENV', 'development');
 
 EOF
-);
+)
 
 # Thanks to a loose match in the base entrypoint, we can "trick" the script
 # into configuring WordPress without starting Apache. Then we run our own script
@@ -92,15 +53,14 @@ EOF
 # and replace it with a dummy script.
 /usr/local/bin/docker-entrypoint.sh apache2ctl -v
 
-
-if  [[ "$(< wp-config.php)" != *"Extra ideasonpurpose dev settings"* ]]; then
+if [[ "$(<wp-config.php)" != *"Extra ideasonpurpose dev settings"* ]]; then
 
   echo "Updating wp-config, injecting: "
   echo
   echo "$WP_EXTRA_DEBUG"
   echo
 
-  awk -v wp="$WP_EXTRA_DEBUG\n" '/^\/\*.*stop editing.*\*\/$/ && c == 0 {c=1; print wp}{print}' wp-config.php > wp-config.tmp
+  awk -v wp="$WP_EXTRA_DEBUG\n" '/^\/\*.*stop editing.*\*\/$/ && c == 0 {c=1; print wp}{print}' wp-config.php >wp-config.tmp
   mv wp-config.tmp wp-config.php
 
   # TODO: Do this somewhere else, preferrably with wp-cli

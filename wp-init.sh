@@ -6,6 +6,9 @@
 # After running this script, the target directory will contain
 # A functional skeleton WordPress site with tooling
 
+SRC=/usr/src
+SITE=/usr/src/site
+
 # style helpers
 RESET="\033[0m"
 BOLD="\033[1m"
@@ -13,10 +16,12 @@ RED="\033[31m"
 CYAN="\033[36m"
 GOLD="\033[33m"
 
-# Default vars
-# DEFAULT_NAME=theme-name
+# echo -e ">>>  ${BOLD}${GOLD}IN WP-INIT.SH script${RESET}"
 
-echo -e ">>>  ${BOLD}${GOLD}IN WP-INIT.SH script${RESET}"
+# Load an existing .env file if it exists
+if [[ -f /usr/src/site/.env ]]; then
+    . /usr/src/site/.env
+fi
 
 # Try to set NAME to either NAME or npm_package_name (if run from an npm script)
 NAME=${NAME:-${npm_package_name}}
@@ -52,37 +57,38 @@ if [[ -z $NAME ]]; then
 fi
 
 echo "Copying docker-compose and tooling files to project root"
-cp -R /usr/src/boilerplate-tooling/* /usr/src/site/
-cp -R /usr/src/boilerplate-tooling/.* /usr/src/site/
-
+cp -R /usr/src/boilerplate-tooling/. /usr/src/site
 
 echo "Copying theme boilerplate to wp-content/themes/${NAME}"
 mkdir -p /usr/src/site/wp-content/themes/${NAME}
 cp -R /usr/src/boilerplate-theme/* /usr/src/site/wp-content/themes/${NAME}
 
-
 echo "Creating theme directories in wp-content/themes/${NAME}"
-mkdir -p /usr/src/site/wp-content/themes/${NAME}/{src,dist,lib,acf-json};
-mkdir -p /usr/src/site/wp-content/themes/${NAME}/src/{js,sass,blocks,fonts,favicon,images};
-mkdir -p /usr/src/site/wp-content/themes/${NAME}/lib/{CPT,Taxonomy,Widgets,blocks};
+mkdir -p /usr/src/site/wp-content/themes/${NAME}/{src,dist,lib,acf-json}
+mkdir -p /usr/src/site/wp-content/themes/${NAME}/src/{js,sass,blocks,fonts,favicon,images}
+mkdir -p /usr/src/site/wp-content/themes/${NAME}/lib/{CPT,Taxonomy,Widgets,blocks}
 
-
-# Check for package.json to merge into
-# if there isn't, create a boilerplate file and merge into that
-if [[ ! -f /usr/src/site/package.json ]]; then
-    echo "Creating baseline package.json file"
-    echo '{"name": "${NAME}"}' >/usr/src/site/package.json
-fi
-
-# TODO: Not working
-echo "Merging default scripts into package.json"
-jq -s '.[0] + {scripts: (.[0].scripts + .[1].scripts)}' /usr/src/site/package.json /usr/src/package.json > /usr/src/site/package.json
+echo "Creating a .env file"
+echo -e "NAME=${NAME}\n" >/usr/src/site/.env
 
 echo "Creating default config file"
 cp /usr/src/default.config.js /usr/src/site/ideasonpurpose.config.js
 
-echo "Updating metadata in theme stylesheet";
-sed -e "s/Theme Name.*$/Theme Name:         ${NAME}/" /usr/src/boilerplate-theme/style.css > /usr/src/site/wp-content/themes/${NAME}/style.css
+# Check for package.json to merge into or create one from boilerplate
+# copy package.json to /tmp so jq doesn't overwrite the file we're working on
+if [[ -f /usr/src/site/package.json ]]; then
+    echo "Creating package.json tempfile"
+    cp /usr/src/site/package.json /tmp/package.json
+else
+    echo "Creating baseline package.json file"
+    echo -e '{"name": "'${NAME}'"}' >/tmp/package.json
+fi
 
-echo "Updating directories in composer.json";
-sed -e "s%wp-content/themes/THEME_NAME%wp-content/themes/${NAME}%" /usr/src/boilerplate-tooling/composer.json > /usr/src/site/composer.json
+echo "Merging defaults onto package.json"
+jq -s '.[0] * (.[1] | {scripts, devDependencies})' /tmp/package.json /usr/src/package.json | cat >/usr/src/site/package.json
+
+echo "Updating metadata in theme stylesheet"
+sed -e "s/Theme Name.*$/Theme Name:         ${NAME}/" /usr/src/boilerplate-theme/style.css >/usr/src/site/wp-content/themes/${NAME}/style.css
+
+echo "Updating directories in composer.json"
+sed -e "s%wp-content/themes/THEME_NAME%wp-content/themes/${NAME}%" /usr/src/boilerplate-tooling/composer.json >/usr/src/site/composer.json
