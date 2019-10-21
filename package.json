@@ -1,24 +1,47 @@
 {
-    "name": "docker-wordpress-dev",
-    "version": "0.1.0",
-    "private": true,
-    "description": "Was Vagrant, now Docker",
-    "license": "MIT",
-    "author": "Ideas On Purpose (https://www.ideasonpurpose.com/)",
-    "contributors": [
-        "Joe Maller <joe@ideasonpurpose.com>"
-    ],
-    "scripts": {
-        "bootstrap": "docker-compose -f docker-compose.yml -f docker-compose-bootstrap.yml up",
-        "docker:start": "docker-compose run --rm -p 8080:8080 tools start",
-        "docker:build": "docker-compose run --rm -p 3000:3000 -p 3001:3001 tools build",
-        "composer": "npm run composer:install",
-        "composer:install": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer",
-        "composer:update": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer update",
-        "phpmyadmin": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 8002:80 phpmyadmin",
-        "webgrind": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 9001:80 webgrind"
-    },
-    "devDependencies": {
-        "dotenv": "^8.2.0"
-    }
+  "name": "docker-wordpress-dev",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Was Vagrant, now Docker",
+  "license": "MIT",
+  "author": "Ideas On Purpose (https://www.ideasonpurpose.com/)",
+  "contributors": [
+    "Joe Maller <joe@ideasonpurpose.com>"
+  ],
+  "scripts": {
+    "bootstrap": "docker-compose -f docker-compose.yml -f docker-compose-bootstrap.yml up",
+    "composer": "npm run composer:install",
+    "composer:install": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer",
+    "composer:require": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer require",
+    "composer:update": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer update",
+    "docker:build": "docker-compose run --rm -p 3000:3000 -p 3001:3001 tools build",
+    "docker:start": "docker-compose run --rm -p 8080:8080 tools start",
+    "phpmyadmin": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 8002:80 phpmyadmin",
+    "webgrind": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 9001:80 webgrind"
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.php",
+        "options": {
+          "printWidth": 120,
+          "tabWidth": 4,
+          "singleQuote": true
+        }
+      }
+    ]
+  },
+  "devDependencies": {
+    "@prettier/plugin-php": "^0.11.2",
+    "dotenv": "^8.2.0",
+    "prettier": "^1.18.2",
+    "stylelint-config-prettier": "^6.0.0",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-prettier": "^1.1.1"
+  },
+  "versionFiles": [
+    "wp-content/themes/THEME_NAME/style.css",
+    "README.md",
+    "composer.json"
+  ]
 }

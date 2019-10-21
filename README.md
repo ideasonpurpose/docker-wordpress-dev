@@ -168,16 +168,25 @@ $ docker-compose run --rm wp-cli user list
 ### Composer
 
 Similar to wp-cli, [Composer][] is available as a pre-configiured image.
-Common commands like `require`, `install` or `update` can be run directly on the project's root directory like:
+Common commands like `install`, `update` and `require` are already configured as npm scripts:
 
 ```sh
-$ docker-compose run --rm composer update
+$ npm run composer    # alias for composer:install
+$ npm run composer:install
+$ npm run composer:update
+$ npm run composer:require -- monolog/monolog
 ```
 
-For an interactive shell, call `bash` instead:
+More specific Composer commands can be run direclty from `docker-compose`:
 
 ```sh
-$ docker-compose run --rm composer bash
+$ docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  composer  update
+$ docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  composer require monolog/monolog
+
+# Open a shell in the composer image
+
+docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  composer bash
+
 ```
 
 ### phpMyAdmin
