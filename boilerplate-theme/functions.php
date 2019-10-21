@@ -46,6 +46,18 @@ new ThemeInit\Admin\Separators(20, 26, 28);
 // new Widgets\NAME();
 
 /**
+ * Register Custom Menus
+ */
+add_action('after_setup_theme', function () {
+  register_nav_menus([
+      'main-nav' => 'Main Navigation',
+      'footer-links' => 'Footer Links',
+  ]);
+});
+
+
+
+/**
  * Load Scripts
  */
 // TODO: What happens if this file doesn't exist yet?

@@ -1,0 +1,28 @@
+/**
+ *  Colors
+ */
+
+$white: #fff;
+$black: #000;
+
+$gray-lighter: mix($white, $black, 85%);
+$gray-light: mix($white, $black, 66%);
+$gray: mix($white, $black, 50%);
+$gray-dark: mix($white, $black, 33%);
+$gray-darker: mix($white, $black, 15%);
+
+$grayscale: (
+  white: $white,
+  gray-lighter: $gray-lighter,
+  gray-light: $gray-light,
+  gray: $gray,
+  gray-dark: $gray-dark,
+  gray-darker: $gray-darker,
+  black: $black
+);
+
+@each $key, $value in $grayscale {
+  .bg-#{$key} {
+    background: $value;
+  }
+}

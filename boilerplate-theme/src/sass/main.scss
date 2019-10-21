@@ -1,5 +1,7 @@
-$primary: red;
+@import "global/colors";
 
 body {
-  background: $primary;
+  color: $black;
+
+  background: $white;
 }
