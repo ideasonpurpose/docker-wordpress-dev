@@ -1,0 +1,14 @@
+.wrapper {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: $wrapper-max-width;
+
+  @each $name, $size in $wrapper-gutter {
+    @include mq($name) {
+        padding-left: $size;
+        padding-right: $size;
+    }
+  }
+}

@@ -1,7 +1,21 @@
-@import "global/colors";
+@charset "utf-8";
 
-body {
-  color: $black;
+@import
+  // Variables
+  "variables/colors",
+  "variables/layout",
 
-  background: $white;
-}
+  // Mixins
+  "mixins/breakpoint",
+  "mixins/columns",
+  "mixins/rows",
+
+  // Base styles
+  "base/reset",
+  "base/base",
+
+  // Layouts
+
+  // Modules
+  "modules/wrapper"
+;
