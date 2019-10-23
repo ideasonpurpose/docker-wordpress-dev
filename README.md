@@ -40,23 +40,27 @@ Docker Desktop should be installed. Development of this project began on macOS t
 Copy your dumpfile to the top-level `_db` directory.
 Copy the three docker-compose files to the project root.
 Merge the scripts section of package.json onto your project's package.json file.
-Call `npm run bootstrap`
+
+~~Call `npm run bootstrap`~~ _not working yet_
 
 ### Clean Start
 
 For starting a new site, this will get a basic WordPress server running locally.
 
 1. Create a project folder and `cd` into it: `mkdir my-wp-site && cd $_`
-2. Run `docker run --rm -it -v $PWD:/usr/src/site ideasonpurpose/wordpress init`
+2. Run `docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress init`
 3. Run `npm install`
-4. Run `npm composer`
+4. Run `npm run composer`
 5. Run `npm run docker:start`
+
+_Windows Note: Replace `${PWD}` with `%CD%` if using **cmd.exe**, `${PWD}` will work in PowerShell_
 
 Notes: Theme name will be set from this list, using the first found:
 
 1. `NAME` environment variable
 2. package.json `name` property (or `npm_package_name` env var)
-3. `"theme-name"`
+
+If no name is found, the init script will prompt for a name.
 
 ### Project Directory Stucture
 
@@ -108,31 +112,33 @@ docker-compose run --rm -p 8080:8080 tools
 ```
 -->
 
-When it finishes, you'll have a Webpack DevServer running at [localhost:8080](http://localhost:8080)
+After calling `npm run docker:start` Webpack DevServer will be serving the dev site from Docker at [localhost:8080](http://localhost:8080)
 
-The first run make take some time as Docker downloads the necessary images. Subsequent runs will only take a few seconds.
+The first run make take some time as Docker downloads the necessary images. Subsequent runs take just a few seconds.
 
-To stop the server type **control-c**. To stop docker, run `docker-compose down` which will teardown the virtual network and stop any active containers.
+To stop the server type **control-c**. To stop docker (and clear ports), run `docker-compose down` which will teardown the virtual network and stop any active containers.
 
 <!--
 We're also watching the [Docker app](https://github.com/docker/app) project and may be able to further simplifiy this by wrapping this project in an app description later on.
 -->
 
-## Dockerfile
+## What's in here
+
+### Dockerfile
 
 The Dockerfile is based on the official WordPress image. We add [Xdebug](https://xdebug.org/), the [ImageMagick](http://www.imagemagick.org/) PHP extension and enable all PHP debug settings.
 
-## Docker-compose
+### Docker-compose
 
 The `docker-compose.yml` files build on our Dockerfile, adding some utilities, diagnostic tools and helper apps.
 
-## Package.json scripts (TODO)
+### Package.json scripts (TODO)
 
-Launching Docker with package.json scripts wraps up several docker configurations and enables ome nice lifeccyle add-ons like package-named test domains, post-launch /etc/hosts rewrites and some post-instantiation configurations like setting the theme and adding default users.
+Launching Docker with package.json scripts wraps up a lot of docker configuration and simplifies some especially verbose docker commands.
 
-<!--
-This also allows for specifying the [project name](https://docs.docker.com/compose/reference/envvars/#compose_project_name), which is very nice to have down the road when sorting through Docker's leftovers. We set this to match the package's `name`.
--->
+---
+
+_below here needs work_
 
 ## Conventions
 
@@ -219,6 +225,18 @@ When working with Vagrant, we used the vagrant hostmanager plugin to set up and 
 
 So, despite fantastic, cross-platform solutions like [Hostile](https://www.npmjs.com/package/hostile), we're dropping `*.test` development domains in favor of proxying through the Webpack DevServer.
 
+## Theme Boilerplate Notes
+
+> Todo: Temporary location, give this a better home.
+
+base - tag styles in \_base.scss, \_reset.scss, anything else that basic. fonts would go here too
+layouts - page specific files, there are NOT reusables
+lib - external libraries
+mixins
+modules - reusables (blocks, components, headlines, buttons etc.)
+variables - site settings (colors, breakpoints, grids settings, themes, etc.)
+main.scss - only imports everything, nothing else should be here (edited)
+
 ## Notes
 
 > todo: move these somewhere
@@ -233,31 +251,32 @@ The `wp-content` directory must be writable by the www-data user.
 
 ## Questions, todos and known issues
 
-- [ ] Should extra tools like wp-cli and composer be wrapped in npm scripts/aliases? **_YES!_** do this.
+- [x] Should extra tools like wp-cli and composer be wrapped in npm scripts/aliases? **_YES!_** do this.
 
-- [x] How to handle port collisions? Can't run two instances at the same time or ports will collide. **Solution:** We're not specifying ports anymore. Instead, docker-compose maps ephermeral ports on on the host. These can be revealed by running either `docker-compose ps` or `docker-compose [service] [internal-port]` (eg. `docker-compose port wordpress 80`) This should be cleaned up and masked behind a script
+- [x] How to handle port collisions? Can't run two instances at the same time or ports will collide. **Possible Solution?:** Don't specify ports anymore. Instead, docker-compose can map ephermeral ports on on the host. These can be revealed by running either `docker-compose ps` or `docker-compose [service] [internal-port]` (eg. `docker-compose port wordpress 80`) This should be cleaned up and masked behind a script
 
 - [x] [phpMyAdmin](https://www.phpmyadmin.net): Yea or nay? (why not, it was really easy to add)
 
-- [ ] Linking the wp-content directory as a docker volume inadvertently creates a few extra files. These are in .gitignore, but it's still annoying. (ie. `wp-content/upgrade`, `wp-content/index.php`) Possible solution might be flattening our theme up to the top level then linking that directly into the docker container.
+- [ ] Linking the wp-content directory as a docker volume inadvertently creates a few extra files. These are in .gitignore, but it's still annoying. (ie. `wp-content/upgrade`, `wp-content/index.php`, all the `themes/twenty*` directories) Possible solution might be flattening our theme up to the top level then linking that directly into the docker container. Or, being more selective about where we're mounting volumes
 
-- [x] Can some of our wp-config add-ons be baked into the wordpress Dockerfile? Specifically the general debug stuff that gets repeated without changing.
+* [x] Can some of our wp-config add-ons be baked into the wordpress Dockerfile? Specifically the general debug stuff that gets repeated without changing.
 
-- [ ] We probably need to build a dockerfile around wp-cli. This would include the theme setting command as well as migrating the install-missing-plugin code from the old Vagrant projects.
+* [ ] We probably need to build a dockerfile around wp-cli. This would include the theme setting command as well as migrating the install-missing-plugin code from the old Vagrant projects.
 
-- [x] How to get a MySQL shell? (`docker ps` find the name of the database container, then `docker exec -it example_db_1 mysql`)
+* [x] How to get a MySQL shell? (`docker ps` find the name of the database container, then `docker exec -it example_db_1 mysql`)
 
 ## Default ports:
 
 For a basic up, the raw WordPress host should be available at port 8001
-The build tools proxyt should be available at port 8080
+The build tools proxy should be available at port 8080
 PHP MyAdmin should be available at port 8002
 
 ## A Few Useful Docker commands
 
-`docker-compose-down` tears down the containers
-`docker system prune` Clean up unused containers and images
-`docker exec -it <container> bash` Open a shell on a running container
+- `docker-compose down` tears down the containers
+- `docker system prune` Clean up unused containers and images
+- `docker system prune -a` Clean everything, will need to download stuff again
+- `docker exec -it <container> bash` Open a shell on a running container
 
 <!-- --- -->
 
