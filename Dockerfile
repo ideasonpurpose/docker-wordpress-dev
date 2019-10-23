@@ -4,19 +4,19 @@ FROM wordpress:latest
 # ENV WORDPRESS_DEBUG 1
 
 RUN echo "[File Uploads]" > /usr/local/etc/php/conf.d/z_iop_max_file_size.ini \
-    && echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/z_iop_max_file_size.ini \
-    && echo "post_max_size=100M" > /usr/local/etc/php/conf.d/z_iop_max_file_size.ini
+    && echo "upload_max_filesize=100M" >> /usr/local/etc/php/conf.d/z_iop_max_file_size.ini \
+    && echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/z_iop_max_file_size.ini
 
 RUN echo "[Execution Time]" > /usr/local/etc/php/conf.d/z_iop_max_execution_time.ini \
-    && echo "max_execution_time=600" > /usr/local/etc/php/conf.d/z_iop_max_execution_time.ini
+    && echo "max_execution_time=600" >> /usr/local/etc/php/conf.d/z_iop_max_execution_time.ini
 
 RUN echo "[Error Reporting]" > /usr/local/etc/php/conf.d/z_iop-debug.ini \
-    && echo "display_errors = on" > /usr/local/etc/php/conf.d/z_iop-debug.ini \
+    && echo "display_errors = on" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
     && echo "display_startup_errors = on" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
     && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/z_iop-debug.ini
 
 RUN echo "[OPcache]" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
-    && echo "opcache.enable=1" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
+    && echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.validate_timestamps=1" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
