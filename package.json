@@ -10,13 +10,18 @@
   ],
   "scripts": {
     "bootstrap": "docker-compose -f docker-compose.yml -f docker-compose-bootstrap.yml up",
+    "build": "npm run docker:build",
     "composer": "npm run composer:install",
     "composer:install": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer",
     "composer:require": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer require",
     "composer:update": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer update",
     "docker:build": "docker-compose run --rm -p 3000:3000 -p 3001:3001 tools build",
     "docker:start": "docker-compose run --rm -p 8080:8080 tools start",
+    "mysql:dump": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm mysqldump",
+    "mysqldump": "mysql:dump",
     "phpmyadmin": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 8002:80 phpmyadmin",
+    "start": "npm run docker:start",
+    "poststart": "npm run mysql:dump",
     "webgrind": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 9001:80 webgrind"
   },
   "prettier": {

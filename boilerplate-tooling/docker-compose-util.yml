@@ -13,7 +13,7 @@ services:
       - wp_data:/var/www/html
       - ./wp-content/:/var/www/html/wp-content/
     entrypoint: wp
-    command: theme activate ${npm_package_name:-iopdev}
+    command: theme activate ${NAME:-${npm_package_name:-iopdev}}
 
   composer:
     image: composer
@@ -38,3 +38,18 @@ services:
       - ./_profiler:/tmp/xdebug
       - wp_data:/var/www/html
       - ./wp-content/:/var/www/html/wp-content/
+
+  mysqldump:
+    image: mysql:5.7
+    depends_on:
+      - db
+    volumes:
+      - ./_db:/usr/src
+    # NOTE: This mysqldump command includes the lines: 
+    #        CREATE DATABASE `wordpress`;
+    #        USE `wordpress`;
+    # to drop the CREATE/USE database commands remove  "--databases" 
+    command: |
+      bash -c "export DUMPFILE=$${NAME:-${npm_package_name:-dumpfile}}-$$(date +%FT%H%M%S).sql && \
+               mysqldump --default-character-set=utf8mb4 -hdb --databases wordpress > $${DUMPFILE} && \
+               tar --remove-files -czf /usr/src/$${DUMPFILE}.zip $${DUMPFILE}"
