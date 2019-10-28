@@ -56,6 +56,7 @@ if [[ -z $NAME ]]; then
     fi
 fi
 
+# TODO: Switch these to rsync so they don't stomp on existing subdirs
 echo "Copying docker-compose and tooling files to project root"
 cp -R /usr/src/boilerplate-tooling/. /usr/src/site
 
