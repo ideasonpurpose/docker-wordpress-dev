@@ -146,6 +146,7 @@ wp-content/flywheel-config/
 
 # don't commit database dumpfiles
 *.sql
+*.sql.zip
 
 # javascript ate the world
 node_modules/
