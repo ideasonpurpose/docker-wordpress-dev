@@ -1,1 +1,1 @@
-console.log("admin.js");
+console.log("editor.js");
