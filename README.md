@@ -207,6 +207,23 @@ To profile a request with Xdebug, add `?XDEBUG_PROFILE=1` to the url.
 
 Profiler files will be in a top-level directory named `_profiler`. These can be viewed with a tool like KCacheGrind, QCacheGrind, WinCacheGrind
 
+#### Reading Call Graphs
+Every profiled run can also be viewed as a call graph. These graphs are [documented in the gprof2dot project](https://github.com/jrfonseca/gprof2dot#output):
+
+```
++------------------------------+
+|        function name         |
+| total time % ( self time % ) |
+|         total calls          |
++------------------------------+
+```
+> where:
+> 
+> * **_total time %_** is the percentage of the running time spent in this function and all its children;
+> * **_self time %_** is the percentage of the running time spent in this function alone;
+> * **_total calls_** is the total number of times this function was called (including recursive calls).
+
+
 <!--
 ## Advantages
 
