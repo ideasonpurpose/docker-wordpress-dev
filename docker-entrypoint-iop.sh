@@ -30,8 +30,11 @@ WP_EXTRA_DEBUG=$(
   *
   * Enable all WordPress debugging constants
   * https://codex.wordpress.org/Debugging_in_WordPress
+  *
+  * Note: WP_DEBUG is set from the default entrypoint script based on
+  *       the WORDPRESS_DEBUG env var in docker-compose.yml
   */
-define('WP_DEBUG', true);
+// define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
 define('WP_DEBUG_DISPLAY', true);
 define('SCRIPT_DEBUG', true);
@@ -55,6 +58,10 @@ EOF
 
 if [[ "$(<wp-config.php)" != *"Extra ideasonpurpose dev settings"* ]]; then
 
+  # echo "Commenting out existing WP_DEBUG"
+  # sed -i -e "s%define( 'WP_DEBUG',%// define( 'WP_DEBUG',%" wp-config.php
+
+
   echo "Updating wp-config, injecting: "
   echo
   echo "$WP_EXTRA_DEBUG"
@@ -76,6 +83,9 @@ if [[ "$(<wp-config.php)" != *"Extra ideasonpurpose dev settings"* ]]; then
 else
   echo "Config already has dev additions"
 fi
+
+# Create a simple phpinfo() page at /info.php
+echo '<?php phpinfo();' > /var/www/html/info.php
 
 # Finally, we run the original endpoint, as intended, to kickoff the server
 exec /usr/local/bin/docker-entrypoint.sh $@
