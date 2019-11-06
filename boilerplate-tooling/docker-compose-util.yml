@@ -10,10 +10,9 @@ services:
     environment:
       WP_CLI_CACHE_DIR: /tmp/wp-cli
     volumes:
-      - wp_data:/var/www/html
       - ./wp-content/:/var/www/html/wp-content/
     entrypoint: wp
-    command: theme activate ${NAME:-${npm_package_name:-iopdev}}
+    command: theme activate $${NAME:-${npm_package_name:-iopdev}}
 
   composer:
     image: composer
@@ -28,16 +27,14 @@ services:
     depends_on:
       - db
     environment:
-      PMA_USER: wordpress
-      PMA_PASSWORD: wordpress
+      PMA_USER: root
+      PMA_PASSWORD: ~
 
   webgrind:
     # user: "33" # www-date on alpine
     image: creativeprojects/webgrind
     volumes:
       - ./_profiler:/tmp/xdebug
-      - wp_data:/var/www/html
-      - ./wp-content/:/var/www/html/wp-content/
 
   mysqldump:
     image: mysql:5.7

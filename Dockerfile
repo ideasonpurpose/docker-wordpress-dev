@@ -1,8 +1,11 @@
 FROM wordpress:latest
 
-# Overload the environment in the default image (instead of docker-compose)
-# ENV WORDPRESS_DEBUG 1
 
+# Set Apache ServerName globally to address slowdowns
+RUN echo "ServerName localhost" > /etc/apache2/conf-available/server-name.conf \
+    && a2enconf server-name
+
+# Configure PHP
 RUN echo "[File Uploads]" > /usr/local/etc/php/conf.d/z_iop_max_file_size.ini \
     && echo "upload_max_filesize = 100M" >> /usr/local/etc/php/conf.d/z_iop_max_file_size.ini \
     && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/z_iop_max_file_size.ini
@@ -28,44 +31,35 @@ RUN echo "[OPcache]" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini
 
+# Install Memcached
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+      libmemcached-dev \
+      zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && pecl install memcached \
+    && docker-php-ext-enable memcached
+
 # Install XDebug, largly copied from:
 # https://github.com/andreccosta/wordpress-xdebug-dockerbuild
-RUN pecl install "xdebug" \
+RUN pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && echo "xdebug.profiler_enable_trigger = 1" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo "xdebug.profiler_output_dir = /tmp/xdebug_profiler" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo "debug.remote_host = host.docker.internal" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && rm -rf /tmp/pear
     # && echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini
     # && echo "xdebug.remote_autostart=0" >> /usr/local/etc/php/conf.d/xdebug.ini \
     # && echo "xdebug.remote_port=${XDEBUG_PORT}" >> /usr/local/etc/php/conf.d/xdebug.ini \
     # && echo "xdebug.idekey=${XDEBUG_IDEKEY}" >> /usr/local/etc/php/conf.d/xdebug.ini
 
-# Make sure the profiler directory exists and is writable by www-data
+# Make sure the XDebug profiler directory exists and is writable by www-data
 RUN mkdir /tmp/xdebug_profiler \
     && chown www-data:www-data /tmp/xdebug_profiler
 
-# Install the PHP Imagick extension, solution found here:
-# https://github.com/docker-library/php/issues/105#issuecomment-421081065
-# RUN export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
-#     && apt-get update \
-#     && apt-get install -y --no-install-recommends \
-#       libmagickwand-dev \
-#       mysql-client \
-#       # vim \
-#     && rm -rf /var/lib/apt/lists/* \
-#     && pecl install imagick-3.4.3 \
-#     && docker-php-ext-enable imagick
-
-# TODO: Is imageMagick installed? Got this mesage:
-#    > Installing '/usr/local/include/php/ext/imagick/php_imagick_shared.h'
-#    > Installing '/usr/local/lib/php/extensions/no-debug-non-zts-20170718/imagick.so'
-#    > install ok: channel:#pecl.php.net/imagick-3.4.3
-#    > configuration option "php_ini" is not set to php.ini location
-#    > You should add "extension=imagick.so" to php.ini
-
-# TODO: This looks easier?
-# https://ourcodeworld.com/articles/read/645/how-to-install-imagick-for-php-7-in-ubuntu-16-04
-
+# Setup alternate WordPress debug.log location in /var/log
+RUN mkdir -p /var/log/wordpress \
+    && chown www-data:www-data /var/log/wordpress
 
 # Install jq for merging package.json files
 RUN apt-get update -qq \
@@ -79,7 +73,15 @@ COPY boilerplate-theme/ /usr/src/boilerplate-theme
 COPY boilerplate-tooling/ /usr/src/boilerplate-tooling
 
 COPY *.sh /usr/local/bin/
-# COPY update-package-json-scripts.php /usr/local/bin/
+
+# Network Debugging Tools
+# TODO: Remove or disable if not needed
+RUN apt-get update -qq \
+    && apt-get install -y --no-install-recommends \
+      iputils-ping \
+      dnsutils \
+      vim \
+    && rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["docker-entrypoint-iop.sh"]
 
