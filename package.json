@@ -22,6 +22,8 @@
     "phpmyadmin": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 8002:80 phpmyadmin",
     "start": "npm run docker:start",
     "poststart": "npm run mysql:dump",
+    "version": "version-everything && git add -u",
+    "postversion": "npm run build",
     "webgrind": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 9001:80 webgrind"
   },
   "prettier": {
@@ -42,7 +44,8 @@
     "prettier": "^1.18.2",
     "stylelint-config-prettier": "^6.0.0",
     "stylelint-config-rational-order": "^0.1.2",
-    "stylelint-prettier": "^1.1.1"
+    "stylelint-prettier": "^1.1.1",
+    "version-everything": "^0.4.0"
   },
   "versionFiles": [
     "wp-content/themes/THEME_NAME/style.css",
