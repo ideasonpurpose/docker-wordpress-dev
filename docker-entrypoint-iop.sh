@@ -35,7 +35,7 @@ WP_EXTRA_DEBUG=$(
   *       the WORDPRESS_DEBUG env var in docker-compose.yml
   */
 // define('WP_DEBUG', true);
-define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_LOG', '/var/log/wordpress/debug.log');
 define('WP_DEBUG_DISPLAY', true);
 define('SCRIPT_DEBUG', true);
 define('SAVEQUERIES', true);
