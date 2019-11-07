@@ -151,6 +151,10 @@ _TODO: start using dotenv library_
 
 Put MySQL dumpfiles in a top-level `_db` directory to populate the development database on `docker-compose up`. The [MySQL Docker image](https://hub.docker.com/_/mysql#initializing-a-fresh-instance) will load all `*.sql` files from that directory in alphabetical order. Later files will overwrite earlier ones.
 
+#### Loading new dumpfiles (update the database)
+
+-- tbd
+
 ## Included Tools, Commands, etc.
 
 Calling `docker-compose up -d` will run everything. To discover ports afterwards, run `docker-compose ps`. To clean up and deactivate any active containers, run `docker-compose down`.
@@ -208,6 +212,7 @@ To profile a request with Xdebug, add `?XDEBUG_PROFILE=1` to the url.
 Profiler files will be in a top-level directory named `_profiler`. These can be viewed with a tool like KCacheGrind, QCacheGrind, WinCacheGrind
 
 #### Reading Call Graphs
+
 Every profiled run can also be viewed as a call graph. These graphs are [documented in the gprof2dot project](https://github.com/jrfonseca/gprof2dot#output):
 
 ```
@@ -217,18 +222,39 @@ Every profiled run can also be viewed as a call graph. These graphs are [documen
 |         total calls          |
 +------------------------------+
 ```
-> where:
-> 
-> * **_total time %_** is the percentage of the running time spent in this function and all its children;
-> * **_self time %_** is the percentage of the running time spent in this function alone;
-> * **_total calls_** is the total number of times this function was called (including recursive calls).
 
+> where:
+>
+> - **_total time %_** is the percentage of the running time spent in this function and all its children;
+> - **_self time %_** is the percentage of the running time spent in this function alone;
+> - **_total calls_** is the total number of times this function was called (including recursive calls).
 
 <!--
 ## Advantages
 
 This project also bundles in our [docker-build toolchain][docker-build]. This has a number of advantages over including a gulpfile or webpack config in the project root. First and foremost, it encapsulates all the node dependencies, leaving only what's relevant to the projec tin niode_modules, instead of several thousand tool-related dependencies.
 -->
+
+## npm package.json scripts
+
+This project bundles a lot of functionality and messy commands behind a small set of npm script commands.
+
+### Primary Scripts
+
+- build
+- start
+- version
+
+### Task specific scripts
+
+### The **start** pipeline
+
+The start script is linked to several lifecycle scripts which do a lot more than just start the devserver. The `npm run start` lifecycle looks like this:
+
+- `npm run start` Starts a development server and run build tools in docker
+  - `poststart` is an alias for `npm run shutdown`
+  - The `preshutdown` script runs first, creating a fresh dumpfile from the current MySQL DB
+  - Then `shutdown` calls `npm run docker:stop` which just calls `docker-compose stop` to tear down the wordpress and db images.
 
 ## Windows Notes
 
@@ -240,7 +266,7 @@ VirtualBox and earlier versions of Docker [can not be installed simultaneously o
 
 When working with Vagrant, we used the vagrant hostmanager plugin to set up and point a project-name.test domain at our dev site. This was nice whjen working on one computer, but the reality bnow is that we're working on many all the time. Whatever the site is being developed on, it's likely being previewed on a handful of different desktop and mobile devices where that lovely development domain is irrelevant.
 
-So, despite fantastic, cross-platform solutions like [Hostile](https://www.npmjs.com/package/hostile), we're dropping `*.test` development domains in favor of proxying through the Webpack DevServer.
+So, despite fantastic, cross-platform solutions like [Hostile](https://www.npmjs.com/package/hostile), we're dropping `*.test` development domains in favor of proxying everything through the Webpack DevServer.
 
 ## Theme Boilerplate Notes
 
