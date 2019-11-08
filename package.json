@@ -15,7 +15,7 @@
     "composer:install": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer",
     "composer:require": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer require",
     "composer:update": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer update",
-    "docker:build": "docker-compose run --rm -p 3000:3000 -p 3001:3001 tools build",
+    "docker:build": "docker-compose run --rm tools build",
     "docker:start": "docker-compose run --rm -p 8080:8080 tools start",
     "docker:stop": "docker-compose down",
     "mysql:dump": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm mysqldump",

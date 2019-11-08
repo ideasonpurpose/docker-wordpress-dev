@@ -72,8 +72,8 @@ services:
       - wordpress
     ports:
       - "8080:8080"
-      - "3000:3000"
-      - "3001:3001"
+      # - "3000:3000"
+      # - "3001:3001"
     volumes:
       - ./:/usr/src/site/
     entrypoint: npm run
