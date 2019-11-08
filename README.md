@@ -159,6 +159,10 @@ Put MySQL dumpfiles in a top-level `_db` directory to populate the development d
 
 Calling `docker-compose up -d` will run everything. To discover ports afterwards, run `docker-compose ps`. To clean up and deactivate any active containers, run `docker-compose down`.
 
+### `phpinfo()`
+
+A PHP Info page is available at [`/info.php`](http://localhost:8080/info.php).
+
 ### MySQL
 
 The MySQL command like client is available whenever the docker images are running. To access it, run this:
