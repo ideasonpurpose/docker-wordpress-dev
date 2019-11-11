@@ -34,6 +34,7 @@ services:
     image: ideasonpurpose/wordpress
     restart: always
     volumes:
+      - wp_data:/var/www/html
       - ./wp-content/themes/${NAME:-ioptheme}:/var/www/html/wp-content/themes/${NAME:-ioptheme}
       - ./wp-content/plugins:/var/www/html/wp-content/plugins
       - ./wp-content/uploads:/var/www/html/wp-content/uploads
@@ -82,3 +83,5 @@ services:
 volumes:
   db_data:
     name: ${NAME:-ioptheme}_db_data
+  wp_data:
+    name: ${NAME:-ioptheme}_wp_data
