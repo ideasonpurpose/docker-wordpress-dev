@@ -32,6 +32,13 @@
   "prettier": {
     "overrides": [
       {
+        "files": "*.html",
+        "options": {
+          "printWidth": 120,
+          "tabWidth": 2
+        }
+      },
+      {
         "files": "*.php",
         "options": {
           "printWidth": 120,
