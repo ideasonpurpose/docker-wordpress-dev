@@ -12,7 +12,7 @@ services:
     volumes:
       - ./wp-content/:/var/www/html/wp-content/
     entrypoint: wp
-    command: theme activate $${NAME:-${npm_package_name:-iopdev}}
+    command: theme activate ${NAME:-${npm_package_name:-iopdev}}
 
   composer:
     image: composer
@@ -23,7 +23,7 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     ports:
-      - 80
+      - "8002:80"
     depends_on:
       - db
     environment:
@@ -42,11 +42,34 @@ services:
       - db
     volumes:
       - ./_db:/usr/src
-    # NOTE: This mysqldump command includes the lines: 
-    #        CREATE DATABASE `wordpress`;
-    #        USE `wordpress`;
-    # to drop the CREATE/USE database commands remove  "--databases" 
+    environment:
+      MYSQL_DATABASE: wordpress
+
+    # NOTE: The mysqldump file will include these CREATE/USE commands:
+    #           CREATE DATABASE `wordpress`;
+    #           USE `wordpress`;
+    #       to drop those lines, remove  "--databases" from the mysqldump command
     command: |
-      bash -c "export DUMPFILE=$${NAME:-${npm_package_name:-dumpfile}}-$$(date +%FT%H%M%S).sql && \
-               mysqldump --default-character-set=utf8mb4 -hdb --databases wordpress > $${DUMPFILE} && \
-               tar --remove-files -czf /usr/src/$${DUMPFILE}.zip $${DUMPFILE}"
+      bash -c "export DUMPFILE=${NAME:-dumpfile}-$$(date +%FT%H%M%S).sql && \
+               mysqldump -hdb --default-character-set=utf8mb4 --databases $${MYSQL_DATABASE} > $${DUMPFILE} && \
+               tar --remove-files -czf /usr/src/$${DUMPFILE}.zip $${DUMPFILE} && \
+               echo Successfully dumped MySQL database to \\\"$${DUMPFILE}.zip\\\""
+
+  mysql-reload:
+    image: mysql:5.7
+    depends_on:
+      - db
+    volumes:
+      - ./_db:/usr/src/dumpfiles
+    environment:
+      MYSQL_DATABASE: wordpress
+    command: |
+      bash -c "mysqladmin -hdb -v -f drop $${MYSQL_DATABASE} && \
+               mysqladmin -hdb -v -f create $${MYSQL_DATABASE} && \
+               echo Database \\\"$${MYSQL_DATABASE}\\\" created && \
+               echo Reloading database from dumpfile && \
+               mysql -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1) && \
+               echo Activating theme \\\"${NAME:-ioptheme}\\\" && \
+               mysql -hdb $${MYSQL_DATABASE} -e \"UPDATE wp_options \
+                                                  SET option_value = '${NAME:-ioptheme}'\
+                                                  WHERE option_name IN ('template','stylesheet')\""

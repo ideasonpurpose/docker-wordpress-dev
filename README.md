@@ -171,6 +171,18 @@ The MySQL command like client is available whenever the docker images are runnin
 $ docker-compose exec db mysql
 ```
 
+A few useful MySQL commands have been wrapped up in package.json scripts:
+
+- `npm run mysql:dump`<br>
+  Dumps the current MySQL database into a dated zip archive in **\_db**
+
+- `npm run mysql:reload`<br>
+  Drops the local database then reloads the last-found `*.sql` file in **\_db**
+
+### phpMyAdmin
+
+Run `npm run phpmyadmin` to launch a phpMyAdmin instance on port `8002`.
+
 ### wp-cli
 
 WP-cli doesn't run as a sevice, but the imasge is pre-configured by the compose file to this specific WordPress instance. To access the command line, use `run` instead of `exec`, like this:
@@ -202,10 +214,6 @@ $ docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  comp
 docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  composer bash
 
 ```
-
-### phpMyAdmin
-
-A phpMyAdmin installation is available on port `13306` of `localhost` or the local `[project-name].test` domain.
 
 ### Xdebug Profiles & The WebGrind Viewer
 
@@ -304,7 +312,7 @@ The `wp-content` directory must be writable by the www-data user.
 
 - [x] [phpMyAdmin](https://www.phpmyadmin.net): Yea or nay? (why not, it was really easy to add)
 
-- [ ] Linking the wp-content directory as a docker volume inadvertently creates a few extra files. These are in .gitignore, but it's still annoying. (ie. `wp-content/upgrade`, `wp-content/index.php`, all the `themes/twenty*` directories) Possible solution might be flattening our theme up to the top level then linking that directly into the docker container. Or, being more selective about where we're mounting volumes
+- [x] Linking the wp-content directory as a docker volume inadvertently creates a few extra files. These are in .gitignore, but it's still annoying. (ie. `wp-content/upgrade`, `wp-content/index.php`, all the `themes/twenty*` directories) ~~Possible solution might be flattening our theme up to the top level then linking that directly into the docker container. Or, being more selective about where we're mounting volumes~~ Mount the relevant wp-content and theme subdirectories directly instead of wp-content itself.
 
 * [x] Can some of our wp-config add-ons be baked into the wordpress Dockerfile? Specifically the general debug stuff that gets repeated without changing.
 
