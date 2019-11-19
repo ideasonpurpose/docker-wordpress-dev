@@ -41,7 +41,7 @@ $SVG = new SVG();
 new ThemeInit\Admin\Separators(20, 26, 28);
 
 /**
- * Register Custom Widegts
+ * Register Custom Widgets
  */
 // new Widgets\NAME();
 
