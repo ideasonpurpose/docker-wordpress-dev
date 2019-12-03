@@ -61,8 +61,9 @@ RUN mkdir /tmp/xdebug_profiler \
 RUN mkdir -p /var/log/wordpress \
     && chown www-data:www-data /var/log/wordpress
 
-# Reset ownership of wp-content to www-data
-RUN chown www-data:www-data /var/www/html/wp-content
+# Reset ownership of wp-content to www-data (doesn't work)
+# RUN mkdir -p /var/www/html/wp-content \
+#     && chown www-data:www-data /var/www/html/wp-content
 
 # Install jq for merging package.json files
 RUN apt-get update -qq \

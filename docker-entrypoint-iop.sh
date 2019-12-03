@@ -87,5 +87,13 @@ fi
 # Create a simple phpinfo() page at /info.php
 echo '<?php phpinfo();' > /var/www/html/info.php
 
+# Correct permissions on wp-content mounts & misc WP files
+chown www-data:www-data /var/www/html/*.php
+chown www-data:www-data /var/www/html/wp-content
+chown www-data:www-data /var/www/html/wp-content/plugins
+chown www-data:www-data /var/www/html/wp-content/uploads
+chown www-data:www-data /var/www/html/wp-content/themes/*
+
+
 # Finally, we run the original endpoint, as intended, to kickoff the server
 exec /usr/local/bin/docker-entrypoint.sh $@
