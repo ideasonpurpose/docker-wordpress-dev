@@ -8,6 +8,7 @@
   "contributors": [
     "Joe Maller <joe@ideasonpurpose.com>"
   ],
+  "repository": "https://github.com/ideasonpurpose/GIP001-Website-2019",
   "scripts": {
     "bootstrap": "docker-compose -f docker-compose.yml -f docker-compose-bootstrap.yml up",
     "build": "npm run docker:build",
