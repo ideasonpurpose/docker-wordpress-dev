@@ -299,6 +299,8 @@ main.scss - only imports everything, nothing else should be here (edited)
 - The wp-content/debug.log file should be writeable by the web user. If logs aren't being written, try `chmod a+w wp-content/debug.log`.
 
 - All scripts are assumed to require jQuery and will include jQuery as a dependency. It's very difficult to get jQuery _out_ or WordPress, so instead of bundling in a second copy of the library, we just use what's there and assume it will already have been required by something else. (TODO: check this)
+- To open a shell on the WordPress instance, run `docker-compose exec wordpress bash`
+- To open a CLI shell on active database, run `docker-compose exec db mysql`
 
 ### Permissions
 
