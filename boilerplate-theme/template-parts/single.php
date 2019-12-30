@@ -1,13 +1,19 @@
 <!-- START template-parts/single.php -->
 
-<div>
-  <h1>
-    <a href="<?= get_post_type_archive_link($post->post_type) ?>">
-      <?php the_title() ?>
-    </a>
-  </h1>
+<main>
+  <article class="post">
 
-  <?php the_content(); ?>
-</div>
+    <h1>
+      <a href="<?= get_post_type_archive_link($post->post_type) ?>">
+        <?php the_title() ?>
+      </a>
+    </h1>
+
+    <section class="editorial wrapper">
+      <?php the_content(); ?>
+    </section>
+
+  </article>
+</main>
 
 <!-- END template-parts/single.php -->
