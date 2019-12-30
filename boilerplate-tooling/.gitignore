@@ -36,9 +36,6 @@ Thumbs.db
 /wp-commentsrss2.php
 /wp-config-sample.php
 /wp-content/index.php
-/wp-content/plugins/akismet
-/wp-content/plugins/hello.php
-/wp-content/plugins/index.php
 /wp-content/themes/index.php
 /wp-content/themes/twenty*
 /wp-cron.php
@@ -90,21 +87,11 @@ wp-content/w3tc.*
 gallery/*
 album/*
 
-# This should never happen
-wp-content/plugins/plugins
-
-
 # wpengine specific
 .smushit-status
 _wpeprivate
 wp-content/advanced-cache.php
-wp-content/mu-plugins/limit-login-attempts/
-wp-content/mu-plugins/mu-plugin.php
-wp-content/mu-plugins/slt-force-strong-passwords.php
-wp-content/mu-plugins/wpengine-common/
 wp-content/object-cache.php
-wp-content/plugins/hyperdb*
-wp-content/plugins/wpengine-snapshot/snapshots/
 
 # flywheel specific
 wp-content/flywheel-config/
@@ -164,11 +151,12 @@ node_modules/
 vendor/
 dist/
 
-# Webpack Stats
-/stats.json
+# Webpack Stats & profiler
+/webpack
 
 # Ignore all plugins
 wp-content/plugins
+wp-content/mu-plugins
 
 # I have not yet wanted these files in project history
 *.code-workspace
