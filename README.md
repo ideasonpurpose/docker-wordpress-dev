@@ -33,13 +33,13 @@ Existing WordPress sites have three highly portable components contained in `wp-
 4. **The Plugins directory**  
    A blob of plugin files. Most of these can be pulled from [wordpress.org/plugins](https://wordpress.org/plugins/) but it's often faster to copy the whole `wp-content/plugins` directory to dev sites.
 
-Docker Desktop should be installed. Development of this project began on macOS then moved to Windows with a focus on WSL 2. The tools should work equally well on any platform that can run Docker.
+Docker Desktop should be installed. The tools should work equally well on any platform that can run Docker, we're using it in production on macOS and Windows, including and WSL 2.
 
 #### Manual Setup
 
-Copy your dumpfile to the top-level `_db` directory.
-Copy the three docker-compose files to the project root.
-Merge the scripts section of package.json onto your project's package.json file.
+Copy a mysql dumpfile to the top-level `_db` directory.
+Copy the contents of **bolerplate-tooling** to the project root.
+Merge the scripts and devDependencies sections of package.json onto your project's package.json file.
 
 ~~Call `npm run bootstrap`~~ _not working yet_
 
@@ -51,9 +51,9 @@ For starting a new site, this will get a basic WordPress server running locally.
 2. Run `docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress init`
 3. Run `npm install`
 4. Run `npm run composer`
-5. Run `npm run docker:start`
+5. Run `npm run start`
 
-_Windows Note: Replace `${PWD}` with `%CD%` if using **cmd.exe**, `${PWD}` will work in PowerShell_
+_Windows Note: Replace `${PWD}` with `%CD%` if using **cmd.exe**, `${PWD}` works in PowerShell_
 
 Notes: Theme name will be set from this list, using the first found:
 
@@ -112,7 +112,7 @@ docker-compose run --rm -p 8080:8080 tools
 ```
 -->
 
-After calling `npm run docker:start` Webpack DevServer will be serving the dev site from Docker at [localhost:8080](http://localhost:8080)
+After calling `npm run start` Webpack DevServer will be serving the dev site from Docker at [localhost:8080](http://localhost:8080)
 
 The first run make take some time as Docker downloads the necessary images. Subsequent runs take just a few seconds.
 
