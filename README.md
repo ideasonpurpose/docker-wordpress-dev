@@ -324,7 +324,7 @@ The `wp-content` directory must be writable by the www-data user.
 
 * [x] How to get a MySQL shell? (`docker ps` find the name of the database container, then `docker exec -it example_db_1 mysql`)
 
-## Default ports:
+### Default ports:
 
 For a basic up, the raw WordPress host should be available at port 8001
 The build tools proxy should be available at port 8080
@@ -337,7 +337,15 @@ PHP MyAdmin should be available at port 8002
 - `docker system prune -a` Clean everything, will need to download stuff again
 - `docker exec -it <container> bash` Open a shell on a running container
 
-<!-- --- -->
+<!-- ### Related Projects -->
+
+### Local Development
+
+To iterate locally, build the image using the same name as the Docker Hub remote. Docker will use the local copy.
+
+```sh
+$ docker build -t ideasonpurpose/docker-build .
+```
 
 [basic-wordpress-vagrant]: https://github.com/ideasonpurpose/basic-wordpress-vagrant
 [basic-wordpress-box]: https://github.com/ideasonpurpose/basic-wordpress-box

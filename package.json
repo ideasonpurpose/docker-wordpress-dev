@@ -48,7 +48,8 @@
         "options": {
           "printWidth": 120,
           "tabWidth": 4,
-          "singleQuote": true
+          "singleQuote": true,
+          "trailingCommaPHP": "all"
         }
       }
     ]
@@ -64,7 +65,8 @@
   },
   "version-everything": {
     "files": [
-      "README.md"
+      "README.md",
+      "Dockerfile"
     ]
   }
 }
