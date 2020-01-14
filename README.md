@@ -1,6 +1,6 @@
 # WordPress local development with Docker
 
-#### Version 0.1.4
+#### Version 0.2.0
 
 [![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)
 
