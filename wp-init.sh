@@ -82,14 +82,27 @@ if [[ -f /usr/src/site/package.json ]]; then
     cp /usr/src/site/package.json /tmp/package.json
 else
     echo "Creating baseline package.json file"
-    jq -n '{name: "'${NAME}'", versionFiles: ["wp-content/themes/'${NAME}'/style.css"]}'  | cat >/tmp/package.json
+    jq -n '{
+            name: "'${NAME}'",
+            version: "0.0.0",
+            private: true,
+            description: "",
+            repository: "",
+            author: "",
+            contributors: [],
+            "version-everything": {
+                files: ["README.md", "wp-content/themes/'${NAME}'/style.css"]
+            }}'  | cat >/tmp/package.json
     # echo -e '{"name": "'${NAME}'", "version_files": ["'${NAME}'"] }' >/tmp/package.json
 fi
 
 echo "Merging defaults onto package.json"
 # jq -s '.[0] * (.[1] | {scripts, devDependencies, version_files, prettier})' /tmp/package.json /usr/src/package.json | cat >/usr/src/site/package.json
 # jq -s '.[0] * (.[1] | {scripts, devDependencies, version_files, prettier}) | {., vvvv: 1234}' /tmp/package.json /usr/src/package.json | cat >/usr/src/site/package.json
-jq -s '.[0] * (.[1] | {config, scripts, devDependencies, prettier}) + {versionFiles: [.[].versionFiles] | flatten | unique}' /tmp/package.json /usr/src/package.json | cat >/usr/src/site/package.json
+jq -s '.[0] * (.[1] | {config, scripts, devDependencies, prettier}) + {
+            "version-everything": {
+                files: [.[]["version-everything"].files] | flatten | unique
+            }}' /tmp/package.json /usr/src/boilerplate-package.json | cat >/usr/src/site/package.json
 
 echo "Updating metadata in theme stylesheet"
 sed -e "s/Theme Name.*$/Theme Name:         ${NAME}/" /usr/src/boilerplate-theme/style.css >/usr/src/site/wp-content/themes/${NAME}/style.css

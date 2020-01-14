@@ -72,8 +72,8 @@ RUN apt-get update -qq \
       jq \
     && rm -rf /var/lib/apt/lists/*
 
-COPY package.json /usr/src/
 COPY default.config.js /usr/src/
+COPY boilerplate-package.json /usr/src/
 COPY boilerplate-theme/ /usr/src/boilerplate-theme
 COPY boilerplate-tooling/ /usr/src/boilerplate-tooling
 
