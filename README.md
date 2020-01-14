@@ -120,6 +120,10 @@ The first run make take some time as Docker downloads the necessary images. Subs
 
 To stop the server type **control-c**. To stop docker (and clear ports), run `docker-compose down` which will teardown the virtual network and stop any active containers.
 
+### Development Port
+
+The default port for the webpack devserver is `8080`. If you need to run more than one development server at the same time, for example when working on multiple sites, just change the `config.PORT` number in **package.json** in one of them so the ports won't collide.
+
 <!--
 We're also watching the [Docker app](https://github.com/docker/app) project and may be able to further simplifiy this by wrapping this project in an app description later on.
 -->

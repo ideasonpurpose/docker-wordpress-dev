@@ -9,6 +9,9 @@
   "contributors": [
     "Joe Maller <joe@ideasonpurpose.com>"
   ],
+  "config": {
+    "PORT": 8080
+  },
   "scripts": {
     "bootstrap": "docker-compose -f docker-compose.yml -f docker-compose-bootstrap.yml up",
     "build": "npm run docker:build",
@@ -18,7 +21,7 @@
     "composer:require": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer require",
     "composer:update": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer update",
     "docker:build": "docker-compose run --rm tools build",
-    "docker:start": "docker-compose run --rm -p 8080:8080 tools start",
+    "docker:start": "cross-var docker-compose run --rm -p $npm_package_config_PORT:8080 tools start",
     "docker:stop": "docker-compose down",
     "mysql:dump": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm mysqldump",
     "mysql:reload": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm mysql-reload",
@@ -56,6 +59,7 @@
   },
   "devDependencies": {
     "@prettier/plugin-php": "^0.12.0",
+    "cross-var": "^1.1.0",
     "dotenv": "^8.2.0",
     "prettier": "^1.19.1",
     "prettier-stylelint": "^0.4.2",

@@ -89,7 +89,7 @@ fi
 echo "Merging defaults onto package.json"
 # jq -s '.[0] * (.[1] | {scripts, devDependencies, version_files, prettier})' /tmp/package.json /usr/src/package.json | cat >/usr/src/site/package.json
 # jq -s '.[0] * (.[1] | {scripts, devDependencies, version_files, prettier}) | {., vvvv: 1234}' /tmp/package.json /usr/src/package.json | cat >/usr/src/site/package.json
-jq -s '.[0] * (.[1] | {scripts, devDependencies, prettier}) + {versionFiles: [.[].versionFiles] | flatten | unique}' /tmp/package.json /usr/src/package.json | cat >/usr/src/site/package.json
+jq -s '.[0] * (.[1] | {config, scripts, devDependencies, prettier}) + {versionFiles: [.[].versionFiles] | flatten | unique}' /tmp/package.json /usr/src/package.json | cat >/usr/src/site/package.json
 
 echo "Updating metadata in theme stylesheet"
 sed -e "s/Theme Name.*$/Theme Name:         ${NAME}/" /usr/src/boilerplate-theme/style.css >/usr/src/site/wp-content/themes/${NAME}/style.css
