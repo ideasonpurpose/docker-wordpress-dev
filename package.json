@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "prettier": "^1.19.1",
-    "version-everything": "^0.5.6"
+    "version-everything": "^0.6.0"
   },
   "version-everything": {
     "files": [
