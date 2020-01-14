@@ -1,6 +1,6 @@
 FROM wordpress:latest
 
-LABEL version="0.0.0"
+LABEL version="0.2.1"
 
 # Set Apache ServerName globally to address slowdowns
 RUN echo "ServerName localhost" > /etc/apache2/conf-available/server-name.conf \
