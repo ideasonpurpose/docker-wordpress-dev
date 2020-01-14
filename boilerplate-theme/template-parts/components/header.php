@@ -12,7 +12,7 @@ if (array_key_exists($menu_key, $menu_locations) && $menu_locations[$menu_key] !
         'menu_class' => 'menu menu--main',
         'items_wrap' => '<ul class="%2$s">%3$s</ul>' . "\n",
         'container' => '',
-        'echo' => false
+        'echo' => false,
     ]);
 }
 ?>
@@ -34,7 +34,9 @@ if (array_key_exists($menu_key, $menu_locations) && $menu_locations[$menu_key] !
 
     <div class="header__menu">
       <?php get_template_part('template-parts/components/search-form', 'header'); ?>
+      <?php if (array_key_exists($menu_key, $menus)): ?>
       <?= $menus[$menu_key] ?>
+      <?php endif; ?>
     </div>
   </nav>
 </header>
