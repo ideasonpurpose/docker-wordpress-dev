@@ -4,11 +4,17 @@ namespace ideasonpurpose;
 
 $autoloader = require __DIR__ . '/vendor/autoload.php';
 
-new ThemeInit();
-
 if (!defined('VERSION')) {
     define('VERSION', defined('WP_DEBUG') ? time() : wp_get_theme()->get('Version'));
 }
+
+new ThemeInit();
+
+/**
+ * Load Scripts
+ */
+// TODO: What happens if this file doesn't exist yet?
+new ThemeInit\Manifest(get_template_directory() . '/dist/dependency-manifest.json');
 
 /**
  * Initialize ideasonpurpose/GoogleAnalytics
@@ -60,11 +66,6 @@ add_action('after_setup_theme', function () {
     ]);
 });
 
-/**
- * Load Scripts
- */
-// TODO: What happens if this file doesn't exist yet?
-new ThemeInit\Manifest(get_template_directory() . '/dist/dependency-manifest.json');
 
 /**
  * Enable assorted WordPress features
@@ -104,6 +105,31 @@ $image_sizes = [
     ['name' => '2k', 'dims' => [2048, 2048], 'display' => '2k - 2048px'],
     ['name' => '4k', 'dims' => [3840, 3840], 'display' => '4k - 3840px']
 ];
+
+/**
+ * Register Sidebars and disable default widgets
+ */
+add_action('widgets_init', function () {
+    register_sidebar();
+    
+    unregister_widget('WP_Nav_Menu_Widget');
+    unregister_widget('WP_Widget_Archives');
+    unregister_widget('WP_Widget_Calendar');
+    unregister_widget('WP_Widget_Categories');
+    unregister_widget('WP_Widget_Custom_HTML');
+    unregister_widget('WP_Widget_Links');
+    unregister_widget('WP_Widget_Media_Audio');
+    unregister_widget('WP_Widget_Media_Gallery');
+    unregister_widget('WP_Widget_Media_Video');
+    unregister_widget('WP_Widget_Meta');
+    unregister_widget('WP_Widget_Pages');
+    unregister_widget('WP_Widget_Recent_Comments');
+    unregister_widget('WP_Widget_Recent_Posts');
+    unregister_widget('WP_Widget_RSS');
+    unregister_widget('WP_Widget_Search');
+    unregister_widget('WP_Widget_Tag_Cloud');
+}
+
 
 new ImageSize($image_sizes);
 
