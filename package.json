@@ -13,7 +13,7 @@
     "version": "version-everything && git add -u"
   },
   "devDependencies": {
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.4",
     "version-everything": "^0.6.0"
   },
   "version-everything": {
