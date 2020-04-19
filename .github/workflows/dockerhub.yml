@@ -4,7 +4,7 @@
 #   DOCKER_PASS: The Docker Hub user's password
 #   DOCKER_NAME: The full image name as it appears on Docker Hub
 
-name: Push Images to Docker Hub
+name: Push to Docker Hub
 
 on:
   push:
@@ -16,7 +16,7 @@ env:
   DOCKER_NAME: ${{ secrets.DOCKER_NAME }}  
 jobs:
 
-  build:
+  Deploy:
     runs-on: ubuntu-latest
 
     steps:
