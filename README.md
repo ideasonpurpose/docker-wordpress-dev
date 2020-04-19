@@ -2,7 +2,8 @@
 
 #### Version 0.3.0
 
-[![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)
+[![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)<br>
+![Push Images to Docker Hub](https://github.com/ideasonpurpose/docker-wordpress-dev/workflows/Push%20Images%20to%20Docker%20Hub/badge.svg)
 
 This project replaces both the [basic-wordpress-vagrant][] and [basic-wordpress-box][] projects with a Docker-based workflow. It's much lighter than Vagrant, faster to spin up and inherently cross-platform.
 
