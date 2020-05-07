@@ -111,7 +111,7 @@ $image_sizes = [
  */
 add_action('widgets_init', function () {
     register_sidebar();
-    
+
     unregister_widget('WP_Nav_Menu_Widget');
     unregister_widget('WP_Widget_Archives');
     unregister_widget('WP_Widget_Calendar');
@@ -128,7 +128,7 @@ add_action('widgets_init', function () {
     unregister_widget('WP_Widget_RSS');
     unregister_widget('WP_Widget_Search');
     unregister_widget('WP_Widget_Tag_Cloud');
-}
+});
 
 
 new ImageSize($image_sizes);
