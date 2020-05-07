@@ -123,7 +123,13 @@ To stop the server type **control-c**. To stop docker (and clear ports), run `do
 
 ### Development Port
 
-The default port for the webpack devserver is `8080`. If you need to run more than one development server at the same time, for example when working on multiple sites, just change the `config.PORT` number in **package.json** in one of them so the ports won't collide.
+Webpack devserver runs on port `8080` by default. Multiple projects can be run simultaneously by assigning different ports using `npm config` with the **package.json** `name`. For example, three projects named `csr-site`, `pro-bono` and `ar-project` can be run simultaneously, on custom ports, after running these commands:
+
+```sh
+$ npm config set csr-site:port 8080
+$ npm config set pro-bono:port 8081
+$ npm config set ar-project:port 8082
+```
 
 <!--
 We're also watching the [Docker app](https://github.com/docker/app) project and may be able to further simplifiy this by wrapping this project in an app description later on.

@@ -7,33 +7,34 @@
   "license": "MIT",
   "author": "",
   "contributors": [],
-  "config": {
-    "PORT": 8080
-  },
   "scripts": {
     "bootstrap": "docker-compose -f docker-compose.yml -f docker-compose-bootstrap.yml up",
     "build": "npm run docker:build",
-    "build:debug": "docker-compose run --rm -p 8080:8080 -p 9229:9229 tools build:debug",
     "composer": "npm run composer:install",
     "composer:install": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer",
     "composer:require": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer require",
     "composer:update": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer update",
     "docker:build": "docker-compose run --rm tools build",
-    "docker:start": "cross-var docker-compose run --rm -p $npm_package_config_PORT:8080 tools start",
+    "docker:start": "cross-env-shell \"docker-compose run --rm -p $npm_package_config_port:8080 tools start\"",
     "docker:stop": "docker-compose down",
     "mysql:dump": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm mysqldump",
     "mysql:reload": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm mysql-reload",
     "mysqldump": "npm run mysql:dump",
     "phpmyadmin": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 8002:80 phpmyadmin",
+    "preshutdown": "npm run mysql:dump",
+    "shutdown": "npm run docker:stop",
     "start": "npm run docker:start",
-    "poststart": "npm run docker:stop",
-    "start:debug": "docker-compose run --rm -p 8080:8080 -p 9229:9229 tools start:debug",
+    "poststart": "npm run shutdown",
+    "start:debug": "cross-env-shell \"docker-compose run --rm -p $npm_package_config_port:8080 -p 9229:9229 tools start:debug\"",
     "poststart:debug": "npm run poststart",
     "test": "jest",
     "test:watch": "jest --watch",
     "version": "version-everything && git add -u",
     "postversion": "npm run build",
     "webgrind": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 9001:80 webgrind"
+  },
+  "config": {
+    "port": 8080
   },
   "prettier": {
     "overrides": [
@@ -48,22 +49,21 @@
         "files": "*.php",
         "options": {
           "printWidth": 120,
-          "tabWidth": 4,
           "singleQuote": true,
+          "tabWidth": 4,
           "trailingCommaPHP": "all"
         }
       }
     ]
   },
   "devDependencies": {
-    "@prettier/plugin-php": "^0.12.0",
-    "cross-var": "^1.1.0",
+    "@prettier/plugin-php": "^0.14.0",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.5",
     "prettier-stylelint": "^0.4.2",
-    "stylelint": "^12.0.1",
-    "stylelint-order": "^4.0.0",
-    "version-everything": "^0.5.6"
+    "stylelint": "^13.3.3",
+    "version-everything": "^0.6.3"
   },
   "version-everything": {
     "files": [
