@@ -48,10 +48,11 @@
       {
         "files": "*.php",
         "options": {
+          "phpVersion": "7.2",
           "printWidth": 120,
           "singleQuote": true,
           "tabWidth": 4,
-          "trailingCommaPHP": "all"
+          "trailingCommaPHP": true
         }
       }
     ]
