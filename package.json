@@ -10,11 +10,15 @@
     "Joe Maller <joe@ideasonpurpose.com>"
   ],
   "scripts": {
-    "version": "version-everything && git add -u"
+    "version": "version-everything && auto-changelog && git add -u"
   },
   "devDependencies": {
+    "auto-changelog": "^2.0.0",
     "prettier": "^2.0.4",
     "version-everything": "^0.6.0"
+  },
+  "auto-changelog": {
+    "package": true
   },
   "version-everything": {
     "files": [
