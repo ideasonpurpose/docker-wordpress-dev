@@ -62,8 +62,9 @@
     "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "prettier": "^2.0.5",
-    "prettier-stylelint": "^0.4.2",
     "stylelint": "^13.3.3",
+    "stylelint-order": "^4.0.0",
+    "stylelint-prettier": "^1.1.2",
     "version-everything": "^0.6.3"
   },
   "version-everything": {

@@ -279,8 +279,10 @@ const misc = {
 };
 
 module.exports = {
-  plugins: ["stylelint-order"],
+  plugins: ["stylelint-order", "stylelint-prettier"],
   rules: {
+    "prettier/prettier": true,
+
     // "order/order": [
     //   {
     //     type: "rule"
