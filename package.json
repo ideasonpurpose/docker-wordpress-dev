@@ -18,7 +18,8 @@
     "version-everything": "^0.6.0"
   },
   "auto-changelog": {
-    "package": true
+    "package": true,
+    "commitLimit": 7
   },
   "version-everything": {
     "files": [
