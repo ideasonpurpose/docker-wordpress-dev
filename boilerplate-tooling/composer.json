@@ -1,7 +1,13 @@
 {
-  "description": "IOP WordPress Theme by Ideas On Purpose",
+  "description": "THEME_NAME WordPress Theme by Ideas On Purpose",
   "config": {
-    "vendor-dir": "wp-content/themes/THEME_NAME/vendor"
+    "optimize-autoloader": true,
+    "sort-packages": true,
+    "vendor-dir": "wp-content/themes/THEME_NAME/vendor",
+    "platform": {
+      "php": "7.2",
+      "ext-intl": "0"
+    }
   },
   "autoload": {
     "psr-4": {
@@ -12,12 +18,12 @@
   },
   "minimum-stability": "dev",
   "require": {
-    "ideasonpurpose/wp-theme-init": "dev-master",
     "ideasonpurpose/wp-caption-hoist-class": "dev-master",
     "ideasonpurpose/wp-googleanalytics": "dev-master",
     "ideasonpurpose/wp-social-share-links": "dev-master",
-    "ideasonpurpose/wp-vimeo-embed": "dev-master",
-    "ideasonpurpose/wp-svg-lib": "dev-master"
+    "ideasonpurpose/wp-svg-lib": "dev-master",
+    "ideasonpurpose/wp-theme-init": "dev-master",
+    "ideasonpurpose/wp-vimeo-embed": "dev-master"
   },
   "repositories": [
     {

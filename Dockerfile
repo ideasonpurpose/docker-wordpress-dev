@@ -32,8 +32,13 @@ RUN echo "[OPcache]" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini
 
+# Install the Intl extension
+RUN apt-get update -yqq \
+    && apt-get install -y libicu-dev \
+    && docker-php-ext-install intl
+
 # Install Memcached
-RUN apt-get update \
+RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \
       libmemcached-dev \
       zlib1g-dev \
@@ -67,7 +72,7 @@ RUN mkdir -p /var/log/wordpress \
 #     && chown www-data:www-data /var/www/html/wp-content
 
 # Install jq for merging package.json files
-RUN apt-get update -qq \
+RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \
       jq \
     && rm -rf /var/lib/apt/lists/*
@@ -81,7 +86,7 @@ COPY *.sh /usr/local/bin/
 
 # Network Debugging Tools
 # TODO: Remove or disable if not needed
-RUN apt-get update -qq \
+RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \
       iputils-ping \
       dnsutils \
