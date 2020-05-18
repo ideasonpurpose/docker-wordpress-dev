@@ -17,6 +17,7 @@
     "docker:build": "docker-compose run --rm tools build",
     "docker:start": "cross-env-shell \"docker-compose run --rm -p $npm_package_config_port:8080 tools start\"",
     "docker:stop": "docker-compose down",
+    "mysql": "docker-compose exec db mysql wordpress",
     "mysql:dump": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm mysqldump",
     "mysql:reload": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm mysql-reload",
     "mysqldump": "npm run mysql:dump",
