@@ -82,8 +82,6 @@ COPY boilerplate-package.json /usr/src/
 COPY boilerplate-theme/ /usr/src/boilerplate-theme
 COPY boilerplate-tooling/ /usr/src/boilerplate-tooling
 
-COPY *.sh /usr/local/bin/
-
 # Network Debugging Tools
 # TODO: Remove or disable if not needed
 RUN apt-get update -yqq \
@@ -92,6 +90,8 @@ RUN apt-get update -yqq \
       dnsutils \
       vim \
     && rm -rf /var/lib/apt/lists/*
+
+COPY *.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint-iop.sh"]
 

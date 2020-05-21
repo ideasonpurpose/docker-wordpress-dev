@@ -67,7 +67,7 @@ if [[ "$(<wp-config.php)" != *"Extra ideasonpurpose dev settings"* ]]; then
   echo "$WP_EXTRA_DEBUG"
   echo
 
-  awk -v wp="$WP_EXTRA_DEBUG\n" '/^\/\*.*stop editing.*\*\/$/ && c == 0 {c=1; print wp}{print}' wp-config.php >wp-config.tmp
+  awk -v wp="$WP_EXTRA_DEBUG\n" '/^\/\*.*stop editing.*\*\/$/ && c == 0 {c=1; print wp}{print}' wp-config.php > wp-config.tmp
   mv wp-config.tmp wp-config.php
 
   # TODO: Do this somewhere else, preferrably with wp-cli
@@ -92,8 +92,8 @@ chown www-data:www-data /var/www/html/*.php
 chown www-data:www-data /var/www/html/wp-content
 chown www-data:www-data /var/www/html/wp-content/plugins
 chown www-data:www-data /var/www/html/wp-content/uploads
+chown www-data:www-data /var/www/html/wp-content/themes
 chown www-data:www-data /var/www/html/wp-content/themes/*
-
 
 # Finally, we run the original endpoint, as intended, to kickoff the server
 exec /usr/local/bin/docker-entrypoint.sh $@
