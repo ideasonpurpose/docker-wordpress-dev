@@ -12,7 +12,7 @@ services:
     volumes:
       - ./wp-content/:/var/www/html/wp-content/
     entrypoint: wp
-    command: theme activate ${NAME:-${npm_package_name:-iopdev}}
+    command: theme activate ${npm_package_name:-ioptheme}
 
   composer:
     image: composer
@@ -50,7 +50,7 @@ services:
     #           USE `wordpress`;
     #       to drop those lines, remove  "--databases" from the mysqldump command
     command: |
-      bash -c "export DUMPFILE=${NAME:-dumpfile}-$$(date +%FT%H%M%S).sql && \
+      bash -c "export DUMPFILE=${npm_package_name:-dumpfile}-$$(date +%FT%H%M%S).sql && \
                mysqldump -hdb --default-character-set=utf8mb4 --databases $${MYSQL_DATABASE} > $${DUMPFILE} && \
                tar --remove-files -czf /usr/src/$${DUMPFILE}.zip $${DUMPFILE} && \
                echo Successfully dumped MySQL database to \\\"$${DUMPFILE}.zip\\\""
@@ -69,7 +69,7 @@ services:
                echo Database \\\"$${MYSQL_DATABASE}\\\" created && \
                echo Reloading database from dumpfile && \
                mysql -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1) && \
-               echo Activating theme \\\"${NAME:-ioptheme}\\\" && \
+               echo Activating theme \\\"${npm_package_name:-ioptheme}\\\" && \
                mysql -hdb $${MYSQL_DATABASE} -e \"UPDATE wp_options \
-                                                  SET option_value = '${NAME:-ioptheme}'\
+                                                  SET option_value = '${npm_package_name:-ioptheme}'\
                                                   WHERE option_name IN ('template','stylesheet')\""
