@@ -7,7 +7,39 @@
 
 This project replaces both the [basic-wordpress-vagrant][] and [basic-wordpress-box][] projects with a Docker-based workflow. It's much lighter than Vagrant, faster to spin up and inherently cross-platform.
 
-> ### _Note: This project is a work in progress and changing rapidly_
+## Workflow & Commands
+
+### MySQL
+
+For the most part, MySQL just works, but there are a few common tasks which come up; reloading the database from a dumpfile, dumping the database to a dumpfile and editing the database by either opening a shell or using [phpMyAdmin][]. These script commands are preconfigured to help with these tasks.
+
+- **`npm run mysql:reload`**  
+   Reloads `*.sql` files from the top-level **\_db** directory.
+
+- **`npm run mysql:dump`**  
+   Dumps a time-stamped, database snaphot to a zipped archive in the top-level **\_db** directory.
+
+- **`npm run mysql`**  
+   Opens a mysql shell in the database container.
+
+- **`npm run phpmysqladmin`**  
+   Starts up a phpMyAdmin server on port 8002.
+
+### Composer
+
+_blurb about composer tasks_
+
+#### `npm run composer`
+
+This runs the default `install` command, but also accepts other command arguments. For example `npm run composer dump-autoload` refreshes autoloader files.
+
+#### `npm run composer:update`
+
+Updates composer dependencies to newer version and rewrites the composer.lock file.
+
+#### `npm run composer:require`
+
+Use this command to add new packages to composer.json.
 
 ## Goals
 
@@ -22,6 +54,8 @@ Starting a vanilla WordPress project on Docker is not difficult, but apparently 
 Our primary use case is to enable fast iteration for existing sites. With a cloned codebase, a database dump and cached Docker images, a cross-platform development environment can be spun up in a few seconds.
 
 ## Getting Started
+
+The **package.json** file is the Single Source of Truth for environment and configuration. Settings such as theme-name and devServer port are passed directly from `npm_package_*` environment variables.
 
 ### Existing Projects
 
@@ -363,3 +397,4 @@ $ docker build -t ideasonpurpose/docker-build .
 [env-file]: https://docs.docker.com/compose/compose-file/#env_file
 [composer]: https://getcomposer.org/
 [docker-build]: https://github.com/ideasonpurpose/docker-build
+[phpmyadmin]: https://www.phpmyadmin.net/
