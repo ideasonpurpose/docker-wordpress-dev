@@ -13,9 +13,9 @@
     "version": "version-everything && auto-changelog && git add -u"
   },
   "devDependencies": {
-    "auto-changelog": "^2.0.0",
-    "prettier": "^2.0.4",
-    "version-everything": "^0.6.0"
+    "auto-changelog": "^2.1.0",
+    "prettier": "^2.0.5",
+    "version-everything": "^0.6.3"
   },
   "auto-changelog": {
     "package": true,
