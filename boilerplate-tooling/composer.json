@@ -7,6 +7,9 @@
     "platform": {
       "php": "7.2",
       "ext-intl": "0"
+    },
+    "github-oauth": {
+      "github.com": "8d01509a3631eab463aaae5166e406f6bda6836f"
     }
   },
   "autoload": {
