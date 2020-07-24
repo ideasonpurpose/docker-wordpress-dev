@@ -164,3 +164,6 @@ wp-content/mu-plugins
 # Docker experiments
 _log/
 _profiler/
+
+# WSL 2 Cruft
+*:Zone.Identifier
