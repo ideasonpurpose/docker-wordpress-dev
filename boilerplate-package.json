@@ -26,6 +26,7 @@
     "start": "npm run docker:start",
     "poststart": "npm run docker:stop",
     "start:debug": "cross-env-shell \"docker-compose run --rm -p $npm_package_config_port:8080 -p 9229:9229 tools start:debug\"",
+    "tail:wordpress": "docker-compose exec wordpress tail -f /var/log/wordpress/debug.log",
     "test": "jest",
     "test:watch": "jest --watch",
     "version": "version-everything && git add -u",
