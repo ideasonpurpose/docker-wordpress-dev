@@ -99,7 +99,7 @@ Notes: Theme name will be set from this list, using the first found:
 
 If no name is found, the init script will prompt for a name.
 
-### Project Directory Stucture
+### Project Directory Structure
 
 Non-wordpress project files should be parallel to the wp-content directory. Something like this:
 
@@ -386,10 +386,10 @@ PHP MyAdmin should be available at port 8002
 
 ### Local Development
 
-To iterate locally, build the image using the same name as the Docker Hub remote. Docker will use the local copy.
+To iterate locally, build the image using the same name as the Docker Hub remote. Docker will use the local copy. Specify `dev` if you're using using versions.
 
 ```sh
-$ docker build -t ideasonpurpose/docker-build .
+$ docker build . --tag ideasonpurpose/wordpress:dev
 ```
 
 [basic-wordpress-vagrant]: https://github.com/ideasonpurpose/basic-wordpress-vagrant
