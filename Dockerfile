@@ -1,6 +1,14 @@
-FROM wordpress:5.4.1-php7.3-apache
+FROM wordpress:5.4.2-php7.3-apache
 
 LABEL version="0.4.2"
+
+# Add `wp` user and group, then add `www-data` user to `wp` group
+RUN addgroup  --gid 1000 wp \
+    && useradd -u 1000 -d /home/wp -g wp -G www-data wp \
+    && usermod -a -G wp www-data
+
+# All new files should be group-writable
+RUN echo 'umask 002' >> /etc/profile.d/set-umask.sh
 
 # Set Apache ServerName globally to address slowdowns
 RUN echo "ServerName localhost" > /etc/apache2/conf-available/server-name.conf \
@@ -66,10 +74,6 @@ RUN mkdir /tmp/xdebug_profiler \
 # Setup alternate WordPress debug.log location in /var/log
 RUN mkdir -p /var/log/wordpress \
     && chown www-data:www-data /var/log/wordpress
-
-# Reset ownership of wp-content to www-data (doesn't work)
-# RUN mkdir -p /var/www/html/wp-content \
-#     && chown www-data:www-data /var/www/html/wp-content
 
 # Install jq for merging package.json files
 RUN apt-get update -yqq \
