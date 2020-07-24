@@ -1,6 +1,6 @@
 {
   "name": "docker-wordpress-dev",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": true,
   "description": "Was Vagrant, now Docker",
   "repository": "https://github.com/ideasonpurpose/GIP001-Website-2019",
