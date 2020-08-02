@@ -8,7 +8,12 @@
   "author": "",
   "contributors": [],
   "scripts": {
-    "bootstrap": "docker-compose -f docker-compose.yml -f docker-compose-bootstrap.yml up",
+    "pre_bootstrap": "npm run _bootstrap:npm",
+    "_bootstrap": "npm run composer",
+    "post_bootstrap": "npm run mysql:reload",
+    "_bootstrap:npm": "npm install --no-audit",
+    "post_bootstrap:npm": "sort-package-json",
+    "bootstrap": "npm run _bootstrap",
     "build": "npm run docker:build",
     "build:debug": "cross-env-shell \"docker-compose run --rm -p $npm_package_config_port:8080 -p 9229:9229 tools build:debug\"",
     "composer": "npm run composer:install",
@@ -62,15 +67,13 @@
     "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "prettier": "^2.0.5",
+    "sort-package-json": "^1.44.0",
     "stylelint": "^13.3.3",
     "stylelint-order": "^4.0.0",
     "stylelint-prettier": "^1.1.2",
     "version-everything": "^0.6.3"
   },
   "version-everything": {
-    "files": [
-      "README.md",
-      "composer.json"
-    ]
+    "files": ["README.md", "composer.json"]
   }
 }

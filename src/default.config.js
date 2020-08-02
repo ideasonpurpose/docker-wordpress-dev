@@ -1,7 +1,5 @@
-require("dotenv").config();
-
 const pkg = require("./package.json");
-const themeName = process.env.NAME || pkg.name || "theme-name";
+const themeName = process.env.NAME || pkg.name || "ioptheme";
 
 module.exports = {
   src: `./wp-content/themes/${themeName}/src`,
@@ -13,6 +11,8 @@ module.exports = {
     "./sass/main.scss"
   ],
   publicPath: `/wp-content/themes/${themeName}/dist/`,
+
+  // TODO: usepolling options from NJHI/Bronx, etc
 
   // OPTIONAL: Specify a Sass implementation, accepts `node-sass` (default) and `sass` (Dart Sass)
   sass: 'node-sass',

@@ -1,5 +1,6 @@
 {
-  "description": "THEME_NAME WordPress Theme by Ideas On Purpose",
+  "description": "",
+  "version": "0.0.0",
   "config": {
     "optimize-autoloader": true,
     "sort-packages": true,
@@ -14,29 +15,23 @@
   },
   "autoload": {
     "psr-4": {
-      "ideasonpurpose\\": [
+      "IdeasOnPurpose\\": [
         "wp-content/themes/THEME_NAME/lib"
       ]
     }
   },
   "minimum-stability": "dev",
   "require": {
-    "ideasonpurpose/wp-caption-hoist-class": "dev-master",
+    "ideasonpurpose/wp-svg-lib": "^0.4.0",
     "ideasonpurpose/wp-googleanalytics": "dev-master",
+    "ideasonpurpose/wp-theme-init": "^2.3.0",
     "ideasonpurpose/wp-social-share-links": "dev-master",
-    "ideasonpurpose/wp-svg-lib": "dev-master",
-    "ideasonpurpose/wp-theme-init": "dev-master",
     "ideasonpurpose/wp-vimeo-embed": "dev-master"
   },
   "repositories": [
     {
       "type": "vcs",
       "url": "https://github.com/ideasonpurpose/wp-theme-init",
-      "no-api": true
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/ideasonpurpose/wp-caption-hoist-class",
       "no-api": true
     },
     {
@@ -59,6 +54,5 @@
       "url": "https://github.com/ideasonpurpose/wp-svg-lib.git",
       "no-api": true
     }
-  ],
-  "version": "0.0.0"
+  ]
 }

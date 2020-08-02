@@ -67,23 +67,29 @@ RUN pecl install xdebug \
     # && echo "xdebug.remote_port=${XDEBUG_PORT}" >> /usr/local/etc/php/conf.d/xdebug.ini \
     # && echo "xdebug.idekey=${XDEBUG_IDEKEY}" >> /usr/local/etc/php/conf.d/xdebug.ini
 
+# Remove 10 MB /usr/src/php.tar.xz file. It's iunnecesary since we're not upda5ting PHP without rebuilding.
+# Ref: https://github.com/docker-library/php/issues/488
+RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
+
 # Make sure the XDebug profiler directory exists and is writable by www-data
 RUN mkdir /tmp/xdebug_profiler \
     && chown www-data:www-data /tmp/xdebug_profiler
 
 # Setup alternate WordPress debug.log location in /var/log
 RUN mkdir -p /var/log/wordpress \
-    && chown www-data:www-data /var/log/wordpress
+    && touch /var/log/wordpress/debug.log \
+    && chown -R www-data:www-data /var/log/wordpress
 
-# Install jq for merging package.json files
+# Install rsync and jq for merging tooling and package.json files
 RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \
+      rsync \
       jq \
     && rm -rf /var/lib/apt/lists/*
 
-COPY default.config.js /usr/src/
-COPY boilerplate-package.json /usr/src/
-COPY boilerplate-theme/ /usr/src/boilerplate-theme
+# COPY default.config.js /usr/src/
+COPY src/* /usr/src/
+# COPY boilerplate-theme/ /usr/src/boilerplate-theme
 COPY boilerplate-tooling/ /usr/src/boilerplate-tooling
 
 # Network Debugging Tools
@@ -95,7 +101,9 @@ RUN apt-get update -yqq \
       vim \
     && rm -rf /var/lib/apt/lists/*
 
-COPY *.sh /usr/local/bin/
+# Copy scripts to /bin and make them executable
+COPY bin/*.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/*.sh
 
 ENTRYPOINT ["docker-entrypoint-iop.sh"]
 
