@@ -12,7 +12,10 @@ module.exports = {
   ],
   publicPath: `/wp-content/themes/${themeName}/dist/`,
 
-  // TODO: usepolling options from NJHI/Bronx, etc
+  // enable polling on Windows (no iNotify events), does `isWindows` work?
+  // This property can be a boolean or an integer > 250
+  // NOTE: iNotify events sometimes stop working on macOS, restart Docker to get them back
+  usePolling: false
 
   // OPTIONAL: Specify a Sass implementation, accepts `node-sass` (default) and `sass` (Dart Sass)
   sass: 'node-sass',
