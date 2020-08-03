@@ -23,20 +23,21 @@
     "docker:build": "docker-compose run --rm tools build",
     "docker:start": "cross-env-shell \"docker-compose run --rm -p $npm_package_config_port:8080 tools start\"",
     "docker:stop": "docker-compose down",
+    "logs:wordpress": "docker-compose exec wordpress tail -f /var/log/wordpress/debug.log",
     "mysql": "docker-compose exec db mysql wordpress",
     "mysql:dump": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm mysqldump",
     "mysql:reload": "cross-env-shell \"docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm mysql-reload\"",
+    "postmysql:reload": "npm run theme:activate",
     "mysqldump": "npm run mysql:dump",
     "phpmyadmin": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 8002:80 phpmyadmin",
     "start": "npm run docker:start",
     "poststart": "npm run docker:stop",
     "start:debug": "cross-env-shell \"docker-compose run --rm -p $npm_package_config_port:8080 -p 9229:9229 tools start:debug\"",
-    "tail:wordpress": "docker-compose exec wordpress tail -f /var/log/wordpress/debug.log",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "theme:activate": "cross-env-shell \"docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm theme-activate\"",
     "version": "version-everything && git add -u",
     "postversion": "npm run build",
-    "webgrind": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 9001:80 webgrind"
+    "webgrind": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 9001:80 webgrind",
+    "wp-cli": "cross-env-shell \"docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm wp-cli\""
   },
   "config": {
     "port": 8080
@@ -74,6 +75,9 @@
     "version-everything": "^0.6.3"
   },
   "version-everything": {
-    "files": ["README.md", "composer.json"]
+    "files": [
+      "README.md",
+      "composer.json"
+    ]
   }
 }

@@ -5,41 +5,93 @@
 [![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)<br>
 [![Push to Docker Hub](https://github.com/ideasonpurpose/docker-wordpress-dev/workflows/Push%20to%20Docker%20Hub/badge.svg)](https://github.com/ideasonpurpose/docker-wordpress-dev)
 
-This project replaces both the [basic-wordpress-vagrant][] and [basic-wordpress-box][] projects with a Docker-based workflow. It's much lighter than Vagrant, faster to spin up and inherently cross-platform.
+## About This Project
+
+This project provides local development environments for developing WordPress websites. This includes flexible, pre-configured Docker-based MySQL and PHP servers as well as a number of helper scripts.
+
+## Getting Started
+
+To update an existing project or start a new one, run the following commands in your working directory.
+
+##### macOS, Linux & Windows PowerShell
+
+```
+docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress init
+npm run bootstrap
+```
+
+##### Windows Command Prompt
+
+```
+docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress init
+npm run bootstrap
+```
+
+The `init` command copies all the necessary tooling files into place and sets up the default theme directory structure. Then the `npm bootstrap` script gets the environment ready to use by installing npm and composer dependencies and reloading the database.
+
+> _Question: Should the bootstrap script also call `npm run start` to kick off the devserver? Or print a message with instructions pointing to `npm run start`? Or do nothing?_
+
+### Setup and Prerequisites
+
+[**Docker**](https://www.docker.com/products/docker-desktop) and **npm** ([node.js](https://nodejs.org/en/download/)) should be installed. The development server runs from Docker images and all workflow commands are called from npm scripts.
+
+### New Projects
+
+In a clean directory, running `init` will prompt for a project name and description, then build out a complete environment with a basic theme skeleton.
+
+### Existing Projects
+
+For existing projects, running `init` reads the project name and description from **package.json**, updates build tools and script commands to the latest versions and syncs in any missing theme files. The project should be a working Git checkout so any undesirable changes can be easily reverted.
+
+The following files will be updated:
+
+- Docker-compose files will be updated to latest versions.
+- Default package.json scripts will be merged onto existing scripts.
+- DevDependencies, Scripts and Prettier properties will be copied onto existing package.json values.
+- Default composer.json packages and metadata will be copied onto existing composer.json values.
+- Update .gitignore from [gist](https://gist.github.com/joemaller/4f7518e0d04a82a3ca16)
+  .gitignore
+- Basic theme folder-structure will be non-destructively refreshed with missing folders added.
+- Missing ideasonpurpose.config.js files will be created.
+- Permissions will be reset for the theme directory and known tooling files.
+
+### Databases
+
+MySQL database dumpfiles in the **\_db** directory will be loaded on first run.
+
+<!-- TODO: Note about what order, overwriting older, etc. in here somewhere -->
 
 ## Workflow & Commands
 
-### MySQL
+### Basic development commands
 
-For the most part, MySQL just works, but there are a few common tasks which come up; reloading the database from a dumpfile, dumping the database to a dumpfile and editing the database by either opening a shell or using [phpMyAdmin][]. These script commands are preconfigured to help with these tasks.
+- **`npm run start`**  
+   Spins up a database and php server, then serves all content through the devServer proxy. Files in the project directory will be watched for chagnes and trigger reloads when saved.
 
-- **`npm run mysql:reload`**  
-   Reloads `*.sql` files from the top-level **\_db** directory.
+- **`npm version [major|minor|patch]`**
+  Increments the version then uses [version-everything][] to update project files before calling `npm run build` which generates a production build and compresses all theme files into a versioned, ready-to-deploy zip archive.
 
-- **`npm run mysql:dump`**  
-   Dumps a time-stamped, database snaphot to a zipped archive in the top-level **\_db** directory.
+### Additional Commands and helpers
 
-- **`npm run mysql`**  
-   Opens a mysql shell in the database container.
+- **`bootstrap`**<br>
+  A helper script for starting projects. This will install npm and composer depenencies, reload the MySQL database, activate the development theme and sort the package.json file.
+- **`build`** - Generate a production-ready build in a zip archive. Ready-to-deploy.
+- **`composer`**<br>
+  Runs `composer install` from Docker.
+  - **`composer:install`** - Installs packages from the composer.lock file
+  - **`composer:require`** - Add new packages and update composer.json
+  - **`composer:update`** - Updates composer dependencies to their newest allowable version and rewrites the **composer.lock** file.
+- **`mysql`**<br>
+  Opens a mysql shell to the development WordPress database
+  - **`mysql:dump`**, **`mysqldump`** - Writes a compressed, timestamped database snapshot into the **\_db** directory
+  - **`mysql:reload`** - Drops, then reloads the database from the most recent dumpfile in **\_db** then attempts to activate the development theme.
+- **`phpmyadmin`** - Starts a phpMyAdmin server at [localhost:8002](http://localhost:8002)
+- **`logs:wordpress`** - Stream the WordPress debug.log
+- **`wp-cli`** - Run [wp-cli](https://wp-cli.org/vc) commands. Default command will re-activate the development theme. This command replaces the `wp` prefix, so a command would look like `npm run wp-cli transient delete --all`
 
-- **`npm run phpmysqladmin`**  
-   Starts up a phpMyAdmin server on port 8002.
+---
 
-### Composer
-
-_blurb about composer tasks_
-
-#### `npm run composer`
-
-This runs the default `install` command, but also accepts other command arguments. For example `npm run composer dump-autoload` refreshes autoloader files.
-
-#### `npm run composer:update`
-
-Updates composer dependencies to newer version and rewrites the composer.lock file.
-
-#### `npm run composer:require`
-
-Use this command to add new packages to composer.json.
+#### _Edited to here..._
 
 ## Goals
 
@@ -75,7 +127,7 @@ Docker Desktop should be installed. The tools should work equally well on any pl
 #### Manual Setup
 
 Copy a mysql dumpfile to the top-level `_db` directory.
-Copy the contents of **bolerplate-tooling** to the project root.
+Copy the contents of **boilerplate-tooling** to the project root.
 Merge the scripts and devDependencies sections of package.json onto your project's package.json file.
 
 ~~Call `npm run bootstrap`~~ _not working yet_
@@ -357,7 +409,7 @@ The `wp-content` directory must be writable by the www-data user.
 
 - [x] Should extra tools like wp-cli and composer be wrapped in npm scripts/aliases? **_YES!_** do this.
 
-- [x] How to handle port collisions? Can't run two instances at the same time or ports will collide. **Possible Solution?:** Don't specify ports anymore. Instead, docker-compose can map ephermeral ports on on the host. These can be revealed by running either `docker-compose ps` or `docker-compose [service] [internal-port]` (eg. `docker-compose port wordpress 80`) This should be cleaned up and masked behind a script
+- [x] How to handle port collisions? Can't run two instances at the same time or ports will collide. **Possible Solution?:** Don't specify ports anymore. Instead, docker-compose can map ephemeral ports on on the host. These can be revealed by running either `docker-compose ps` or `docker-compose [service] [internal-port]` (eg. `docker-compose port wordpress 80`) This should be cleaned up and masked behind a script
 
 - [x] [phpMyAdmin](https://www.phpmyadmin.net): Yea or nay? (why not, it was really easy to add)
 
