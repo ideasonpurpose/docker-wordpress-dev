@@ -144,21 +144,35 @@ sed -i -e "s/Theme Name.*$/Theme Name:         ${NAME} - v0.0.0/" "/usr/src/site
 sed -i -e "s/Description.*$/Description:        ${DESCRIPTION}/" "/usr/src/site/wp-content/themes/${NAME}/style.css"
 
 
+# Create a README.md file if the file doesn't exist
+if [[ ! -s /usr/src/site/README.md ]]; then
+    echo "Creating README.md file"
+    echo -e "# ${NAME}\n" > /usr/src/site/README.md
+    # echo >> /usr/src/site/README.md
+    echo -e '#### Version 0.0.0\n'  >> /usr/src/site/README.md
+    # echo >> /usr/src/site/README.md
+    echo -e "${DESCRIPTION}\n" >> /usr/src/site/README.md
+fi
+
 # This is intentionally granular for files outside of the theme directory
 echo "Resetting permissions"
 chown "$USERGROUP" \
-                /usr/src/site \
-                /usr/src/site/_db \
-                /usr/src/site/composer.json \
-                /usr/src/site/ideasonpurpose.config.js \
-                /usr/src/site/package.json \
-                /usr/src/site/.gitignore \
-                /usr/src/site/.stylelintrc.js \
-                /usr/src/site/wp-content/{.,plugins,themes,uploads} \
+    /usr/src/site \
+    /usr/src/site/.gitignore \
+    /usr/src/site/.stylelintrc.js \
+    /usr/src/site/composer.json \
+    /usr/src/site/composer.lock \
+    /usr/src/site/ideasonpurpose.config.js \
+    /usr/src/site/package.json \
+    /usr/src/site/package-lock.json \
+    /usr/src/site/README.md \
+    /usr/src/site/wp-content/{.,plugins,themes,uploads} \
 
 TOOLING=$(ls /usr/src/boilerplate-tooling)
 for f in $TOOLING; do
     chown "$USERGROUP" "/usr/src/site/${f}"
 done
 
-chown -R "$USERGROUP" "/usr/src/site/wp-content/themes/${NAME}"
+chown -R "$USERGROUP" \
+    /usr/src/site/_db \
+    "/usr/src/site/wp-content/themes/${NAME}"
