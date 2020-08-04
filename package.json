@@ -10,11 +10,14 @@
     "Joe Maller <joe@ideasonpurpose.com>"
   ],
   "scripts": {
+    "_bump_wordpress_image_version": "replace-in-file '/ideasonpurpose/wordpress:[.0-9]+$/m' \"ideasonpurpose/wordpress:${npm_package_version}\" boilerplate-tooling/docker-compose.yml --isRegex",
+    "preversion": "npm run _bump_wordpress_image_version",
     "version": "version-everything && auto-changelog && git add -u"
   },
   "devDependencies": {
     "auto-changelog": "^2.1.0",
     "prettier": "^2.0.5",
+    "replace-in-file": "^6.1.0",
     "version-everything": "^0.6.3"
   },
   "auto-changelog": {
