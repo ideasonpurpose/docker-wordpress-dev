@@ -16,6 +16,7 @@ To update an existing project or start a new one, run the following commands in 
 ##### macOS, Linux & Windows PowerShell
 
 ```
+docker pull ideasonpurpose/wordpress
 docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress init
 npm run bootstrap
 ```
@@ -23,13 +24,14 @@ npm run bootstrap
 ##### Windows Command Prompt
 
 ```
+docker pull ideasonpurpose/wordpress
 docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress init
 npm run bootstrap
 ```
 
-The `init` command copies all the necessary tooling files into place and sets up the default theme directory structure. Then the `npm bootstrap` script gets the environment ready to use by installing npm and composer dependencies and reloading the database.
+First, Docker updates to the most recent image version. Then the `init` command copies all the necessary tooling files into place and sets up the default theme directory structure. Finally, `npm run bootstrap` readies the environment ready by installing npm and composer dependencies and reloading the database.
 
-> _Question: Should the bootstrap script also call `npm run start` to kick off the devserver? Or print a message with instructions pointing to `npm run start`? Or do nothing?_
+> _**Question:** Should the bootstrap script also call `npm run start` to kick off the devserver? Or print a message with instructions pointing to `npm run start`? Or do nothing?_
 
 ### Setup and Prerequisites
 
@@ -37,17 +39,17 @@ The `init` command copies all the necessary tooling files into place and sets up
 
 ### New Projects
 
-In a clean directory, running `init` will prompt for a project name and description, then build out a complete environment with a basic theme skeleton.
+In an empty directory, running `init` will prompt for the new project's name and description, then build out a complete environment with a basic theme skeleton.
 
 ### Existing Projects
 
-For existing projects, running `init` reads the project name and description from **package.json**, updates build tools and script commands to the latest versions and syncs in any missing theme files. The project should be a working Git checkout so any undesirable changes can be easily reverted.
+For existing projects, running `init` reads the project's name and description from **package.json**, updates build tools and script commands to the latest versions and syncs in any missing theme files. The project should be a working Git checkout so any undesirable changes can be easily reverted.
 
 Before calling `npm run start`, copy a database snapshot into the top-level **\_db** directory, copy any required plugins to **Plugins** and mirror media files to **Uploads**.
 
 #### These files will be updated:
 
-- Docker-compose files will be updated to latest versions.
+- Docker-compose files will be updated to the latest versions.
 - Default package.json scripts will be merged onto existing scripts.
 - DevDependencies, Scripts and Prettier properties will be copied onto existing package.json values.
 - Default composer.json packages and metadata will be copied onto existing composer.json values.
@@ -100,7 +102,7 @@ To open a shell on _any_ running Docker container, run `docker ps` to retrieve c
 The [Composer][] image can also run other, more specific commands directly from `docker-compose`:
 
 ```sh
-docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  composer  update
+docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  composer update
 docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  composer require monolog/monolog
 
 # Open a shell in the composer image
