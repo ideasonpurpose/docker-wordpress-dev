@@ -156,7 +156,7 @@ fi
 
 # This is intentionally granular for files outside of the theme directory
 echo "Resetting permissions"
-chown "$USERGROUP" \
+chown -f "$USERGROUP" \
     /usr/src/site \
     /usr/src/site/.gitignore \
     /usr/src/site/.stylelintrc.js \
@@ -173,6 +173,6 @@ for f in $TOOLING; do
     chown "$USERGROUP" "/usr/src/site/${f}"
 done
 
-chown -R "$USERGROUP" \
+chown -fR "$USERGROUP" \
     /usr/src/site/_db \
     "/usr/src/site/wp-content/themes/${NAME}"
