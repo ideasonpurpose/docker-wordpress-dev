@@ -35,9 +35,8 @@ jobs:
         docker push ${DOCKER_NAME}:${GITHUB_REF#refs/tags/v}
         
     - name: Update Docker Hub Readme
-      uses: ms-jpq/sync-dockerhub-readme@v1
-      with:
-        username: ${DOCKER_USER}
-        password: ${DOCKER_PASS}
-        repository: ${DOCKER_NAME}
-        readme: "./README.md"
+      uses: peter-evans/dockerhub-description@v2
+      env:
+        DOCKERHUB_USERNAME: ${{ DOCKER_USER }}
+        DOCKERHUB_PASSWORD: ${{ DOCKER_PASS }}
+        DOCKERHUB_REPOSITORY: ${{ DOCKER_NAME }}
