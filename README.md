@@ -7,7 +7,7 @@
 
 ## About This Project
 
-This project provides local development environments for developing WordPress websites. This includes flexible, pre-configured Docker-based MySQL and PHP servers as well as a number of helper scripts.
+This project provides local development environments for developing WordPress websites. This includes pre-configured Docker-based MySQL and PHP servers, our [Docker-Build toolchain][docker-build] and a number of helper scripts.
 
 ## Getting Started
 
