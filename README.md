@@ -29,7 +29,7 @@ docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress init
 npm run bootstrap
 ```
 
-First, Docker updates to the most recent image version. Then the `init` command copies all the necessary tooling files into place and sets up the default theme directory structure. Finally, `npm run bootstrap` readies the environment ready by installing npm and composer dependencies and reloading the database.
+First, Docker pulls the most recent image version. Then the `init` command copies all the necessary tooling files into place and sets up the default theme directory structure. Finally, `npm run bootstrap` readies the environment ready by installing npm and composer dependencies and reloading the database.
 
 > _**Question:** Should the bootstrap script also call `npm run start` to kick off the devserver? Or print a message with instructions pointing to `npm run start`? Or do nothing?_
 
