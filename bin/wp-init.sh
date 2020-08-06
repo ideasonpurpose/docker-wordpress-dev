@@ -106,15 +106,20 @@ else
         cp /usr/src/boilerplate-package.json /tmp/package.json
 fi
 
+# This merge extracts the default scripts and then applies those onto
+# any existing scripts as a last step. All other properties defer to
+# existing values.
 echo "Merging defaults into package.json"
-jq -s '.[0] * .[1] |
+jq -s '.[0].scripts as $defaultScripts |
+       .[0] * .[1] |
        .name = "'"${NAME}"'" |
        .description = "'"${DESCRIPTION}"'" |
        ."version-everything".files = (
            ."version-everything".files + ["wp-content/themes/'"${NAME}"'/style.css"] |
            unique |
            sort
-        )' \
+        ) |
+        .scripts = $defaultScripts' \
     /usr/src/boilerplate-package.json /tmp/package.json | cat > /usr/src/site/package.json
 
 # Check for composer.json to merge into or create a new one from boilerplate-composer.json
