@@ -18,7 +18,7 @@ const regex = /ideasonpurpose\/wordpress:(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*
 const results = replace.sync({
   from: regex,
   to: `ideasonpurpose/wordpress:${version}`,
-  files: "./boilerplate-tooling/docker-compose.yml",
+  files: ["./boilerplate-tooling/docker-compose.yml", "./README.md"],
 });
 
 results.map(({ file }) => {
