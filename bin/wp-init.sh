@@ -156,9 +156,7 @@ sed -i -e "s/Description.*$/Description:        ${DESCRIPTION}/" "/usr/src/site/
 if [[ ! -s /usr/src/site/README.md ]]; then
     echo "Creating README.md file"
     echo -e "# ${NAME}\n" > /usr/src/site/README.md
-    # echo >> /usr/src/site/README.md
     echo -e '#### Version 0.0.0\n'  >> /usr/src/site/README.md
-    # echo >> /usr/src/site/README.md
     echo -e "${DESCRIPTION}\n" >> /usr/src/site/README.md
 fi
 
