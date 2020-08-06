@@ -133,6 +133,8 @@ else
 fi
 
 # This command also syncs .description and sorts .require and .repositories, and re-orders some keys
+# Preferred order is: {name, description, author, authors, config, autoload, [everything else]}
+# Null values will not be written.
 echo "Merging defaults onto composer.json"
 jq -s '.[0] * .[1] |
        .config."vendor-dir" = "wp-content/themes/'"${NAME}"'/vendor" |
@@ -141,7 +143,8 @@ jq -s '.[0] * .[1] |
        .description = "'"${DESCRIPTION}"'" |
        .repositories |= sort_by(.url) |
        .require = (.require | to_entries | sort_by(.key) | from_entries) |
-       {name, description, version, config, autoload} * .' \
+       {name, description, version, authors, config, autoload} * . |
+       with_entries(select(.value))' \
     /usr/src/boilerplate-composer.json /tmp/composer.json | cat > /usr/src/site/composer.json
 
 echo "Updating metadata in theme stylesheet"
