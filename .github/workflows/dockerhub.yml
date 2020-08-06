@@ -33,10 +33,3 @@ jobs:
         docker login --username $DOCKER_USER --password $DOCKER_PASS
         docker push $DOCKER_NAME
         docker push ${DOCKER_NAME}:${GITHUB_REF#refs/tags/v}
-        
-    - name: Update Docker Hub Readme
-      uses: peter-evans/dockerhub-description@v2
-      env:
-        DOCKERHUB_USERNAME: ${{ DOCKER_USER }}
-        DOCKERHUB_PASSWORD: ${{ DOCKER_PASS }}
-        DOCKERHUB_REPOSITORY: ${{ DOCKER_NAME }}
