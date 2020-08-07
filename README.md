@@ -52,7 +52,6 @@ Before calling `npm run start`, copy a database snapshot into the top-level **\_
 - DevDependencies, Scripts and Prettier properties will be copied onto existing package.json values.
 - Default composer.json packages and metadata will be copied onto existing composer.json values.
 - Update .gitignore from [gist](https://gist.github.com/joemaller/4f7518e0d04a82a3ca16)
-  .gitignore
 - Basic theme folder-structure will be non-destructively refreshed with missing folders added.
 - Missing ideasonpurpose.config.js files will be created.
 - Permissions will be reset for the theme directory and known tooling files.
