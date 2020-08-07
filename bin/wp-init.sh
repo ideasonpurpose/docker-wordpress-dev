@@ -69,6 +69,9 @@ echo -e "${BOLD}Setting up WordPress environment"
 echo -e "${BOLD}Theme name: ${CYAN}${NAME}${RESET}"
 echo
 
+# Set umask so all created files and folders are group-writable
+umask 0002
+
 echo "Syncing docker-compose and tooling files"
 rsync -aq /usr/src/boilerplate-tooling/ /usr/src/site/
 
@@ -119,7 +122,7 @@ jq -s '.[0].scripts as $defaultScripts |
            unique |
            sort
         ) |
-        .scripts = $defaultScripts' \
+        .scripts *= $defaultScripts' \
     /usr/src/boilerplate-package.json /tmp/package.json | cat > /usr/src/site/package.json
 
 # Check for composer.json to merge into or create a new one from boilerplate-composer.json
@@ -172,13 +175,29 @@ chown -f "$USERGROUP" \
     /usr/src/site/package.json \
     /usr/src/site/package-lock.json \
     /usr/src/site/README.md \
-    /usr/src/site/wp-content/{.,plugins,themes,uploads} \
+
+chmod -f g+w \
+    /usr/src/site \
+    /usr/src/site/.gitignore \
+    /usr/src/site/.stylelintrc.js \
+    /usr/src/site/composer.json \
+    /usr/src/site/composer.lock \
+    /usr/src/site/ideasonpurpose.config.js \
+    /usr/src/site/package.json \
+    /usr/src/site/package-lock.json \
+    /usr/src/site/README.md \
+
 
 TOOLING=$(ls /usr/src/boilerplate-tooling)
 for f in $TOOLING; do
     chown "$USERGROUP" "/usr/src/site/${f}"
+    chmod g+w "/usr/src/site/${f}"
 done
 
 chown -fR "$USERGROUP" \
     /usr/src/site/_db \
-    "/usr/src/site/wp-content/themes/${NAME}"
+    "/usr/src/site/wp-content"
+
+chmod -fR g+w \
+    /usr/src/site/_db \
+    "/usr/src/site/wp-content"
