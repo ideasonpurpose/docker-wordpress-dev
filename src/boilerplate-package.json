@@ -9,7 +9,7 @@
   "contributors": [],
   "scripts": {
     "pre_bootstrap": "npm run _bootstrap:npm",
-    "_bootstrap": "npm run composer",
+    "_bootstrap": "npm run composer:update",
     "post_bootstrap": "npm run mysql:reload",
     "_bootstrap:npm": "npm install --no-audit",
     "post_bootstrap:npm": "sort-package-json",
