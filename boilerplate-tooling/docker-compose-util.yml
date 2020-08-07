@@ -80,7 +80,7 @@ services:
       MYSQL_DATABASE: wordpress
     command: |
       bash -c 'echo Activating theme \"'${npm_package_name:-ioptheme}'\" &&
-               mysql -h db $${MYSQL_DATABASE} \
+               mysql -h db '$${MYSQL_DATABASE}' \
                      -e "UPDATE wp_options \
-                         SET option_value = \"FOO\" \
+                         SET option_value = \"'${npm_package_name:-ioptheme}'\" \
                          WHERE option_name in (\"template\",\"stylesheet\")"'
