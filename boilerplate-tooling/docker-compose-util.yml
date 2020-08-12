@@ -50,10 +50,11 @@ services:
     #           USE `wordpress`;
     #       to drop those lines, remove  "--databases" from the mysqldump command
     command: |
-      bash -c 'export DUMPFILE=${npm_package_name:-dumpfile}-$$(date +%FT%H%M%S).sql &&
-               mysqldump -hdb --default-character-set=utf8mb4 --databases $${MYSQL_DATABASE} > $${DUMPFILE} &&
-               tar --remove-files -czf /usr/src/$${DUMPFILE}.tgz $${DUMPFILE} &&
-               echo "Successfully dumped MySQL database to \"$${DUMPFILE}.tgz\""'
+      bash -c 'export DUMPFILE="/usr/src/'${npm_package_name:-dumpfile}'-$$(date +%FT%H%M%S).sql" &&
+               echo $${DUMPFILE} &&
+               mysqldump -hdb --default-character-set=utf8mb4 --databases $${MYSQL_DATABASE} > "$${DUMPFILE}" &&
+               gzip "$${DUMPFILE}" && 
+               echo "Successfully dumped MySQL database to \"$${DUMPFILE}.gz\""'
 
   mysql-reload:
     image: mysql:5.7
@@ -79,8 +80,16 @@ services:
     environment:
       MYSQL_DATABASE: wordpress
     command: |
-      bash -c 'echo Activating theme \"'${npm_package_name:-ioptheme}'\" &&
-               mysql -h db '$${MYSQL_DATABASE}' \
-                     -e "UPDATE wp_options \
-                         SET option_value = \"'${npm_package_name:-ioptheme}'\" \
-                         WHERE option_name in (\"template\",\"stylesheet\")"'
+      bash -c 'for i in {1..10}; do echo Waiting for MySQL server... && mysql -s -h db -e "exit" && break || sleep 3; done &&
+               sleep 2 &&
+               echo Connected to MySQL &&
+               if [[ $$(mysql -s -h db $${MYSQL_DATABASE} -e "SHOW TABLES LIKE \"wp_options\"") ]]
+               then 
+                 echo Activating theme \"'${npm_package_name:-ioptheme}'\"
+                 mysql -h db $${MYSQL_DATABASE} \
+                       -e "UPDATE wp_options \
+                           SET option_value = \"'${npm_package_name:-ioptheme}'\" \
+                           WHERE option_name in (\"template\",\"stylesheet\")"
+               else
+                 echo Unable to activate theme: 'wp_options' table does not exist.
+               fi'

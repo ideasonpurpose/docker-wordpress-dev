@@ -10,7 +10,7 @@
   "scripts": {
     "pre_bootstrap": "npm run _bootstrap:npm",
     "_bootstrap": "npm run composer:update",
-    "post_bootstrap": "npm run mysql:reload",
+    "post_bootstrap": "npm run theme:activate",
     "_bootstrap:npm": "npm install --no-audit",
     "post_bootstrap:npm": "sort-package-json",
     "bootstrap": "npm run _bootstrap",
