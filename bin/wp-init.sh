@@ -198,6 +198,7 @@ chown -fR "$USERGROUP" \
     /usr/src/site/_db \
     "/usr/src/site/wp-content"
 
-chmod -fR ug+rwx \
-    /usr/src/site/_db \
-    "/usr/src/site/wp-content"
+chmod -fR ug+rwx /usr/src/site/_db
+
+find /usr/src/site/wp-content -type f -exec chmod 0644 {} \+
+find /usr/src/site/wp-content -type d -exec chmod 0755 {} \+
