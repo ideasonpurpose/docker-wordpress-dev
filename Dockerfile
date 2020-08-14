@@ -1,6 +1,6 @@
 FROM wordpress:5.5.0-php7.4-apache
 
-LABEL version="0.5.5"
+LABEL version="0.5.6"
 
 # Add `wp` user and group, then add `www-data` user to `wp` group
 RUN addgroup  --gid 1000 wp \
