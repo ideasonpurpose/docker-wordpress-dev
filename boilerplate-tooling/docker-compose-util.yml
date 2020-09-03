@@ -17,6 +17,7 @@ services:
 
   composer:
     image: composer
+    user: '${UID:-1000}:${GID:-1000}'    
     volumes:
       - ./:/app
     command: install
