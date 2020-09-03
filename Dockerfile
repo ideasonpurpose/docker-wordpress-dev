@@ -1,4 +1,4 @@
-FROM wordpress:5.5.0-php7.4-apache
+FROM wordpress:5.5.1-php7.4-apache
 
 LABEL version="0.5.6"
 
