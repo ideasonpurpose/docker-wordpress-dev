@@ -56,7 +56,7 @@
         "files": "*.php",
         "options": {
           "phpVersion": "7.2",
-          "printWidth": 120,
+          "printWidth": 100,
           "singleQuote": true,
           "tabWidth": 4,
           "trailingCommaPHP": true
