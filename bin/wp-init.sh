@@ -200,5 +200,5 @@ chown -fR "$USERGROUP" \
 
 chmod -fR ug+rwx /usr/src/site/_db
 
-find /usr/src/site/wp-content -type f -exec chmod 0664 {} \+
-find /usr/src/site/wp-content -type d -exec chmod 0775 {} \+
+chmod -fR 0775 /usr/src/site/wp-content
+find /usr/src/site/wp-content -type f -exec chmod -f 0664 {} \+
