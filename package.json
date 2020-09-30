@@ -13,9 +13,9 @@
     "version": "node bump-wordpress-image.js && version-everything && auto-changelog && git add -u"
   },
   "devDependencies": {
-    "auto-changelog": "^2.1.0",
+    "auto-changelog": "^2.2.1",
     "chalk": "^4.1.0",
-    "prettier": "^2.0.5",
+    "prettier": "^2.1.2",
     "replace-in-file": "^6.1.0",
     "version-everything": "^0.6.3"
   },
