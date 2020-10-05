@@ -53,9 +53,14 @@
         }
       },
       {
+        "files": "*.md",
+        "options": {
+          "embeddedLanguageFormatting": "off"
+        }
+      },
+      {
         "files": "*.php",
         "options": {
-          "phpVersion": "7.2",
           "printWidth": 100,
           "singleQuote": true,
           "tabWidth": 4,
