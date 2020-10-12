@@ -3,7 +3,7 @@ version: "3.7"
 services:
   wp-cli:
     image: wordpress:cli
-    user: '${UID:-1000}:${GID:-1000}'
+    user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - db
       - wordpress
@@ -17,7 +17,7 @@ services:
 
   composer:
     image: composer
-    user: '${UID:-1000}:${GID:-1000}'    
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - ./:/app
     command: install
@@ -94,3 +94,12 @@ services:
                else
                  echo Unable to activate theme: 'wp_options' table does not exist.
                fi'
+
+  repair-permissions:
+    # image: ideasonpurpose/wordpress:dev
+    image: ideasonpurpose/wordpress:0.5.7
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      - .:/usr/src/site
+    command: |
+      /usr/local/bin/permissions.sh

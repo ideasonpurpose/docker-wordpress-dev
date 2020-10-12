@@ -5,19 +5,21 @@
 # development with tooling and copy of our wordpress theme boilerplate.
 #
 # This can also be run on an existing project to update or refresh tooling and dependencies.
+#
+# Run permissions.sh after this to ensure correct file ownership and permissions
 
 # style helpers
 RESET="\033[0m"
 BOLD="\033[1m"
 RED="\033[31m"
 CYAN="\033[36m"
+GREEN="\033[32m"
 GOLD="\033[33m"
+CLEAR="\033[K"
 
-# Honestly, kind of amazed this $USERGROUP trick works. The command stores the UID:GID from `stat`
-# in a variable which is passed as the first argument to `chown` later on. Values are collected
-# from the directory Docker's volume mount points to, on macOS and Windows the owner will usually
-# be root, but on Linux it will match the active host user.
-USERGROUP=$(stat -c "%u:%g" /usr/src/site)
+# Progress/Done icons
+DO="\r${GOLD}${BOLD}⋯${RESET} "
+DONE="\r${GREEN}${BOLD}√${RESET} "
 
 # If package.json exists, extract 'name' with jq into $NAME and continue
 if [[ -s /usr/src/site/package.json ]]; then
@@ -61,58 +63,68 @@ if [[ -z "$DESCRIPTION" ]]; then
 
     # Prompt for a new project description
     read -p "$(echo -e -n "\n${BOLD}${GOLD}Project description > ${RESET}${CYAN}")" DESCRIPTION
-    echo -e -n "$RESET"
+    echo -ne $RESET
 fi
 
 echo
-echo -e "${BOLD}Setting up WordPress environment"
-echo -e "${BOLD}Theme name: ${CYAN}${NAME}${RESET}"
+echo -e "${BOLD}Setting up WordPress environment${RESET}"
+echo -e "Theme name: ${CYAN}${NAME}${RESET}"
 echo
 
 # Set umask so all created files and folders are group-writable
 umask 0002
 
-echo "Syncing docker-compose and tooling files"
-rsync -aq /usr/src/boilerplate-tooling/ /usr/src/site/
+echo -ne "${DO}Syncing docker-compose and tooling files"
+rsync -aq --no-owner --no-group /usr/src/boilerplate-tooling/ /usr/src/site/
+echo -e $DONE
 
-echo "Refreshing .gitignore from https://gist.github.com/4f7518e0d04a82a3ca16"
+echo -ne "${DO}Refreshing ${CYAN}.gitignore${RESET} from ${GOLD}https://gist.github.com/4f7518e0d04a82a3ca16"
 curl -sL https://gist.githubusercontent.com/joemaller/4f7518e0d04a82a3ca16/raw > /usr/src/site/.gitignore
+echo -e $DONE
 
-echo "Creating directories"
+echo -ne "${DO}Creating directories"
 mkdir -p /usr/src/site/_db
 mkdir -p /usr/src/site/wp-content/{plugins,uploads}
+echo -e $DONE
 
-echo "Restoring bolerplate theme files from ideasonpurpose/wp-theme-boilerplate"
+
+echo -ne "${DO}Restoring bolerplate theme files from ${GOLD}ideasonpurpose/wp-theme-boilerplate"
 curl -Ls https://github.com/ideasonpurpose/wp-theme-boilerplate/tarball/master > /tmp/theme-boilerplate.tar
 mkdir -p /tmp/theme-boilerplate
 tar -xf /tmp/theme-boilerplate.tar -C /tmp/theme-boilerplate --strip-components=1
 mkdir -p "/usr/src/site/wp-content/themes/${NAME}"
 rsync -aq --ignore-existing --exclude 'README.md' /tmp/theme-boilerplate/ "/usr/src/site/wp-content/themes/${NAME}"
+sleep 0.2s
+echo -e $DONE
 
-echo "Creating theme directories in wp-content/themes/${NAME}"
+echo -ne "${DO}Creating theme directories in ${CYAN}wp-content/themes/${NAME}"
 mkdir -p /usr/src/site/wp-content/themes/"${NAME}"/{src,dist,lib,acf-json}
 mkdir -p /usr/src/site/wp-content/themes/"${NAME}"/src/{js,sass,blocks,fonts,favicon,images}
 mkdir -p /usr/src/site/wp-content/themes/"${NAME}"/lib/{CPT,Taxonomy,Widgets,blocks}
+echo -e $DONE
 
 if [ ! -s "/usr/src/site/ideasonpurpose.config.js" ]; then
-    echo "Creating default config file"
+    echo -ne "${DO}Creating default config file"
     cp /usr/src/default.config.js /usr/src/site/ideasonpurpose.config.js
+    echo -e $DONE
 fi
 
 # Check for package.json to merge into or create a new one from boilerplate-package.json
 # use /tmp to prevent accidentally overwriting the existing file
 if [[ -s /usr/src/site/package.json ]]; then
-    echo "Creating package.json tempfile"
+    echo -ne "${DO}Creating ${CYAN}package.json${RESET} tempfile"
     cp /usr/src/site/package.json /tmp/package.json
 else
-    echo "Copying boilerplate-package.json to tempfile"
-        cp /usr/src/boilerplate-package.json /tmp/package.json
+    echo -ne "${DO}Copying ${CYAN}boilerplate-package.json${RESET} to tempfile"
+    cp /usr/src/boilerplate-package.json /tmp/package.json
 fi
+sleep 0.2s
+echo -e $DONE
 
 # This merge extracts the default scripts and then applies those onto
 # any existing scripts as a last step. All other properties defer to
 # existing values.
-echo "Merging defaults into package.json"
+echo -ne "${DO}Merging defaults into ${CYAN}package.json"
 jq -s '.[0].scripts as $defaultScripts |
        .[0] * .[1] |
        .name = "'"${NAME}"'" |
@@ -125,20 +137,23 @@ jq -s '.[0].scripts as $defaultScripts |
         .scripts *= $defaultScripts' \
     /usr/src/boilerplate-package.json /tmp/package.json | cat > /usr/src/site/package.json
 
+echo -e $DONE
+
 # Check for composer.json to merge into or create a new one from boilerplate-composer.json
 # use /tmp to prevent accidentally overwriting the existing file
 if [[ -s /usr/src/site/composer.json ]]; then
-    echo "Creating composer.json tempfile"
+    echo -ne "${DO}Creating ${CYAN}composer.json${RESET} tempfile"
     cp /usr/src/site/composer.json /tmp/composer.json
 else
-    echo "Copying bolilerplate-composer.json to tempfile"
+    echo -ne "${DO}Copying ${CYAN}bolilerplate-composer.json${RESET} to tempfile"
     cp /usr/src/boilerplate-composer.json /tmp/composer.json
 fi
+echo -e $DONE
 
 # This command also syncs .description and sorts .require and .repositories, and re-orders some keys
 # Preferred order is: {name, description, author, authors, config, autoload, [everything else]}
 # Null values will not be written.
-echo "Merging defaults onto composer.json"
+echo -ne "${DO}Merging defaults onto ${CYAN}composer.json"
 jq -s '.[0] * .[1] |
        .config."vendor-dir" = "wp-content/themes/'"${NAME}"'/vendor" |
        .autoload."psr-4"."IdeasOnPurpose\\" = ["wp-content/themes/'"${NAME}"'/lib"] |
@@ -150,55 +165,19 @@ jq -s '.[0] * .[1] |
        with_entries(select(.value))' \
     /usr/src/boilerplate-composer.json /tmp/composer.json | cat > /usr/src/site/composer.json
 
-echo "Updating metadata in theme stylesheet"
+echo -e $DONE
+
+echo -ne "${DO}Updating metadata in theme ${CYAN}style.css"
 sed -i -e "s/Theme Name.*$/Theme Name:         ${NAME} - v0.0.0/" "/usr/src/site/wp-content/themes/${NAME}/style.css"
 sed -i -e "s/Description.*$/Description:        ${DESCRIPTION}/" "/usr/src/site/wp-content/themes/${NAME}/style.css"
+echo -e $DONE
 
 
 # Create a README.md file if the file doesn't exist
 if [[ ! -s /usr/src/site/README.md ]]; then
-    echo "Creating README.md file"
+    echo -ne "${DO}Creating ${CYAN}README.md${RESET} file"
     echo -e "# ${NAME}\n" > /usr/src/site/README.md
     echo -e '#### Version 0.0.0\n'  >> /usr/src/site/README.md
     echo -e "${DESCRIPTION}\n" >> /usr/src/site/README.md
+    echo -e $DONE
 fi
-
-# This is intentionally granular for files outside of the theme directory
-echo "Resetting permissions"
-chown -f "$USERGROUP" \
-    /usr/src/site \
-    /usr/src/site/.gitignore \
-    /usr/src/site/.stylelintrc.js \
-    /usr/src/site/composer.json \
-    /usr/src/site/composer.lock \
-    /usr/src/site/ideasonpurpose.config.js \
-    /usr/src/site/package.json \
-    /usr/src/site/package-lock.json \
-    /usr/src/site/README.md \
-
-chmod -f g+w \
-    /usr/src/site \
-    /usr/src/site/.gitignore \
-    /usr/src/site/.stylelintrc.js \
-    /usr/src/site/composer.json \
-    /usr/src/site/composer.lock \
-    /usr/src/site/ideasonpurpose.config.js \
-    /usr/src/site/package.json \
-    /usr/src/site/package-lock.json \
-    /usr/src/site/README.md \
-
-
-TOOLING=$(ls /usr/src/boilerplate-tooling)
-for f in $TOOLING; do
-    chown "$USERGROUP" "/usr/src/site/${f}"
-    chmod g+w "/usr/src/site/${f}"
-done
-
-chown -fR "$USERGROUP" \
-    /usr/src/site/_db \
-    "/usr/src/site/wp-content"
-
-chmod -fR ug+rwx /usr/src/site/_db
-
-chmod -fR 0775 /usr/src/site/wp-content
-find /usr/src/site/wp-content -type f -exec chmod -f 0664 {} \+

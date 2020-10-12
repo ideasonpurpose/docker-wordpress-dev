@@ -2,6 +2,12 @@
 
 if [[ "$1" == init ]]; then
   /usr/local/bin/wp-init.sh
+  /usr/local/bin/permissions.sh
+  exit 0
+fi
+
+if [[ "$1" == permissions ]]; then
+  /usr/local/bin/permissions.sh
   exit 0
 fi
 
