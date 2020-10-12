@@ -11,8 +11,8 @@
 # style helpers
 RESET="\033[0m"
 BOLD="\033[1m"
-RED="\033[31m"
-CYAN="\033[36m"
+# RED="\033[31m"
+# CYAN="\033[36m"
 GREEN="\033[32m"
 GOLD="\033[33m"
 CLEAR="\033[K"
@@ -31,36 +31,36 @@ echo -ne "${DO}Resetting permissions "
 
 # This is intentionally granular for files outside of the theme directory
 chown -f "$OWNER_GROUP" \
-    /usr/src/site \
-    /usr/src/site/.gitignore \
-    /usr/src/site/.stylelintrc.js \
-    /usr/src/site/composer.json \
-    /usr/src/site/composer.lock \
-    /usr/src/site/ideasonpurpose.config.js \
-    /usr/src/site/package.json \
-    /usr/src/site/package-lock.json \
-    /usr/src/site/README.md \
+  /usr/src/site \
+  /usr/src/site/.gitignore \
+  /usr/src/site/.stylelintrc.js \
+  /usr/src/site/composer.json \
+  /usr/src/site/composer.lock \
+  /usr/src/site/ideasonpurpose.config.js \
+  /usr/src/site/package.json \
+  /usr/src/site/package-lock.json \
+  /usr/src/site/README.md
 
 chmod -f g+w \
-    /usr/src/site \
-    /usr/src/site/.gitignore \
-    /usr/src/site/.stylelintrc.js \
-    /usr/src/site/composer.json \
-    /usr/src/site/composer.lock \
-    /usr/src/site/ideasonpurpose.config.js \
-    /usr/src/site/package.json \
-    /usr/src/site/package-lock.json \
-    /usr/src/site/README.md \
+  /usr/src/site \
+  /usr/src/site/.gitignore \
+  /usr/src/site/.stylelintrc.js \
+  /usr/src/site/composer.json \
+  /usr/src/site/composer.lock \
+  /usr/src/site/ideasonpurpose.config.js \
+  /usr/src/site/package.json \
+  /usr/src/site/package-lock.json \
+  /usr/src/site/README.md
 
 TOOLING=$(ls /usr/src/boilerplate-tooling)
 for f in $TOOLING; do
-    chown "$OWNER_GROUP" "/usr/src/site/${f}"
-    chmod g+w "/usr/src/site/${f}"
+  chown "$OWNER_GROUP" "/usr/src/site/${f}"
+  chmod g+w "/usr/src/site/${f}"
 done
 
 chown -fR "$OWNER_GROUP" \
-    /usr/src/site/_db \
-    "/usr/src/site/wp-content"
+  /usr/src/site/_db \
+  "/usr/src/site/wp-content"
 
 chmod -fR ug+rwx /usr/src/site/_db
 

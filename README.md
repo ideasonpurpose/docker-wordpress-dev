@@ -133,12 +133,20 @@ The default command replaces the `wp` prefix, so alternate commands would look l
 To iterate on this project locally, build the image using the same name as the Docker Hub remote. Docker will use the local copy. Specify `dev` if you're using using versions.
 
 ```sh
-$ docker build . --tag ideasonpurpose/wordpress:dev
+docker build . --tag ideasonpurpose/wordpress:dev
 ```
 
 ### Dockerfile
 
 This project's Dockerfile is based on the official WordPress image. We add [Xdebug](https://xdebug.org/), the [ImageMagick](http://www.imagemagick.org/) PHP extension and enable all PHP debug settings.
+
+### Shell Scripts
+
+All shell scripts in **bin** have been checked with [ShellCheck](https://www.shellcheck.net/) and formatted with [shfmt](https://github.com/mvdan/sh) via Docker:
+
+```sh
+docker run --rm -it -v "$PWD":/src peterdavehello/shfmt:latest shfmt -i 2 -w /src/bin/<FILE>.sh
+```
 
 ## Docker maintenance
 

@@ -60,14 +60,14 @@ if [[ "$(<wp-config.php)" != *"Extra ideasonpurpose dev settings"* ]]; then
   # echo "Commenting out existing WP_DEBUG"
   # sed -i -e "s%define( 'WP_DEBUG',%// define( 'WP_DEBUG',%" wp-config.php
   # Load wp-config-extra-debug.php deleting the first line containing <?php
-  WP_EXTRA_DEBUG=$(cat /usr/src/wp-config-extra-debug.php | sed '1d')
+  WP_EXTRA_DEBUG=$(sed '1d' </usr/src/wp-config-extra-debug.php)
 
   echo "Updating wp-config, injecting: "
   echo
   echo "$WP_EXTRA_DEBUG"
   echo
 
-  awk -v wp="$WP_EXTRA_DEBUG\n" '/^\/\*.*stop editing.*\*\/$/ && c == 0 {c=1; print wp}{print}' wp-config.php > wp-config.tmp
+  awk -v wp="$WP_EXTRA_DEBUG\n" '/^\/\*.*stop editing.*\*\/$/ && c == 0 {c=1; print wp}{print}' wp-config.php >wp-config.tmp
   mv wp-config.tmp wp-config.php
 
   # TODO: Do this somewhere else, preferrably with wp-cli
@@ -85,7 +85,7 @@ else
 fi
 
 # Create a simple phpinfo() page at /info.php
-echo '<?php phpinfo();' > /var/www/html/info.php
+echo '<?php phpinfo();' >/var/www/html/info.php
 
 # Finally, we run the original endpoint, as intended, to kickoff the server
 exec /usr/local/bin/docker-entrypoint.sh "$@"
