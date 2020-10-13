@@ -97,7 +97,7 @@ services:
 
   repair-permissions:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.5.7
+    image: ideasonpurpose/wordpress:0.5.8
     user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - .:/usr/src/site
