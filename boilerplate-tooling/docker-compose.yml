@@ -71,13 +71,13 @@ services:
     image: ideasonpurpose/docker-build:0.7.0
     # image: ideasonpurpose/docker-build:dev
     # user: www-data
-    user: '${UID:-1000}:${GID:-1000}'
+    user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - wordpress
     volumes:
       - ./:/usr/src/site/:delegated
-    environment: 
-        PORT: ${npm_package_config_port:-8080}
+    environment:
+      PORT: ${npm_package_config_port:-8080}
     entrypoint: npm run
     command: start
 
