@@ -32,6 +32,7 @@
     "postmysql:reload": "npm run theme:activate",
     "mysqldump": "npm run mysql:dump",
     "permissions:repair": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm repair-permissions",
+    "prephpmyadmin": "boxen --border-color blue --padding 1 --margin 1 --align center --border-style round 'Starting phpMyAdmin on port 8002\nhttp://localhost:8002'",
     "phpmyadmin": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 8002:80 phpmyadmin",
     "start": "npm run docker:start",
     "poststart": "npm run docker:stop",
