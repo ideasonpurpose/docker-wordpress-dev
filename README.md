@@ -41,8 +41,6 @@ In an empty directory, running `init` will prompt for the new project's name and
 
 For existing projects, running `init` reads the project's name and description from **package.json**, updates build tools and script commands to the latest versions and syncs in any missing theme files. The project should be a working Git checkout so any undesirable changes can be easily reverted.
 
-Before calling `npm run start`, copy a database snapshot into the top-level **\_db** directory, copy any required plugins to **Plugins** and mirror media files to **Uploads**.
-
 #### These files will be updated:
 
 - Docker-compose files will be updated to the latest versions.
@@ -54,18 +52,22 @@ Before calling `npm run start`, copy a database snapshot into the top-level **\_
 - Missing ideasonpurpose.config.js files will be created.
 - Permissions will be reset for the theme directory and known tooling files.
 
+Before calling `npm run start`, copy a database snapshot into the top-level **\_db** directory, add any required plugins to **Plugins** and mirror media files to **Uploads**.
+
 Plugins and Uploads folders should not be committed to Git, but should be mirrored from production sites so the local environment works as expected.
+
+After configuring an SSH connection in the **.env** file, the database, plugins and uploads be can be synced down from a remote server with the `npm run pull` command. The **.env.sample** file documents the required credentials.
 
 ### Databases
 
-Copy your MySQL database dumpfiles into the top-level **\_db** directory before calling `npm run start`. The [MySQL Docker image](https://hub.docker.com/_/mysql#initializing-a-fresh-instance) will load all `*.sql` files from that directory in alphabetical order. Later files will overwrite earlier ones.
+Copy your MySQL database dumpfiles into before calling Calling `npm run start` will tell the [MySQL Docker image](https://hub.docker.com/_/mysql#initializing-a-fresh-instance) to load all `*.sql` files from the top-level **\_db** directory in alphabetical order. Later files will overwrite earlier ones.
 
 ## Workflow & Commands
 
 ### Basic development commands
 
 - **`npm run start`**  
-   Spins up a database and php server, then serves all content through the devServer proxy at [http://localhost:8080]. Files in the project directory will be watched for changes and trigger reloads when saved. Type **control-c** to stop the local server.
+   Spins up a database and php server, then serves all content through the devServer proxy at [http://localhost:8080](http://localhost:8080). Files in the project directory will be watched for changes and trigger reloads when saved. Type **control-c** to stop the local server.
 
 - **`npm version [major|minor|patch]`**
   Increments the version then uses [version-everything][] to update project files before calling `npm run build` which generates a production build and compresses all theme files into a versioned, ready-to-deploy zip archive.
@@ -73,7 +75,7 @@ Copy your MySQL database dumpfiles into the top-level **\_db** directory before 
 ### Additional Commands and helpers
 
 - **`bootstrap`**<br>
-  A helper script for starting projects. This will install npm and composer depenencies, reload the MySQL database, activate the development theme and sort the package.json file.
+  A helper script for starting projects. This will install npm and composer dependencies, reload the MySQL database, activate the development theme and sort the package.json file.
 - **`build`** - Generate a production-ready build in a zip archive. Ready-to-deploy.
 - **`composer`**<br>
   Runs `composer install` from Docker.
@@ -85,12 +87,50 @@ Copy your MySQL database dumpfiles into the top-level **\_db** directory before 
   - **`mysql:dump`**, **`mysqldump`** - Writes a compressed, timestamped database snapshot into the **\_db** directory
   - **`mysql:reload`** - Drops, then reloads the database from the most recent dumpfile in **\_db** then attempts to activate the development theme.
 - **`phpmyadmin`** - Starts a phpMyAdmin server at [localhost:8002](http://localhost:8002)
+- **`pull`**<br>
+  Syncs data from a remote server to the local development environment. The bare command will run these sub-commands:
+  - **`pull:db`** - Syncs down the most recent mySQL dumpfile, backs up the current dev DB then reloads the DB
+  - **`pull:plugins`** - Syncs down **wp-content/plugins** from the remote
+  - **`pull:uploads`** - Syncs down **wp-content/uploads** from the remote
 - **`logs:wordpress`** - Stream the WordPress debug.log
 - **`wp-cli`** - Runs [wp-cli](https://wp-cli.org/vc) commands. The default command re-activates the development theme.
 
+### Pulling Data from Remote Servers
+
+The `npm run pull` command brings together several sub-commands to sync remote data to the local development environment. Each command can also be called individually. Connection info needs to be configured in a **.env** file. Values are documented in the **.env.sample** file.
+
+Private SSH keys are passed to the image as [Docker Secrets][], set `$SSH_KEY to a local keypath in **.env**.
+
+Pulling uploads, plugins and database dumps is currently supported on WP Engine.
+
+Connections must be configured on a per-machine basis using a `.env` file in the project root. For new projects, rename the `.env.example` to **.env** and update the settings.
+
+The important properties are:
+
+- **`SSH_KEY`**<br>
+  Local path to your private key. If you uploaded a `id_rsa_wpengine.pub` key to your WP Engine account,
+  point this to the pair's matching private key: `~/.ssh/id_rsa_wpengine`
+
+- **`SSH_LOGIN`**<br>
+  This is simply the SSH connection string from WP Engine backend, something like `iop001@iop001.ssh.wpengine.net`
+  where the elements are `${SSH_USER}@${SSH_HOST}`. Each item can also be entered indivudally, individual entries
+  take precedence over components extracted from SSH_CONNECT_STRING.
+
+- **`SSH_WP_CONTENT_DIR`**<br> (default: sites/${SSH_USER}/wp-content)
+  The path to the wordpress wp-content folder. Most likley matches the `WP_CONTENT_DIR` WordPress constant.
+  Does not include a trailing slash. Can relative to the SSH user home folder or an absolute path.
+
+- **`SSH_USER`**<br>
+  The user account which connects to the server.
+
+- **`SSH_HOST`**<br>
+  The server address to connect to.
+
+Both `$SSH_LOGIN` and `$SSH_HOST` can be extracted from `$SSH_LOGIN`. Specifying either will override the value in `$SSH_LOGIN`.
+
 #### Accessing running containers
 
-To open a shell on _any_ running Docker container, run `docker ps` to retrieve continer IDs or Names, then run `docker exec -it <name or ID> bash`. Some containers may use `sh` instead of bash. To open a shell on the running WordPress instance, run `docker-compose exec wordpress bash`.
+To open a shell on _any_ running Docker container, run `docker ps` to retrieve container IDs or Names, then run `docker exec -it <name or ID> bash`. Some containers may use `sh` instead of bash. To open a shell on the running WordPress instance, run `docker-compose exec wordpress bash`.
 
 #### Other composer commands
 
@@ -138,7 +178,7 @@ docker build . --tag ideasonpurpose/wordpress:dev
 
 ### Dockerfile
 
-This project's Dockerfile is based on the official WordPress image. We add [Xdebug](https://xdebug.org/), the [ImageMagick](http://www.imagemagick.org/) PHP extension and enable all PHP debug settings.
+This project's Dockerfile is based on the official WordPress image. We add [Xdebug](https://xdebug.org/), the [ImageMagick](http://www.imagemagick.org/) PHP extension, SSH and enable all PHP debug settings.
 
 ### Shell Scripts
 
@@ -253,6 +293,8 @@ Every profiled run can also be viewed as a call graph. These graphs are [documen
 [basic-wordpress-vagrant]: https://github.com/ideasonpurpose/basic-wordpress-vagrant
 [basic-wordpress-box]: https://github.com/ideasonpurpose/basic-wordpress-box
 [env-file]: https://docs.docker.com/compose/compose-file/#env_file
+[version-everything]: https://github.com/joemaller/version-everything
 [composer]: https://getcomposer.org/
 [docker-build]: https://github.com/ideasonpurpose/docker-build
 [phpmyadmin]: https://www.phpmyadmin.net/
+[docker-secrets]: https://docs.docker.com/compose/compose-file/compose-file-v3/#secrets

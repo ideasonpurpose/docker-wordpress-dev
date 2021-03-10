@@ -101,5 +101,19 @@ services:
     user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - .:/usr/src/site
-    command: |
-      /usr/local/bin/permissions.sh
+    entrypoint: /usr/local/bin/permissions.sh
+
+  pull:
+    image: ideasonpurpose/wordpress:dev
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      - .:/usr/src/site
+    entrypoint: |
+      /usr/local/bin/pull.sh
+    env_file: .env
+    secrets:
+      - SSH_KEY
+
+secrets:
+  SSH_KEY:
+    file: ${SSH_KEY}

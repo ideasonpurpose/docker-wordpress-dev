@@ -1,4 +1,6 @@
-FROM wordpress:5.5.1-php7.4-apache
+# Official WordPress image on DockerHub: https://hub.docker.com/_/wordpress/
+# Check for the latest tags there
+FROM wordpress:5.6.2-php7.4-apache
 
 LABEL version="0.5.8"
 
@@ -80,12 +82,21 @@ RUN mkdir -p /var/log/wordpress \
     && touch /var/log/wordpress/debug.log \
     && chown -R www-data:www-data /var/log/wordpress
 
-# Install rsync and jq for merging tooling and package.json files
+# Install rsync, ssh-client and jq for merging tooling and package.json files
 RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \
       rsync \
+      openssh-client \
       jq \
     && rm -rf /var/lib/apt/lists/*
+
+# Configure SSH
+RUN echo >> /etc/ssh/ssh_config \
+    && echo "# IOP Additions for automated connections" >> /etc/ssh/ssh_config \
+    && echo "    IdentityFile /run/secrets/SSH_KEY" >> /etc/ssh/ssh_config \
+    && echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
+    && echo "    UserKnownHostsFile /dev/null" >> /etc/ssh/ssh_config \
+    && echo "    LogLevel QUIET" >> /etc/ssh/ssh_config
 
 # COPY default.config.js /usr/src/
 COPY src/* /usr/src/

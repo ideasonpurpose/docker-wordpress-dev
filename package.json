@@ -15,8 +15,8 @@
   "devDependencies": {
     "auto-changelog": "^2.2.1",
     "chalk": "^4.1.0",
-    "prettier": "^2.1.2",
-    "replace-in-file": "^6.1.0",
+    "prettier": "^2.2.1",
+    "replace-in-file": "^6.2.0",
     "version-everything": "^0.6.3"
   },
   "auto-changelog": {

@@ -6,7 +6,11 @@ if [[ "$1" == init ]]; then
   exit 0
 fi
 
+# TODO: Remove once we're certain it's unused
+# This was never called. docker-compose files replace the entrypoint instead
 if [[ "$1" == permissions ]]; then
+  echo "DEPRECATED: Replace the entrypoint with /usr/local/bin/permissions"
+  echo "            or call from docker-compose."
   /usr/local/bin/permissions.sh
   exit 0
 fi
