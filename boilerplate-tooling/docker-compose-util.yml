@@ -97,14 +97,14 @@ services:
 
   repair-permissions:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.6.0
+    image: ideasonpurpose/wordpress:0.6.1
     user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - .:/usr/src/site
     entrypoint: /usr/local/bin/permissions.sh
 
   pull:
-    image: ideasonpurpose/wordpress:0.6.0
+    image: ideasonpurpose/wordpress:0.6.1
     user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - .:/usr/src/site
