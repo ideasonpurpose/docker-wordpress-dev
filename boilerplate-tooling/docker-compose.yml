@@ -68,7 +68,7 @@ services:
           - devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61
 
   tools:
-    image: ideasonpurpose/docker-build:0.7.0
+    image: ideasonpurpose/docker-build:0.8.0
     # image: ideasonpurpose/docker-build:dev
     # user: www-data
     user: "${UID:-1000}:${GID:-1000}"

@@ -104,7 +104,7 @@ services:
     entrypoint: /usr/local/bin/permissions.sh
 
   pull:
-    image: ideasonpurpose/wordpress:dev
+    image: ideasonpurpose/wordpress:0.6.0
     user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - .:/usr/src/site
