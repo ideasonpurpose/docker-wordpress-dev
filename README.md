@@ -56,7 +56,7 @@ Before calling `npm run start`, copy a database snapshot into the top-level **\_
 
 Plugins and Uploads folders should not be committed to Git, but should be mirrored from production sites so the local environment works as expected.
 
-After configuring an SSH connection in the **.env** file, the database, plugins and uploads be can be synced down from a remote server with the `npm run pull` command. The **.env.sample** file documents the required credentials.
+After configuring your SSH key path in **.env**, the database, plugins and uploads be can be synced down from a remote server with the `npm run pull` command. The **.env.sample** file documents the required credentials.
 
 ### Databases
 
@@ -99,7 +99,7 @@ Copy your MySQL database dumpfiles into before calling Calling `npm run start` w
 
 The `npm run pull` command brings together several sub-commands to sync remote data to the local development environment. Each command can also be called individually. Connection info needs to be configured in a **.env** file. Values are documented in the **.env.sample** file.
 
-Private SSH keys are passed to the image as [Docker Secrets][], set `$SSH_KEY to a local keypath in **.env**.
+Private SSH keys are passed to the image as [Docker Secrets][], set `$SSH_KEY_PATH to a local keypath in **.env**.
 
 Pulling uploads, plugins and database dumps is currently supported on WP Engine.
 
@@ -107,7 +107,7 @@ Connections must be configured on a per-machine basis using a `.env` file in the
 
 The important properties are:
 
-- **`SSH_KEY`**<br>
+- **`SSH_KEY_PATH`**<br>
   Local path to your private key. If you uploaded a `id_rsa_wpengine.pub` key to your WP Engine account,
   point this to the pair's matching private key: `~/.ssh/id_rsa_wpengine`
 
