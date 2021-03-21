@@ -198,6 +198,10 @@ While not specific to this project, here are a few useful docker commands for ke
 - `docker ps` List running containers
 - `docker exec -it <container> bash` Open a shell on a running container
 
+### Additional Notes
+
+The **docker-entrypoint.sh** script in the base WordPress docker image checks for a WordPress installation by checking for **index.php** and **wp-includes/version.php**.
+
 <!--
 
 #### _Edited to here..._

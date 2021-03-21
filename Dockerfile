@@ -116,6 +116,16 @@ RUN apt-get update -yqq \
 COPY bin/*.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/*.sh
 
+# Include our wp-config-extra.php file in wp-config-docker.php
+RUN sed -i -E '/stop editing!/irequire("/usr/src/wp-config-extra.php");\n' /usr/src/wordpress/wp-config-docker.php
+
+# Define default environment variables
+ENV WORDPRESS_DB_HOST=db:3306
+ENV WORDPRESS_DB_USER=wordpress
+ENV WORDPRESS_DB_PASSWORD=wordpress
+ENV WORDPRESS_DB_NAME=wordpress
+ENV WORDPRESS_DEBUG=1
+
 ENTRYPOINT ["docker-entrypoint-iop.sh"]
 
 CMD ["apache2-foreground"]
