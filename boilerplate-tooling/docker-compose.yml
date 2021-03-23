@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.9"
 
 # Note about devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61
 # Since the proxy will be rewriting everything and replacing the default hostname,
@@ -39,38 +39,15 @@ services:
       - ./wp-content/themes/${npm_package_name:-ioptheme}:/var/www/html/wp-content/themes/${npm_package_name:-ioptheme}:delegated
       - ./wp-content/plugins:/var/www/html/wp-content/plugins:delegated
       - ./wp-content/uploads:/var/www/html/wp-content/uploads:delegated
-      # - ./_log/apache2:/var/log/apache2:delegated
-      # - ./_log/wordpress:/var/log/wordpress:delegated
-      # - ./_profiler:/tmp/xdebug_profiler:delegated
 
     # Apache will throw errors for any ulimit value below 8192
     # NOTE THAT THIS MIGHT BE MORE THAN THE SYSTEM OFFERS
     ulimits:
       nofile: 8192
 
-    environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
-
-      WORDPRESS_ACTIVE_THEME: ${npm_package_name:-ioptheme}
-
-      WORDPRESS_DEBUG: 1
-      WORDPRESS_CONFIG_EXTRA: |
-        define('WP_HOME', 'http://devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61');
-        define('WP_SITEURL', 'http://devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61');
-
-    networks:
-      default:
-        aliases:
-          # TODO: Replace this with an environment variable, dotenv? also WORDPRESS_CONFIG_EXTRA
-          - devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61
-
   tools:
-    image: ideasonpurpose/docker-build:0.8.0
+    image: ideasonpurpose/docker-build:0.9.1
     # image: ideasonpurpose/docker-build:dev
-    # user: www-data
     user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - wordpress
