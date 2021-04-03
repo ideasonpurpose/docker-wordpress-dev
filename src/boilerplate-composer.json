@@ -1,6 +1,5 @@
 {
   "description": "",
-  "version": "0.0.0",
   "config": {
     "optimize-autoloader": true,
     "sort-packages": true,
