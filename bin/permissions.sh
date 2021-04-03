@@ -29,6 +29,8 @@ OWNER_GROUP=$(stat -c "%u:%g" /usr/src/site)
 
 echo -ne "${DO}Resetting permissions "
 
+echo -ne "${DO}Resetting permissions: Tooling files Ownership "
+
 # This is intentionally granular for files outside of the theme directory
 chown -f "$OWNER_GROUP" \
   /usr/src/site \
@@ -41,6 +43,7 @@ chown -f "$OWNER_GROUP" \
   /usr/src/site/package-lock.json \
   /usr/src/site/README.md
 
+echo -ne "${DO}Resetting permissions: Tooling files Permissions "
 chmod -f g+w \
   /usr/src/site \
   /usr/src/site/.gitignore \
@@ -52,21 +55,25 @@ chmod -f g+w \
   /usr/src/site/package-lock.json \
   /usr/src/site/README.md
 
+echo -ne "${DO}Resetting permissions: Boilerplate "
 TOOLING=$(ls /usr/src/boilerplate-tooling)
 for f in $TOOLING; do
   chown "$OWNER_GROUP" "/usr/src/site/${f}"
   chmod g+w "/usr/src/site/${f}"
 done
 
-chown -fR "$OWNER_GROUP" \
-  /usr/src/site/_db \
-  "/usr/src/site/wp-content"
-
+echo -ne "${DO}Resetting permissions: Database "
+chown -fR "$OWNER_GROUP" /usr/src/site/_db
 chmod -fR ug+rwx /usr/src/site/_db
 
-chmod -fR 0775 /usr/src/site/wp-content
+echo -ne "${DO}Resetting permissions: wp-content Permissions & Ownership: chmod "
+chown "$OWNER_GROUP" "/usr/src/site/${f}"
+chmod -fR 0664 /usr/src/site/wp-content
+# Reset wp-content permissions or we'll be locked out of subsequent modifications
+chmod -f 0775 /usr/src/site/wp-content
 
-find /usr/src/site/wp-content -type f -exec chmod -f 0664 {} \+
+echo -ne "${DO}Resetting permissions: wp-content Permissions & Ownership: find: type d "
+find /usr/src/site/wp-content -type d -exec chown -f "$OWNER_GROUP" {} \+ -exec chmod -f 0775 {} \+
 
 sleep 0.2s
 echo -e "${DONE}Resetting permissions${CLEAR}"
