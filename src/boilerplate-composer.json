@@ -25,7 +25,6 @@
     "ideasonpurpose/wp-svg-lib": "^0.4.0",
     "ideasonpurpose/wp-googleanalytics": "dev-master",
     "ideasonpurpose/wp-theme-init": "^2.3.0",
-    "ideasonpurpose/wp-social-share-links": "dev-master",
     "ideasonpurpose/wp-vimeo-embed": "dev-master"
   },
   "repositories": [
@@ -37,11 +36,6 @@
     {
       "type": "vcs",
       "url": "https://github.com/ideasonpurpose/wp-googleanalytics",
-      "no-api": true
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/ideasonpurpose/wp-social-share-links",
       "no-api": true
     },
     {
