@@ -111,9 +111,14 @@ services:
       - .:/usr/src/site
     entrypoint: |
       /usr/local/bin/pull.sh
+    environment:
+      - SSH_KEY_PATH
+      - SSH_LOGIN
+      - SSH_USER
+      - SSH_WP_CONTENT_DIR
     secrets:
       - SSH_KEY
 
 secrets:
   SSH_KEY:
-    file: ${SSH_KEY:-~/.ssh/your_ssh_private_key}
+    file: ${SSH_KEY_PATH:-~/.ssh/your_ssh_private_key}
