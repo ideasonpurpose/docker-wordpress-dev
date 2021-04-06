@@ -79,7 +79,7 @@
     ]
   },
   "devDependencies": {
-    "@prettier/plugin-php": "^0.16.1",
+    "@prettier/plugin-php": "^0.16.2",
     "boxen-cli": "^2.0.0",
     "cross-env": "^7.0.3",
     "prettier": "^2.2.1",
