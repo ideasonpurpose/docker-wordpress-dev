@@ -116,17 +116,24 @@ The important properties are:
   where the elements are `${SSH_USER}@${SSH_HOST}`. Each item can also be entered indivudally, individual entries
   take precedence over components extracted from SSH_CONNECT_STRING.
 
-- **`SSH_WP_CONTENT_DIR`**<br> (default: sites/${SSH_USER}/wp-content)
-  The path to the wordpress wp-content folder. Most likley matches the `WP_CONTENT_DIR` WordPress constant.
-  Does not include a trailing slash. Can relative to the SSH user home folder or an absolute path.
-
 - **`SSH_USER`**<br>
   The user account which connects to the server.
 
 - **`SSH_HOST`**<br>
   The server address to connect to.
 
+- **`SSH_WP_CONTENT_DIR`**<br> (default: sites/${SSH_USER}/wp-content)
+  The path to the wordpress wp-content folder. Most likley matches the `WP_CONTENT_DIR` WordPress constant.
+  Does not include a trailing slash. Can relative to the SSH user home folder or an absolute path.
+
 Both `$SSH_LOGIN` and `$SSH_HOST` can be extracted from `$SSH_LOGIN`. Specifying either will override the value in `$SSH_LOGIN`.
+
+### Plugin Development
+
+Projects often rely on plugins which are developed in parallel. Two placeholder environment variables can be used to directly mount plugins into the WordPress environment. This enables better version control and dependency management since the nested and .gitignored **wp-content/plugins** directory often conflicts with the parent theme.
+
+- **`DATA_MODEL_PLUGIN`**
+- **`BLOCKS_PLUGIN`**
 
 #### Accessing running containers
 

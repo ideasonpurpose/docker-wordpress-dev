@@ -1,16 +1,5 @@
 version: "3.9"
 
-# Note about devserver-proxy-token--d939bef2a41c4aa154ddb8db903ce19fff338b61
-# Since the proxy will be rewriting everything and replacing the default hostname,
-# we needed a unique value to search for. I couldn't find a way to access a
-# hash ID from the docker-compose file, so we're using this pseudo-unique
-# identifier instead.
-
-# Docker also appears to normalize hostnames to lowercase, and fails silently when trying to
-# access mixed-case domains.
-#
-# TODO: pull something from the environment (somehow?) to make this more unique
-
 services:
   db:
     image: mysql:5.7
@@ -39,6 +28,12 @@ services:
       - ./wp-content/themes/${npm_package_name:-ioptheme}:/var/www/html/wp-content/themes/${npm_package_name:-ioptheme}
       - ./wp-content/plugins:/var/www/html/wp-content/plugins
       - ./wp-content/uploads:/var/www/html/wp-content/uploads
+      - ${DATA_MODEL_PLUGIN:-/tmp/null:/tmp/DATA_MODEL_PLUGIN}
+      - ${BLOCKS_PLUGIN:-/tmp/null:/tmp/BLOCKS_PLUGIN}
+
+    environment:
+      - DATA_MODEL_PLUGIN
+      - BLOCKS_PLUGIN
 
     # Apache will throw errors for any ulimit value below 8192
     # NOTE THAT THIS MIGHT BE MORE THAN THE SYSTEM OFFERS
