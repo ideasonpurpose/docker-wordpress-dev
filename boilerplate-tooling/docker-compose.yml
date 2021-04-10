@@ -17,8 +17,8 @@ services:
     restart: always
     volumes:
       - db_data:/var/lib/mysql
-      - ./_db:/docker-entrypoint-initdb.d:delegated
-      # - ./_log/mysql:/var/log/mysql:delegated
+      - ./_db:/docker-entrypoint-initdb.d
+      # - ./_log/mysql:/var/log/mysql
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
       MYSQL_DATABASE: wordpress
@@ -36,9 +36,9 @@ services:
     restart: always
     volumes:
       - wp_data:/var/www/html
-      - ./wp-content/themes/${npm_package_name:-ioptheme}:/var/www/html/wp-content/themes/${npm_package_name:-ioptheme}:delegated
-      - ./wp-content/plugins:/var/www/html/wp-content/plugins:delegated
-      - ./wp-content/uploads:/var/www/html/wp-content/uploads:delegated
+      - ./wp-content/themes/${npm_package_name:-ioptheme}:/var/www/html/wp-content/themes/${npm_package_name:-ioptheme}
+      - ./wp-content/plugins:/var/www/html/wp-content/plugins
+      - ./wp-content/uploads:/var/www/html/wp-content/uploads
 
     # Apache will throw errors for any ulimit value below 8192
     # NOTE THAT THIS MIGHT BE MORE THAN THE SYSTEM OFFERS
@@ -52,7 +52,7 @@ services:
     depends_on:
       - wordpress
     volumes:
-      - ./:/usr/src/site/:delegated
+      - ./:/usr/src/site/
     environment:
       PORT: ${npm_package_config_port:-8080}
     entrypoint: npm run
