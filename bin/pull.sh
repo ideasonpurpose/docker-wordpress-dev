@@ -11,12 +11,13 @@ if (! ssh-keygen -l -f /run/secrets/SSH_KEY); then
 fi
 
 #
-# Try to split the $SSH_LOGIN string into $_USER and $_HOST
+# Try to split the $SSH_LOGIN string into $_USER, $_HOST and $_PORT
 #
-if [[ $SSH_LOGIN =~ "@" ]]; then
+if [[ $SSH_LOGIN =~ ([^ @]+)@([^ ]+)( +-p +([0-9]+))?$ ]]; then
   echo "Parsing $SSH_LOGIN"
-  _USER=${SSH_LOGIN%@*}
-  _HOST=${SSH_LOGIN#*@}
+  _USER=${BASH_REMATCH[1]}
+  _HOST=${BASH_REMATCH[2]}
+  _PORT=${BASH_REMATCH[3]:-22}
 else
   echo "Unable to parse SSH_LOGIN $SSH_LOGIN"
 fi
@@ -33,6 +34,13 @@ fi
 #
 if [[ -n "$SSH_HOST" ]]; then
   _HOST=${SSH_HOST}
+fi
+
+#
+# Override $_PORT if $SSH_PORT is set
+#
+if [[ -n "$SSH_PORT" ]]; then
+  _PORT=${SSH_PORT}
 fi
 
 #
@@ -63,7 +71,7 @@ fi
 #
 if [[ "$1" == database ]]; then
   echo "Pulling new dumpfile from remote."
-  rsync -azphv "${_USER}@${_HOST}:${_WP_CONTENT}/mysql.sql" /usr/src/site/_db/
+  rsync -azphv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/mysql.sql" /usr/src/site/_db/
 fi
 
 #
@@ -71,7 +79,7 @@ fi
 #
 if [[ "$1" == plugins ]]; then
   echo "Syncing plugins from remote."
-  rsync -azphv "${_USER}@${_HOST}:${_WP_CONTENT}/plugins/" /usr/src/site/wp-content/plugins/
+  rsync -azphv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/plugins/" /usr/src/site/wp-content/plugins/
 fi
 
 #
@@ -79,5 +87,5 @@ fi
 #
 if [[ "$1" == uploads ]]; then
   echo "Syncing uploads from remote."
-  rsync -azphv "${_USER}@${_HOST}:${_WP_CONTENT}/uploads/" /usr/src/site/wp-content/uploads/
+  rsync -azphv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/uploads/" /usr/src/site/wp-content/uploads/
 fi
