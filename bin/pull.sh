@@ -68,6 +68,9 @@ fi
 #
 # Sync down the remote database dumpfile
 # TODO: This path is WP Engine specific
+# TODO: Kinsta does not automatically provide a dumpfile in wp-content
+#       BUT they do let us use cron, so we can create our own. Their nginx
+#       proxy correctly services 403-forbidden responses to *.sql requests
 #
 if [[ "$1" == database ]]; then
   echo "Pulling new dumpfile from remote."
