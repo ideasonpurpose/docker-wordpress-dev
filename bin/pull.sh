@@ -17,7 +17,7 @@ if [[ $SSH_LOGIN =~ ([^ @]+)@([^ ]+)( +-p +([0-9]+))?$ ]]; then
   echo "Parsing $SSH_LOGIN"
   _USER=${BASH_REMATCH[1]}
   _HOST=${BASH_REMATCH[2]}
-  _PORT=${BASH_REMATCH[3]:-22}
+  _PORT=${BASH_REMATCH[4]:-22}
 else
   echo "Unable to parse SSH_LOGIN $SSH_LOGIN"
 fi
@@ -47,7 +47,14 @@ fi
 # Set the path to wp-content if $SSH_WP_CONTENT_DIR is not set
 if [[ -z "$SSH_WP_CONTENT_DIR" ]]; then
   _WP_CONTENT="sites/${_USER}/wp-content"
+else
+  _WP_CONTENT="${SSH_WP_CONTENT_DIR}"
 fi
+
+echo '_USER: ' $_USER
+echo '_HOST: ' $_HOST
+echo '_PORT: ' $_PORT
+echo '_WP_CONTENT: ' $_WP_CONTENT
 
 #
 # Exit if the necessary vars are not set
@@ -60,17 +67,20 @@ if [[ -z $_HOST ]]; then
   echo "Unable to set HOST"
   exit 1
 fi
-if [[ -z $_HOST ]]; then
+if [[ -z $_PORT ]]; then
+  echo "Unable to set PORT"
+  exit 1
+fi
+if [[ -z $_WP_CONTENT ]]; then
   echo "Unable to set WP_CONTENT"
   exit 1
 fi
 
 #
 # Sync down the remote database dumpfile
-# TODO: This path is WP Engine specific
-# TODO: Kinsta does not automatically provide a dumpfile in wp-content
-#       BUT they do let us use cron, so we can create our own. Their nginx
-#       proxy correctly services 403-forbidden responses to *.sql requests
+# The default DB path is based on WP Engine defaults. Kinsta does not automatically create dumpfiles
+# in wp-content _but_ they do let us use cron, so we can create our own. Their nginx proxy correctly
+# services 403-forbidden errors to *.sql requests.
 #
 if [[ "$1" == database ]]; then
   echo "Pulling new dumpfile from remote."
