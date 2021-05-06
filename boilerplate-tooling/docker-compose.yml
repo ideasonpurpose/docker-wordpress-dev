@@ -2,7 +2,8 @@ version: "3.9"
 
 services:
   db:
-    image: mysql:5.7
+    # image: mysql:5.7
+    image: mariadb:10.5.9
     restart: always
     volumes:
       - db_data:/var/lib/mysql
@@ -41,7 +42,7 @@ services:
       nofile: 8192
 
   tools:
-    image: ideasonpurpose/docker-build:0.9.1
+    image: ideasonpurpose/docker-build:0.9.2
     # image: ideasonpurpose/docker-build:dev
     user: "${UID:-1000}:${GID:-1000}"
     depends_on:
