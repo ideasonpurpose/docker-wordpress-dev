@@ -1,6 +1,6 @@
 {
   "name": "docker-wordpress-dev",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "private": true,
   "description": "Docker-based local development environment for WordPress projects",
   "repository": "https://github.com/ideasonpurpose/docker-wordpress-dev",

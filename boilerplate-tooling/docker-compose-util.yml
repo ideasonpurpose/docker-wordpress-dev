@@ -103,7 +103,7 @@ services:
 
   repair-permissions:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.7.3
+    image: ideasonpurpose/wordpress:0.7.4
     user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - .:/usr/src/site
@@ -111,7 +111,7 @@ services:
 
   pull:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.7.3
+    image: ideasonpurpose/wordpress:0.7.4
     user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - .:/usr/src/site
