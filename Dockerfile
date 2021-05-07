@@ -90,10 +90,15 @@ RUN apt-get update -yqq \
       jq \
     && rm -rf /var/lib/apt/lists/*
 
+# Setup location for wp user's SSH keys
+RUN mkdir -p /ssh_keys \
+    && chmod 0700 /ssh_keys \
+    && chown wp:wp /ssh_keys
+
 # Configure SSH
 RUN echo >> /etc/ssh/ssh_config \
     && echo "# IOP Additions for automated connections" >> /etc/ssh/ssh_config \
-    && echo "    IdentityFile /run/secrets/SSH_KEY" >> /etc/ssh/ssh_config \
+    && echo "    IdentityFile /ssh_keys/id_rsa" >> /etc/ssh/ssh_config \
     && echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
     && echo "    UserKnownHostsFile /dev/null" >> /etc/ssh/ssh_config \
     && echo "    LogLevel QUIET" >> /etc/ssh/ssh_config

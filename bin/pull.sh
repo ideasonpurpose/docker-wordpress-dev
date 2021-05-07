@@ -5,7 +5,14 @@
 # Docker secret. Docker-compose loads a key from the path specified
 # in the .env file. SSH is pre-configured to use this key.
 #
-if (! ssh-keygen -l -f /run/secrets/SSH_KEY); then
+
+if [[ -f /run/secrets/SSH_KEY ]]; then
+  echo "Copying key to /ssh_keys/id_rsa"
+  cp /run/secrets/SSH_KEY /ssh_keys/id_rsa 
+  chmod 0600 /ssh_keys/id_rsa
+fi
+
+if (! ssh-keygen -l -f /ssh_keys/id_rsa); then
   echo "Invalid key, unable to connect."
   exit 1
 fi
