@@ -84,7 +84,8 @@ fi
 #
 if [[ "$1" == database ]]; then
   echo "Pulling new dumpfile from remote."
-  rsync -azphv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/mysql.sql" /usr/src/site/_db/
+  mkdir -p /usr/src/site/wp-content/_db
+  rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/mysql.sql" /usr/src/site/_db/
 fi
 
 #
@@ -92,7 +93,8 @@ fi
 #
 if [[ "$1" == plugins ]]; then
   echo "Syncing plugins from remote."
-  rsync -azphv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/plugins/" /usr/src/site/wp-content/plugins/
+  mkdir -p /usr/src/site/wp-content/plugins
+  rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/plugins/" /usr/src/site/wp-content/plugins/
 fi
 
 #
@@ -100,5 +102,6 @@ fi
 #
 if [[ "$1" == uploads ]]; then
   echo "Syncing uploads from remote."
-  rsync -azphv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/uploads/" /usr/src/site/wp-content/uploads/
+  mkdir -p /usr/src/site/wp-content/uploads
+  rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/uploads/" /usr/src/site/wp-content/uploads/
 fi
