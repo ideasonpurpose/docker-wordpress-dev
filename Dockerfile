@@ -82,6 +82,13 @@ RUN mkdir -p /var/log/wordpress \
     && touch /var/log/wordpress/debug.log \
     && chown -R www-data:www-data /var/log/wordpress
 
+# Install npm so we can run npx sort-package-json from the init script
+RUN apt-get update -yqq \
+    && apt-get install -y --no-install-recommends \
+      npm \
+    && rm -rf /var/lib/apt/lists/* \
+    && npm install --global sort-package-json@1.48
+
 # Install rsync, ssh-client and jq for merging tooling and package.json files
 RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \

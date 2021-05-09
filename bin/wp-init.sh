@@ -138,8 +138,22 @@ jq -s '.[0].scripts as $defaultScripts |
         ) |
         .scripts *= $defaultScripts' \
   /usr/src/boilerplate-package.json /tmp/package.json | cat >/usr/src/site/package.json
-
+sleep 0.2s
 echo -e "$DONE"
+echo -ne "${DO}Sorting ${CYAN}package-lock.json${RESET}"
+sort-package-json@1.48 /usr/src/site/package.json &>/dev/null
+echo -e "$DONE"
+
+# Create a placeholder package-lock.json file if one doesn't exist. The bootstrap
+# script needs one so `npm ci` will run without complaining. This only needs to be
+# a skeleton file, if `packages` and `dependencies` are missing, `npmci` will
+# install everything from package.json but won't rewrite package-lock.json
+if [[ ! -s /usr/src/site/package-lock.json ]]; then
+  echo -ne "${DO}Creating placeholder ${CYAN}package-lock.json${RESET} file"
+  echo '{"lockfileVersion":2}' > /usr/src/site/package-lock.json
+  sleep 0.2s
+  echo -e "$DONE"
+fi
 
 # Check for composer.json to merge into or create a new one from boilerplate-composer.json
 # use /tmp to prevent accidentally overwriting the existing file
