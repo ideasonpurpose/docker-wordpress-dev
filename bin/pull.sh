@@ -8,7 +8,7 @@
 
 if [[ -f /run/secrets/SSH_KEY ]]; then
   echo "Copying key to /ssh_keys/id_rsa"
-  cp /run/secrets/SSH_KEY /ssh_keys/id_rsa 
+  cp /run/secrets/SSH_KEY /ssh_keys/id_rsa
   chmod 0600 /ssh_keys/id_rsa
 fi
 
@@ -91,7 +91,7 @@ fi
 #
 if [[ "$1" == database ]]; then
   echo "Pulling new dumpfile from remote."
-  mkdir -p /usr/src/site/wp-content/_db
+  mkdir -p /usr/src/site/_db
   rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/mysql.sql" /usr/src/site/_db/
 fi
 

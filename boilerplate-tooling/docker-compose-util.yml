@@ -49,6 +49,7 @@ services:
       - ./_db:/usr/src
     environment:
       MYSQL_DATABASE: wordpress
+      ID: "${UID:-1000}:${GID:-1000}"
 
     # NOTE: The mysqldump file will include these CREATE/USE commands:
     #           CREATE DATABASE `wordpress`;
@@ -56,10 +57,11 @@ services:
     #       to drop those lines, remove  "--databases" from the mysqldump command
     command: |
       bash -c 'export DUMPFILE="/usr/src/'${npm_package_name:-dumpfile}'-$$(date +%FT%H%M%S).sql" &&
-               echo $${DUMPFILE} &&
-               mysqldump -hdb --default-character-set=utf8mb4 --databases $${MYSQL_DATABASE} > "$${DUMPFILE}" &&
-               gzip "$${DUMPFILE}" &&
-               echo "Successfully dumped MySQL database to \"$${DUMPFILE}.gz\""'
+                echo $${DUMPFILE} &&
+                mysqldump -hdb --default-character-set=utf8mb4 --databases $${MYSQL_DATABASE} > "$${DUMPFILE}" &&
+                gzip "$${DUMPFILE}" &&
+                chown -R $${ID} /usr/src &&
+                echo "Successfully dumped MySQL database to \"$${DUMPFILE}.gz\""'
 
   mysql-reload:
     # image: mysql:5.7
