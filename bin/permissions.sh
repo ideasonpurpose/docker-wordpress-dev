@@ -1,12 +1,16 @@
 #!/bin/bash
 
-# This is a WordPress specific boilerplate assembler
-# After running this script, the target directory will be fully configured for local WordPress
-# development with tooling and copy of our wordpress theme boilerplate.
-#
-# Run permissions.sh after this to ensure correct file ownership and permissions
-#
-# This can also be run on an existing project to update or refresh tooling and dependencies.
+# This script corrects permissions of known files in our WordPress boilerplate.
+# The script is run from Docker as root, with a $OWNER_GROUP envvar set to "$UID:$GID"
+# Default values for $ID are
+
+if [[ -z $OWNER_GROUP ]]; then
+  # Honestly, kind of amazed this $OWNER_GROUP trick works. The command stores the UID:GID from `stat`
+  # in a variable which is passed as the first argument to `chown` later on. Values are collected
+  # from the directory Docker's volume mount points to, on macOS and Windows the owner will usually
+  # be root, but on Linux it will match the active host user.
+  OWNER_GROUP=$(stat -c "%u:%g" /usr/src/site)
+fi
 
 # style helpers
 RESET="\033[0m"
@@ -20,12 +24,6 @@ CLEAR="\033[K"
 # Progress/Done icons
 DO="\r${GOLD}${BOLD}⋯${RESET} "
 DONE="\r${GREEN}${BOLD}√${RESET} "
-
-# Honestly, kind of amazed this $OWNER_GROUP trick works. The command stores the UID:GID from `stat`
-# in a variable which is passed as the first argument to `chown` later on. Values are collected
-# from the directory Docker's volume mount points to, on macOS and Windows the owner will usually
-# be root, but on Linux it will match the active host user.
-OWNER_GROUP=$(stat -c "%u:%g" /usr/src/site)
 
 echo -ne "${DO}Resetting permissions "
 
