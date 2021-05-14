@@ -120,7 +120,7 @@ if [[ "$1" == database ]]; then
   echo
   mkdir -p /usr/src/site/_db
   rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/mysql.sql" /usr/src/site/_db/
-  chown "${OWNER_GROUP}" -R /usr/src/site/_db
+  chown -R "${OWNER_GROUP}" /usr/src/site/_db
 fi
 
 #
@@ -132,8 +132,8 @@ if [[ "$1" == plugins ]]; then
   echo
   mkdir -p /usr/src/site/wp-content/plugins
   rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/plugins/" /usr/src/site/wp-content/plugins/
-  chown "${OWNER_GROUP}" -R /usr/src/site/wp-content/plugins
-
+  chown -R "${OWNER_GROUP}" /usr/src/site/wp-content/plugins
+  chmod -R g+w /usr/src/site/wp-content/plugins
 fi
 
 #
@@ -145,5 +145,6 @@ if [[ "$1" == uploads ]]; then
   echo
   mkdir -p /usr/src/site/wp-content/uploads
   rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/uploads/" /usr/src/site/wp-content/uploads/
-  chown "${OWNER_GROUP}" -R /usr/src/site/wp-content/uploads
+  chown -R "${OWNER_GROUP}" /usr/src/site/wp-content/uploads
+  chmod -R g+w /usr/src/site/wp-content/uploads
 fi
