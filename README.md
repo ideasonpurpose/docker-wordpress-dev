@@ -20,6 +20,8 @@ docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:0.7.8 init
 npm run bootstrap
 ```
 
+_NOTE: If **~/.composer** dosn't exist, Docker will create it with root ownership causing the Composer task to fail. Either create this directory before running `npm run bootstrap` or reset it's ownership with `sudo chown -R $UID:$GID .composer` and then run `bootstrap` again. See [#21](https://github.com/ideasonpurpose/docker-wordpress-dev/issues/21)_ 
+
 ##### Windows Command Prompt
 
 ```
