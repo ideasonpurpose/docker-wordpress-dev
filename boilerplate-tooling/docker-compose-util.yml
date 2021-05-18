@@ -26,7 +26,7 @@ services:
     command: install
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin:5.1.0-apache
+    image: phpmyadmin:5.1.0-apache
     ports:
       - "8002:80"
     depends_on:
