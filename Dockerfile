@@ -30,7 +30,8 @@ RUN echo "[Resource Limits]" > /usr/local/etc/php/conf.d/z_iop_resource_limits.i
 RUN echo "[Error Reporting]" > /usr/local/etc/php/conf.d/z_iop-debug.ini \
     && echo "display_errors = on" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
     && echo "display_startup_errors = on" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
-    && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/z_iop-debug.ini
+    && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/z_iop-debug.ini \
+    && echo "short_open_tag = off" >> /usr/local/etc/php/conf.d/z_iop-debug.ini
 
 RUN echo "[OPcache]" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
