@@ -2,7 +2,7 @@
 # Check for the latest tags there
 FROM wordpress:5.8.0-php7.4-apache
 
-LABEL version="0.7.8"
+LABEL version="0.7.9"
 
 # Add `wp` user and group, then add `www-data` user to `wp` group
 RUN addgroup  --gid 1000 wp \
