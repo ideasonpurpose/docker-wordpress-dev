@@ -10,7 +10,21 @@ RUN addgroup  --gid 1000 wp \
     && usermod -a -G wp www-data
 
 # All new files should be group-writable
+# TODO: This is likely wrong. Harmless, but wrong.
 RUN echo 'umask 002' >> /etc/profile.d/set-umask.sh
+
+# # Set global umask in /etc/bashrc
+# RUN echo && echo 'umask 002' >> /etc/bash.bashrc
+
+# # Set umask for Apache & PHP
+# RUN echo >> /etc/apache2/envvars \
+#     && echo '# Set umask so newly created files are group writeable' >> /etc/apache2/envvars \
+#     && echo 'umask 002' >> /etc/apache2/envvars
+
+# Set global Umask with pam_umask
+RUN echo >> /etc/pam.d/common-session \
+    && echo '# Set umask so newly created files are group writeable' >> /etc/pam.d/common-session \
+    && echo 'session optional pam_umask.so umask=002' >> /etc/pam.d/common-session
 
 # Set Apache ServerName globally to address slowdowns
 RUN echo "ServerName localhost" > /etc/apache2/conf-available/server-name.conf \
@@ -97,6 +111,15 @@ RUN apt-get update -yqq \
       openssh-client \
       jq \
     && rm -rf /var/lib/apt/lists/*
+
+
+# Install acl, attempting to fix umask permissions issues
+# NOTE: unsupported on this filesystem??
+# RUN apt-get update -yqq \
+#     && apt-get install -y --no-install-recommends \
+#       acl \
+#     && rm -rf /var/lib/apt/lists/*
+
 
 # Setup location for wp user's SSH keys
 RUN mkdir -p /ssh_keys \
