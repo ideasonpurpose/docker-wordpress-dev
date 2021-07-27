@@ -8,28 +8,41 @@ name: Push to Docker Hub
 
 on:
   push:
-    tags: ['v*'] 
+    tags: ["v*"]
 
-env: 
+env:
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
-  DOCKER_NAME: ${{ secrets.DOCKER_NAME }}  
+  DOCKER_NAME: ${{ secrets.DOCKER_NAME }}
 jobs:
-
   Deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Build image from Dockerfile
-      run: docker build . --tag $DOCKER_NAME
-    
-    - name: 'Tag image with version'
-      run: docker tag $DOCKER_NAME ${DOCKER_NAME}:${GITHUB_REF#refs/tags/v}
+      - name: Build image from Dockerfile
+        run: docker build . --tag ${DOCKER_NAME}
 
-    - name: 'Deploy  to Docker Hub'
-      run: |
-        docker login --username $DOCKER_USER --password $DOCKER_PASS
-        docker push $DOCKER_NAME
-        docker push ${DOCKER_NAME}:${GITHUB_REF#refs/tags/v}
+      - name: "Tag image with version"
+        run: docker tag ${DOCKER_NAME} ${DOCKER_NAME}:${GITHUB_REF#refs/tags/v}
+
+      # - name: Store Artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: ${{ DOCKER_NAME }}
+      #     path: ./${DOCKER_NAME}
+      #     retention-days: 3
+
+      - name: Create GitHub release
+        if: ${{ contains(github.ref, 'refs/tags/') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create v${TAG}
+
+      - name: "Deploy to Docker Hub"
+        run: |
+          docker login --username ${DOCKER_USER} --password ${DOCKER_PASS}
+          docker push ${DOCKER_NAME}
+          docker push ${DOCKER_NAME}:${GITHUB_REF#refs/tags/v}
