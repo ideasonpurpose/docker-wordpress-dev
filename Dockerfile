@@ -9,22 +9,23 @@ RUN addgroup  --gid 1000 wp \
     && useradd -u 1000 -d /home/wp -g wp -G www-data wp \
     && usermod -a -G wp www-data
 
+# TODO: Leaving these here for now in case something goes wrong
 # All new files should be group-writable
 # TODO: This is likely wrong. Harmless, but wrong.
-RUN echo 'umask 002' >> /etc/profile.d/set-umask.sh
+# RUN echo 'umask 002' >> /etc/profile.d/set-umask.sh
 
 # # Set global umask in /etc/bashrc
 # RUN echo && echo 'umask 002' >> /etc/bash.bashrc
 
-# # Set umask for Apache & PHP
-# RUN echo >> /etc/apache2/envvars \
-#     && echo '# Set umask so newly created files are group writeable' >> /etc/apache2/envvars \
-#     && echo 'umask 002' >> /etc/apache2/envvars
-
-# Set global Umask with pam_umask
+# Set global umask with pam_umask
 RUN echo >> /etc/pam.d/common-session \
     && echo '# Set umask so newly created files are group writeable' >> /etc/pam.d/common-session \
     && echo 'session optional pam_umask.so umask=002' >> /etc/pam.d/common-session
+
+# Set umask for Apache & PHP so new files are group-writable
+RUN echo >> /etc/apache2/envvars \
+    && echo '# Set umask so newly created files are group writeable' >> /etc/apache2/envvars \
+    && echo 'umask 002' >> /etc/apache2/envvars
 
 # Set Apache ServerName globally to address slowdowns
 RUN echo "ServerName localhost" > /etc/apache2/conf-available/server-name.conf \

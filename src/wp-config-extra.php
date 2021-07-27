@@ -25,3 +25,8 @@ define("SAVEQUERIES", true);
  * Useful idea from https://roots.io/
  */
 define("WP_ENV", "development");
+
+/**
+ * Explicitly define FS_METHOD so WordPress creates group-writeable files
+ */
+define('FS_METHOD', 'direct');
