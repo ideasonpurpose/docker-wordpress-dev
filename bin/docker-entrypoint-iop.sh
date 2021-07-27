@@ -3,6 +3,7 @@
 if [[ "$1" == init ]]; then
   /usr/local/bin/wp-init.sh
   /usr/local/bin/permissions.sh
+  /usr/local/bin/getting-started.sh
   exit 0
 fi
 
