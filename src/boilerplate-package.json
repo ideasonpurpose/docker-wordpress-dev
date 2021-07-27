@@ -11,7 +11,7 @@
     "_bootstrap:npm": "npm ci",
     "prebootstrap": "npm run permissions:repair",
     "bootstrap": "npm run _bootstrap:npm && npm run _bootstrap:composer && npm run theme:activate",
-    "postbootstrap": "echo && echo \\ 🚀 \\ \\ \\ All set! && echo \\ \\ \\ \\ ✨ Run this to get started: && echo 🌏\\ \\ \\ \\ \\ npm run start && echo",
+    "postbootstrap": "echo && echo '  🚀' && echo '     ✨ All set!' && echo '🌏      Run this to get started:' && chalk bold yellow  '        npm run start' && echo",
     "build": "npm run docker:build",
     "build:debug": "cross-env-shell \"docker-compose run --rm -p $npm_package_config_port:8080 -p 9229:9229 tools build:debug\"",
     "composer": "npm run composer:install",
@@ -77,9 +77,10 @@
     ]
   },
   "devDependencies": {
-    "@prettier/plugin-php": "^0.16.3",
+    "@prettier/plugin-php": "^0.17.2",
+    "chalk-cli": "^4.1.0",
     "cross-env": "^7.0.3",
-    "prettier": "^2.3.0",
+    "prettier": "^2.3.2npm-c",
     "stylelint": "^13.13.1",
     "stylelint-order": "^4.1.0",
     "stylelint-prettier": "^1.2.0",
