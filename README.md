@@ -20,7 +20,7 @@ docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:0.7.10 init
 npm run bootstrap
 ```
 
-_NOTE: If **~/.composer** dosn't exist, Docker will create it with root ownership causing the Composer task to fail. Either create this directory before running `npm run bootstrap` or reset it's ownership with `sudo chown -R $UID:$GID .composer` and then run `bootstrap` again. See [#21](https://github.com/ideasonpurpose/docker-wordpress-dev/issues/21)_ 
+_NOTE: If **~/.composer** dosn't exist, Docker will create it with root ownership causing the Composer task to fail. Either create this directory before running `npm run bootstrap` or reset it's ownership with `sudo chown -R $UID:$GID .composer` and then run `bootstrap` again. See [#21](https://github.com/ideasonpurpose/docker-wordpress-dev/issues/21)_
 
 ##### Windows Command Prompt
 
@@ -129,6 +129,10 @@ The important properties are:
   Does not include a trailing slash. Can relative to the SSH user home folder or an absolute path.
 
 Both `$SSH_LOGIN` and `$SSH_HOST` can be extracted from `$SSH_LOGIN`. Specifying either will override the value in `$SSH_LOGIN`.
+
+### Debugging
+
+`WP_DEBUG` is enabled by default, and can be toggled by setting the `WORDPRESS_DEBUG` variable in the **.env** config file.
 
 ### Plugin Development
 
