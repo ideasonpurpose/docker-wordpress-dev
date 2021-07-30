@@ -12,7 +12,34 @@
   "scripts": {
     "version": "node bump-wordpress-image.js && version-everything && auto-changelog && git add -u"
   },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "printWidth": 120,
+          "tabWidth": 2
+        }
+      },
+      {
+        "files": "*.md",
+        "options": {
+          "embeddedLanguageFormatting": "off"
+        }
+      },
+      {
+        "files": "*.php",
+        "options": {
+          "printWidth": 100,
+          "singleQuote": true,
+          "tabWidth": 4,
+          "trailingCommaPHP": true
+        }
+      }
+    ]
+  },
   "devDependencies": {
+    "@prettier/plugin-php": "^0.17.2",
     "auto-changelog": "^2.3.0",
     "chalk": "^4.1.1",
     "prettier": "^2.3.2",
