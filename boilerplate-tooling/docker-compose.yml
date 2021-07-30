@@ -35,6 +35,7 @@ services:
     environment:
       - DATA_MODEL_PLUGIN
       - BLOCKS_PLUGIN
+      - WORDPRESS_DEBUG
 
     # Apache will throw errors for any ulimit value below 8192
     # NOTE THAT THIS MIGHT BE MORE THAN THE SYSTEM OFFERS
