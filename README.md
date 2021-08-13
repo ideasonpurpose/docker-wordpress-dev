@@ -160,6 +160,8 @@ docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  compos
 
 ### Alternate DevServer Ports
 
+_note: This no longer works for npm versions > v7. See [#29](https://github.com/ideasonpurpose/docker-wordpress-dev/issues/29)_
+
 Webpack devserver runs on port `8080` by default. Multiple projects can be run simultaneously by using `npm config` to assign different ports the the project's **package.json** `name`. For example, three projects named `csr-site`, `pro-bono` and `ar-project` could be run simultaneously on custom ports, after running these commands:
 
 ```sh
