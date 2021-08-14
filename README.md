@@ -93,7 +93,8 @@ Copy your MySQL database dumpfiles into before calling Calling `npm run start` w
   Syncs data from a remote server to the local development environment. The bare command will run these sub-commands:
   - **`pull:db`** - Syncs down the most recent mySQL dumpfile, backs up the current dev DB then reloads the DB
   - **`pull:plugins`** - Syncs down **wp-content/plugins** from the remote
-  - **`pull:uploads`** - Syncs down **wp-content/uploads** from the remote
+  - **`pull:uploads <$YEAR>`** - Syncs down the current year's **wp-content/uploads/$YEAR** from the remote. Sync specific years with the optional year argument.
+  - **`pull:uploads-all`** - Syncs down the entire **wp-content/uploads** directory from the remote
 - **`logs:wordpress`** - Stream the WordPress debug.log
 - **`wp-cli`** - Runs [wp-cli](https://wp-cli.org/vc) commands. The default command re-activates the development theme.
 
@@ -101,9 +102,9 @@ Copy your MySQL database dumpfiles into before calling Calling `npm run start` w
 
 The `npm run pull` command brings together several sub-commands to sync remote data to the local development environment. Each command can also be called individually. Connection info needs to be configured in a **.env** file. Values are documented in the **.env.sample** file.
 
-Private SSH keys are passed to the image as [Docker Secrets][], set `$SSH_KEY_PATH to a local keypath in **.env**.
+Private SSH keys are passed to the image as [Docker Secrets][docker-secrets], point `$SSH_KEY_PATH` to a local private key in **.env**.
 
-Pulling uploads, plugins and database dumps is currently supported on WP Engine.
+Pulling uploads, plugins and database dumps is currently supported on WP Engine and Kinsta.
 
 Connections must be configured on a per-machine basis using a `.env` file in the project root. For new projects, rename the `.env.example` to **.env** and update the settings.
 
@@ -160,7 +161,7 @@ docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  compos
 
 ### Alternate DevServer Ports
 
-_note: This no longer works for npm versions > v7. See [#29](https://github.com/ideasonpurpose/docker-wordpress-dev/issues/29)_
+_note: This no longer works for npm versions >v6. See [#29](https://github.com/ideasonpurpose/docker-wordpress-dev/issues/29)_
 
 Webpack devserver runs on port `8080` by default. Multiple projects can be run simultaneously by using `npm config` to assign different ports the the project's **package.json** `name`. For example, three projects named `csr-site`, `pro-bono` and `ar-project` could be run simultaneously on custom ports, after running these commands:
 
@@ -200,7 +201,7 @@ This project's Dockerfile is based on the official WordPress image. We add [Xdeb
 All shell scripts in **bin** have been checked with [ShellCheck](https://www.shellcheck.net/) and formatted with [shfmt](https://github.com/mvdan/sh) via Docker:
 
 ```sh
-docker run --rm -it -v "$PWD":/src peterdavehello/shfmt:latest shfmt -i 2 -w /src/bin/<FILE>.sh
+docker run --user "$UID" --rm -it -v "$PWD":/scripts peterdavehello/shfmt:latest shfmt -i 2 -w /scripts/bin/<FILE>.sh
 ```
 
 ## Docker maintenance

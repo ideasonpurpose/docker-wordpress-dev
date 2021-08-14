@@ -138,13 +138,31 @@ fi
 
 #
 # Sync down the remote wp-content/uploads directory
+# If second arg is "all" then download everything
+# If second arg is a year-ish four-digit number then treat as a year and download that year
+# If second arg is anything else or missing, then download the current year
 #
 if [[ "$1" == uploads ]]; then
+  DIR="$(date +%Y)"
+  LABEL="${DIR}"
+
+  if [[ "$2" =~ ^[0-9]{4}$ ]]; then
+    DIR="${2}"
+    LABEL="$2"
+  fi
+
+  DIR="${DIR}/"
+
+  if [[ "$2" == "all" ]]; then
+    DIR=""
+    LABEL="$2"
+  fi
+
   echo
-  echo -e "🖼   ${GOLD}Pulling uploads from remote.${RESET}"
+  echo -e "🖼   ${GOLD}Pulling ${LABEL} uploads from remote.${RESET}"
   echo
-  mkdir -p /usr/src/site/wp-content/uploads
-  rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/uploads/" /usr/src/site/wp-content/uploads/
+  mkdir -p "/usr/src/site/wp-content/uploads/${DIR}"
+  rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/uploads/${DIR}" "/usr/src/site/wp-content/uploads/${DIR}"
   chown -R "${OWNER_GROUP}" /usr/src/site/wp-content/uploads
   chmod -R g+w /usr/src/site/wp-content/uploads
 fi

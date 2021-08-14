@@ -37,6 +37,7 @@
     "postpull:db": "npm run mysql:reload",
     "pull:plugins": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm pull plugins",
     "pull:uploads": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm pull uploads",
+    "pull:uploads-all": "docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm pull uploads all",
     "start": "npm run docker:start",
     "poststart": "npm run stop",
     "start:debug": "cross-env-shell \"docker-compose run --rm -p $npm_package_config_port:8080 -p 9229:9229 tools start:debug\"",
