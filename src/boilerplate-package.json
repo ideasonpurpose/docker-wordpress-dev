@@ -77,10 +77,10 @@
     ]
   },
   "devDependencies": {
-    "@prettier/plugin-php": "^0.17.2",
+    "@prettier/plugin-php": "^0.17.3",
     "chalk-cli": "^4.1.0",
     "cross-env": "^7.0.3",
-    "prettier": "^2.3.2npm-c",
+    "prettier": "^2.3.2",
     "stylelint": "^13.13.1",
     "stylelint-order": "^4.1.0",
     "stylelint-prettier": "^1.2.0",
