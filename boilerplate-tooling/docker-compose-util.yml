@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   wp-cli:
     image: wordpress:cli
@@ -26,7 +24,7 @@ services:
     command: install
 
   phpmyadmin:
-    image: phpmyadmin:5.1.0-apache
+    image: phpmyadmin:5.1.1-apache
     ports:
       - "8002:80"
     depends_on:
@@ -42,7 +40,7 @@ services:
 
   mysqldump:
     # image: mysql:5.7
-    image: mariadb:10.5.10
+    image: mariadb:10.5.12
     depends_on:
       - db
     volumes:
@@ -65,7 +63,7 @@ services:
 
   mysql-reload:
     # image: mysql:5.7
-    image: mariadb:10.5.9
+    image: mariadb:10.5.12
     depends_on:
       - db
     volumes:
@@ -81,7 +79,7 @@ services:
 
   theme-activate:
     # image: mysql:5.7
-    image: mariadb:10.5.9
+    image: mariadb:10.5.12
     depends_on:
       - db
     volumes:
