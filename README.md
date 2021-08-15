@@ -1,6 +1,6 @@
 # WordPress local development with Docker
 
-#### Version 0.7.12
+#### Version 0.7.13
 
 [![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)<br>
 [![Push to Docker Hub](https://github.com/ideasonpurpose/docker-wordpress-dev/workflows/Push%20to%20Docker%20Hub/badge.svg)](https://github.com/ideasonpurpose/docker-wordpress-dev)
@@ -16,7 +16,7 @@ To update an existing project or start a new one, run the following commands in 
 ##### macOS, Linux & Windows PowerShell
 
 ```
-docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:0.7.12 init
+docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:0.7.13 init
 npm run bootstrap
 ```
 
@@ -25,7 +25,7 @@ _NOTE: If **~/.composer** dosn't exist, Docker will create it with root ownershi
 ##### Windows Command Prompt
 
 ```
-docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress:0.7.12 init
+docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress:0.7.13 init
 npm run bootstrap
 ```
 
