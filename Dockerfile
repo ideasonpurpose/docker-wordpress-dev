@@ -154,7 +154,8 @@ COPY bin/*.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/*.sh
 
 # Include our wp-config-extra.php file in wp-config-docker.php
-RUN sed -i -E '/stop editing!/irequire("/usr/src/wp-config-extra.php");\n' /usr/src/wordpress/wp-config-docker.php
+RUN sed -i -E '/stop editing!/i// Ideas On Purpose config additions. (optional for wp-cli)\
+    \n@include "/usr/src/wp-config-extra.php";\n' /usr/src/wordpress/wp-config-docker.php
 
 # Define default environment variables
 ENV WORDPRESS_DB_HOST=db:3306

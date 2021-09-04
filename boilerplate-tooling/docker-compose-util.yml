@@ -1,10 +1,14 @@
 services:
   wp-cli:
-    image: wordpress:cli
+    image: wordpress:cli-2.5.0-php7.4
     user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - db
       - wordpress
+    environment:
+      - WORDPRESS_DB_HOST=db:3306
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_PASSWORD=wordpress
     volumes:
       - wp_data:/var/www/html
       - ./wp-content/themes/${npm_package_name:-ioptheme}:/var/www/html/wp-content/themes/${npm_package_name:-ioptheme}
