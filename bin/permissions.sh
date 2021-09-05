@@ -65,13 +65,17 @@ chown -fR "$OWNER_GROUP" /usr/src/site/_db
 chmod -fR ug+rwx /usr/src/site/_db
 
 echo -ne "${DO}Resetting permissions: wp-content Permissions & Ownership: chmod "
-chown "$OWNER_GROUP" "/usr/src/site/${f}"
+# chown "$OWNER_GROUP" "/usr/src/site/${f}" // TODO: Unnecessary? Typo? Should be wp-content? or is that next?
 chmod -fR 0664 /usr/src/site/wp-content
 # Reset wp-content permissions or we'll be locked out of subsequent modifications
 chmod -f 0775 /usr/src/site/wp-content
 
 echo -ne "${DO}Resetting permissions: wp-content Permissions & Ownership: find: type d "
 find /usr/src/site/wp-content -type d -exec chown -f "$OWNER_GROUP" {} \+ -exec chmod -f 0775 {} \+
+
+echo -ne "${DO}Resetting permissions: acf-json Permissions & Ownership "
+find /usr/src/site/wp-content -type f -wholename '*acf-json/*.json' -exec chmod -f 0664 {} \+
+find /usr/src/site/wp-content -type f -wholename '*acf-json/*.json' -exec chown -f "$OWNER_GROUP" {} \+
 
 sleep 0.2s
 echo -e "${DONE}Resetting permissions${CLEAR}"
