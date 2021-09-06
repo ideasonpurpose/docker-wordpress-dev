@@ -17,7 +17,6 @@ CLEAR="\033[K"
 DO="\r${GOLD}${BOLD}⋯${RESET} "
 DONE="\r${GREEN}${BOLD}√${RESET} "
 
-
 if [[ -z $OWNER_GROUP ]]; then
   # Honestly, kind of amazed this $OWNER_GROUP trick works. The command stores the UID:GID from `stat`
   # in a variable which is passed as the first argument to `chown` later on. Values are collected
@@ -34,7 +33,6 @@ echo -e "${GOLD}Resetting permissions"
 
 # This list is intentionally granular for files outside of the theme directory
 TOP_LEVEL_FILES=(
-  /usr/src/site
   /usr/src/site/.env
   /usr/src/site/.env.sample
   /usr/src/site/.gitignore
@@ -50,20 +48,19 @@ TOP_LEVEL_FILES=(
 for f in "${TOP_LEVEL_FILES[@]}"; do
   echo -ne "${DO}${GOLD} Resetting permissions: Top-level tooling files: ${CYAN}${f}${CLEAR}\r"
   chown -f "${OWNER_GROUP}" "${f}"
-  chmod -f g+w "${f}"
+  chmod -f 0664 "${f}"
   sleep 0.1s
 done
 echo -e "${DONE} Top-level tooling files${CLEAR}"
 sleep 0.2s
 
 # echo -ne "${DO}Resetting permissions: Boilerplate tooling "
-TOOLING=$(ls /usr/src/boilerplate-tooling)
-# for f in "${TOOLING[@]}"; do
-  for f in /usr/src/boilerplate-tooling/*; do
+TOOLING=$(ls -C /usr/src/boilerplate-tooling)
+find /usr/src/boilerplate-tooling -type f -printf "%P\n" | while read f; do
   echo -ne "${DO}${GOLD} Resetting permissions: Boilerplate tooling: ${CYAN}${f}${CLEAR}\r"
-  chown "${OWNER_GROUP}" "${f}"
-  chmod g+w "${f}"
-  sleep 0.1s
+  chown -f "${OWNER_GROUP}" "/usr/src/site/${f}"
+  chmod -f 0664 "/usr/src/site/${f}"
+  sleep 0.8s
 done
 echo -e "${DONE} Boilerplate tooling${CLEAR}"
 sleep 0.2s
