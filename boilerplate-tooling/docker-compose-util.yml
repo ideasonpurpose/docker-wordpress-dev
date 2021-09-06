@@ -107,6 +107,7 @@ services:
                else
                  echo Unable to activate theme: 'wp_options' table does not exist.
                fi'
+
   repair-permissions:
     # image: ideasonpurpose/wordpress:dev
     image: ideasonpurpose/wordpress:0.7.15
