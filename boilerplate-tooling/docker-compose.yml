@@ -19,7 +19,7 @@ services:
   wordpress:
     depends_on:
       - db
-    image: ideasonpurpose/wordpress:0.7.13
+    image: ideasonpurpose/wordpress:0.7.14
     # image: ideasonpurpose/wordpress:dev
     restart: always
     volumes:

@@ -109,7 +109,7 @@ services:
                fi'
   repair-permissions:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.7.13
+    image: ideasonpurpose/wordpress:0.7.14
     volumes:
       - .:/usr/src/site
     environment:
@@ -118,7 +118,7 @@ services:
 
   pull:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.7.13
+    image: ideasonpurpose/wordpress:0.7.14
     volumes:
       - .:/usr/src/site
     entrypoint: |
