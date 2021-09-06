@@ -18,7 +18,7 @@ services:
     command: theme activate ${npm_package_name:-ioptheme}
 
   composer:
-    image: composer:2.0.13
+    image: composer:2.1.6
     user: "${UID:-1000}:${GID:-1000}"
     environment:
       COMPOSER_HOME: /.composer
@@ -44,7 +44,7 @@ services:
 
   mysqldump:
     # image: mysql:5.7
-    image: mariadb:10.5.12
+    image: mariadb:10.6.4
     depends_on:
       - db
     volumes:
@@ -67,7 +67,7 @@ services:
 
   mysql-reload:
     # image: mysql:5.7
-    image: mariadb:10.5.12
+    image: mariadb:10.6.4
     depends_on:
       - db
     volumes:
@@ -83,7 +83,7 @@ services:
 
   theme-activate:
     # image: mysql:5.7
-    image: mariadb:10.5.12
+    image: mariadb:10.6.4
     depends_on:
       - db
     volumes:

@@ -196,6 +196,17 @@ docker build . --tag ideasonpurpose/wordpress:dev
 
 This project's Dockerfile is based on the official WordPress image. We add [Xdebug](https://xdebug.org/), the [ImageMagick](http://www.imagemagick.org/) PHP extension, SSH and enable all PHP debug settings.
 
+### Docker Images
+
+This project uses or builds from the following docker images:
+
+- [composer:2.1.6](https://hub.docker.com/_/composer)
+- [mariadb:10.6.4](https://hub.docker.com/_/mariadb)
+- [phpmyadmin:5.1.1](https://hub.docker.com/_/phpmyadmin)
+- [wordpress:5.8.0-php7.4-apache](https://hub.docker.com/_/wordpress)
+- [wordpress:cli-2.5.0-php7.4](https://hub.docker.com/_/wordpress)
+- [ideasonpurpose/docker-build:0.9.5](https://hub.docker.com/r/ideasonpurpose/docker-build)
+
 ### Shell Scripts
 
 All shell scripts in **bin** have been checked with [ShellCheck](https://www.shellcheck.net/) and formatted with [shfmt](https://github.com/mvdan/sh) via Docker:
