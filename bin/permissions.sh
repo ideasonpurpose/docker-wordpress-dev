@@ -4,19 +4,11 @@
 # The script is run from Docker as root, with a $OWNER_GROUP envvar set to "$UID:$GID"
 # Default values for $ID are
 
-if [[ -z $OWNER_GROUP ]]; then
-  # Honestly, kind of amazed this $OWNER_GROUP trick works. The command stores the UID:GID from `stat`
-  # in a variable which is passed as the first argument to `chown` later on. Values are collected
-  # from the directory Docker's volume mount points to, on macOS and Windows the owner will usually
-  # be root, but on Linux it will match the active host user.
-  OWNER_GROUP=$(stat -c "%u:%g" /usr/src/site)
-fi
-
 # style helpers
 RESET="\033[0m"
 BOLD="\033[1m"
-# RED="\033[31m"
-# CYAN="\033[36m"
+RED="\033[31m"
+CYAN="\033[36m"
 GREEN="\033[32m"
 GOLD="\033[33m"
 CLEAR="\033[K"
@@ -25,57 +17,79 @@ CLEAR="\033[K"
 DO="\r${GOLD}${BOLD}⋯${RESET} "
 DONE="\r${GREEN}${BOLD}√${RESET} "
 
-echo -ne "${DO}Resetting permissions "
 
-echo -ne "${DO}Resetting permissions: Tooling files Ownership "
+if [[ -z $OWNER_GROUP ]]; then
+  # Honestly, kind of amazed this $OWNER_GROUP trick works. The command stores the UID:GID from `stat`
+  # in a variable which is passed as the first argument to `chown` later on. Values are collected
+  # from the directory Docker's volume mount points to, on macOS and Windows the owner will usually
+  # be root, but on Linux it will match the active host user.
 
-# This is intentionally granular for files outside of the theme directory
-chown -f "$OWNER_GROUP" \
-  /usr/src/site \
-  /usr/src/site/.gitignore \
-  /usr/src/site/.stylelintrc.js \
-  /usr/src/site/composer.json \
-  /usr/src/site/composer.lock \
-  /usr/src/site/ideasonpurpose.config.js \
-  /usr/src/site/package.json \
-  /usr/src/site/package-lock.json \
+  echo -e "${GOLD}DEPRECATED: ${BOLD}\$OWNER_GROUP${RESET}${GOLD} should be defined in the environment, or from docker-compose.${RESET}"
+  echo -e "${GOLD}            Falling back to an internal definition. This will fail if \`/usr/src/site\` does not exist.${RESET}"
+
+  OWNER_GROUP=$(stat -c "%u:%g" /usr/src/site)
+fi
+
+echo -e "${GOLD}Resetting permissions"
+
+# This list is intentionally granular for files outside of the theme directory
+TOP_LEVEL_FILES=(
+  /usr/src/site
+  /usr/src/site/.env
+  /usr/src/site/.env.sample
+  /usr/src/site/.gitignore
+  /usr/src/site/.stylelintrc.js
+  /usr/src/site/composer.json
+  /usr/src/site/composer.lock
+  /usr/src/site/ideasonpurpose.config.js
+  /usr/src/site/package.json
+  /usr/src/site/package-lock.json
   /usr/src/site/README.md
+)
 
-echo -ne "${DO}Resetting permissions: Tooling files Permissions "
-chmod -f g+w \
-  /usr/src/site \
-  /usr/src/site/.gitignore \
-  /usr/src/site/.stylelintrc.js \
-  /usr/src/site/composer.json \
-  /usr/src/site/composer.lock \
-  /usr/src/site/ideasonpurpose.config.js \
-  /usr/src/site/package.json \
-  /usr/src/site/package-lock.json \
-  /usr/src/site/README.md
-
-echo -ne "${DO}Resetting permissions: Boilerplate "
-TOOLING=$(ls /usr/src/boilerplate-tooling)
-for f in $TOOLING; do
-  chown "$OWNER_GROUP" "/usr/src/site/${f}"
-  chmod g+w "/usr/src/site/${f}"
+for f in "${TOP_LEVEL_FILES[@]}"; do
+  echo -ne "${DO}${GOLD} Resetting permissions: Top-level tooling files: ${CYAN}${f}${CLEAR}\r"
+  chown -f "${OWNER_GROUP}" "${f}"
+  chmod -f g+w "${f}"
+  sleep 0.1s
 done
+echo -e "${DONE} Top-level tooling files${CLEAR}"
+sleep 0.2s
 
-echo -ne "${DO}Resetting permissions: Database "
-chown -fR "$OWNER_GROUP" /usr/src/site/_db
+# echo -ne "${DO}Resetting permissions: Boilerplate tooling "
+TOOLING=$(ls /usr/src/boilerplate-tooling)
+# for f in "${TOOLING[@]}"; do
+  for f in /usr/src/boilerplate-tooling/*; do
+  echo -ne "${DO}${GOLD} Resetting permissions: Boilerplate tooling: ${CYAN}${f}${CLEAR}\r"
+  chown "${OWNER_GROUP}" "${f}"
+  chmod g+w "${f}"
+  sleep 0.1s
+done
+echo -e "${DONE} Boilerplate tooling${CLEAR}"
+sleep 0.2s
+
+echo -ne "${DO}${GOLD} Resetting permissions: Database files${CLEAR}\r"
+chown -fR "${OWNER_GROUP}" /usr/src/site/_db
 chmod -fR ug+rwx /usr/src/site/_db
+echo -e "${DONE} Database files${CLEAR}"
+sleep 0.2s
 
-echo -ne "${DO}Resetting permissions: wp-content Permissions & Ownership: chmod "
-# chown "$OWNER_GROUP" "/usr/src/site/${f}" // TODO: Unnecessary? Typo? Should be wp-content? or is that next?
+echo -ne "${DO}${GOLD} Resetting permissions: wp-content Permissions${CLEAR}}\r"
 chmod -fR 0664 /usr/src/site/wp-content
 # Reset wp-content permissions or we'll be locked out of subsequent modifications
 chmod -f 0775 /usr/src/site/wp-content
+echo -e "${DONE} wp-content Permissions & Ownership${CLEAR}"
+sleep 0.2s
 
-echo -ne "${DO}Resetting permissions: wp-content Permissions & Ownership: find: type d "
+echo -ne "${DO}${GOLD} Resetting permissions: wp-content Permissions & Ownership: find: type d "
 find /usr/src/site/wp-content -type d -exec chown -f "$OWNER_GROUP" {} \+ -exec chmod -f 0775 {} \+
+echo -e "${DONE} wp-content Ownership${CLEAR}"
+sleep 0.2s
 
-echo -ne "${DO}Resetting permissions: acf-json Permissions & Ownership "
+echo -ne "${DO}${GOLD} Resetting permissions: acf-json Permissions & Ownership "
 find /usr/src/site/wp-content -type f -wholename '*acf-json/*.json' -exec chmod -f 0664 {} \+
 find /usr/src/site/wp-content -type f -wholename '*acf-json/*.json' -exec chown -f "$OWNER_GROUP" {} \+
-
+echo -e "${DONE} acf-json Permissions & Ownership${CLEAR}"
 sleep 0.2s
-echo -e "${DONE}Resetting permissions${CLEAR}"
+
+echo -e "${DONE}${GREEN} Done!${CLEAR}"

@@ -16,6 +16,16 @@ CYAN="\033[36m"
 # DONE="\r${GREEN}${BOLD}√${RESET} "
 FAIL="\r${RED}${BOLD}×${RESET} "
 
+if [[ -z $OWNER_GROUP ]]; then
+  # Lifted from permissions.sh, used to exsure _db, uploads and plugins have correct ownership & permissions
+  # NOTE: Definiing this variable in the script is a fallback and probably deprecated or only for testing.
+  # The value should be definied from the docker call or from the docker-compose file.
+  echo -e "${GOLD}DEPRECATED: ${BOLD}\$OWNER_GROUP${RESET}${GOLD} should be defined in the environment, or from docker-compose.${RESET}"
+  echo -e "${GOLD}            Falling back to an internal definition. This will fail if \`/usr/src/site\` does not exist.${RESET}"
+
+  OWNER_GROUP=$(stat -c "%u:%g" /usr/src/site)
+fi
+
 #
 # Check whether key is valid. This is passed into the container as a
 # Docker secret. Docker-compose loads a key from the path specified
@@ -119,8 +129,11 @@ if [[ "$1" == database ]]; then
   echo -e "📚  ${GOLD}Pulling new dumpfile from remote.${RESET}"
   echo
   mkdir -p /usr/src/site/_db
-  rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/mysql.sql" /usr/src/site/_db/
   chown -R "${OWNER_GROUP}" /usr/src/site/_db
+  chmod -R g+w /usr/src/site/_db
+  rsync -azhv -e "ssh -p ${_PORT}" "${_USER}@${_HOST}:${_WP_CONTENT}/mysql.sql" /usr/src/site/_db/
+  chown -R "${OWNER_GROUP}" /usr/src/site/_db
+  chmod -R g+w /usr/src/site/_db
 fi
 
 #
@@ -131,7 +144,9 @@ if [[ "$1" == plugins ]]; then
   echo -e "🧩  ${GOLD}Pulling plugins from remote.${RESET}"
   echo
   mkdir -p /usr/src/site/wp-content/plugins
-  rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/plugins/" /usr/src/site/wp-content/plugins/
+  chown -R "${OWNER_GROUP}" /usr/src/site/wp-content/plugins
+  chmod -R g+w /usr/src/site/wp-content/plugins
+  rsync -azhv -e "ssh -p ${_PORT}" "${_USER}@${_HOST}:${_WP_CONTENT}/plugins/" /usr/src/site/wp-content/plugins/
   chown -R "${OWNER_GROUP}" /usr/src/site/wp-content/plugins
   chmod -R g+w /usr/src/site/wp-content/plugins
 fi
@@ -162,6 +177,8 @@ if [[ "$1" == uploads ]]; then
   echo -e "🖼   ${GOLD}Pulling ${LABEL} uploads from remote.${RESET}"
   echo
   mkdir -p "/usr/src/site/wp-content/uploads/${DIR}"
+  chown -R "${OWNER_GROUP}" /usr/src/site/wp-content/uploads
+  chmod -R g+w /usr/src/site/wp-content/uploads
   rsync -azhv -e "ssh -p $_PORT" "${_USER}@${_HOST}:${_WP_CONTENT}/uploads/${DIR}" "/usr/src/site/wp-content/uploads/${DIR}"
   chown -R "${OWNER_GROUP}" /usr/src/site/wp-content/uploads
   chmod -R g+w /usr/src/site/wp-content/uploads
