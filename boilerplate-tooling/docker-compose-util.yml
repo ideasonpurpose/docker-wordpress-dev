@@ -4,7 +4,7 @@ services:
       - db
       - wordpress
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.7.15
+    image: ideasonpurpose/wordpress:0.7.16
     user: www-data
     volumes:
       - wp_data:/var/www/html
@@ -109,7 +109,7 @@ services:
 
   repair-permissions:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.7.15
+    image: ideasonpurpose/wordpress:0.7.16
     volumes:
       - .:/usr/src/site
     environment:
@@ -118,7 +118,7 @@ services:
 
   pull:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.7.15
+    image: ideasonpurpose/wordpress:0.7.16
     volumes:
       - .:/usr/src/site
     entrypoint: |
