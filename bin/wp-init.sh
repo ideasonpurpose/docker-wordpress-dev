@@ -141,7 +141,8 @@ jq -s '.[0].scripts as $defaultScripts |
 sleep 0.2s
 echo -e "$DONE"
 echo -ne "${DO}Sorting ${CYAN}package-lock.json${RESET}"
-sort-package-json@1.48 /usr/src/site/package.json &>/dev/null
+# TODO: Temporarily disabled dev/null pipe to debug sort-package-json failure
+sort-package-json@1.48 /usr/src/site/package.json # &>/dev/null
 echo -e "$DONE"
 
 # Create a placeholder package-lock.json file if one doesn't exist. The bootstrap
