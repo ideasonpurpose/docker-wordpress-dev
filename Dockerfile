@@ -99,6 +99,15 @@ RUN mkdir -p /var/log/wordpress \
     && touch /var/log/wordpress/debug.log \
     && chown -R www-data:www-data /var/log/wordpress
 
+# Install less for wp-cli's pager
+RUN apt-get update -yqq \
+    && apt-get install -y less \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install wp-cli since the native image is a bowl of permissions errors
+RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /usr/local/bin/wp \
+    && chmod +x /usr/local/bin/wp
+
 # Install npm so we can run npx sort-package-json from the init script
 RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \
