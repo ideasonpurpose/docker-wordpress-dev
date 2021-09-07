@@ -76,8 +76,9 @@ RUN apt-get update -yqq \
 # https://github.com/andreccosta/wordpress-xdebug-dockerbuild
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug \
-    && echo "xdebug.profiler_enable_trigger = 1" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo "xdebug.profiler_output_dir = /tmp/xdebug_profiler" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo "xdebug.mode = profile" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo "xdebug.start_with_request = trigger" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo "xdebug.output_dir = /tmp/xdebug_profiler" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo "debug.remote_host = host.docker.internal" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && rm -rf /tmp/pear
     # && echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini
