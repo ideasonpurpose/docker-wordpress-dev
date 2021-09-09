@@ -135,6 +135,18 @@ Both `$SSH_LOGIN` and `$SSH_HOST` can be extracted from `$SSH_LOGIN`. Specifying
 
 `WP_DEBUG` is enabled by default, and can be toggled by setting the `WORDPRESS_DEBUG` variable in the **.env** config file.
 
+### Updating WordPress
+
+The base image provides a specific version of WordPress, but once running that version can be upgraded using the wp-admin dashboard, just like any other site.
+
+wp-cli can also be used to update to [pre-release](https://wordpress.org/download/releases/#betas) version of WordPress. An example command looks like this:
+
+```sh
+npm run wp-cli wp core update https://wordpress.org/wordpress-5.8.1-RC1.zip
+```
+
+Versions can be rolled back by removing the docker `*_wp` volume.
+
 ### Plugin Development
 
 Projects often rely on plugins which are developed in parallel. Two placeholder environment variables can be used to directly mount plugins into the WordPress environment. This enables better version control and dependency management since the nested and .gitignored **wp-content/plugins** directory often conflicts with the parent theme.
@@ -204,7 +216,6 @@ This project uses or builds from the following docker images:
 - [mariadb:10.6.4](https://hub.docker.com/_/mariadb)
 - [phpmyadmin:5.1.1](https://hub.docker.com/_/phpmyadmin)
 - [wordpress:5.8.0-php7.4-apache](https://hub.docker.com/_/wordpress)
-- [wordpress:cli-2.5.0-php7.4](https://hub.docker.com/_/wordpress)
 - [ideasonpurpose/docker-build:0.9.5](https://hub.docker.com/r/ideasonpurpose/docker-build)
 
 ### Shell Scripts
