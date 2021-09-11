@@ -91,20 +91,22 @@ services:
       MYSQL_DATABASE: wordpress
     command: |
       bash -c 'for i in {1..10}
-               do echo -e "⏳  \033[33mWaiting for MySQL server..." &&
+               do echo -e "⏳  \033[33mWaiting for MySQL server...\033[0m" &&
                   mysql -s -h db -e "exit" && break || sleep 3
                done &&
                sleep 2 &&
-               echo -e "✔️   \033[32mConnected to MySQL" &&
+               echo -e "✔️   \033[32mConnected to MySQL\033[0m" &&
                if [[ $$(mysql -s -h db $${MYSQL_DATABASE} -e "SHOW TABLES LIKE \"wp_options\"") ]]
                then
-                 echo -e "🎨  \033[36mActivating theme \033[0m\033[1m${npm_package_name:-ioptheme}"
+                 echo -e "🎨  \033[36mActivating theme \033[0m\033[1m${npm_package_name:-ioptheme}\033[0m"
                  mysql -h db $${MYSQL_DATABASE} \
                        -e "UPDATE wp_options \
                            SET option_value = \"'${npm_package_name:-ioptheme}'\" \
                            WHERE option_name in (\"template\",\"stylesheet\")"
                else
-                 echo Unable to activate theme: 'wp_options' table does not exist.
+                 echo -e "Unable to activate theme: \033[31m'\'wp_options\'' table does not exist.\033[0m"
+                 echo "To recreate an existing site, copy the site'\''s MySQL dumpfile into _db"
+                 echo If this project is starting from an empty database, you can ignore this messege.
                fi'
 
   repair-permissions:
