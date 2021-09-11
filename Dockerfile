@@ -1,6 +1,5 @@
 # Official WordPress image on DockerHub: https://hub.docker.com/_/wordpress/
-# Check for the latest tags there
-FROM wordpress:5.8.0-php7.4-apache
+FROM wordpress:5.8.1-php7.4-apache
 
 LABEL version="0.7.16"
 
