@@ -17,11 +17,11 @@ CYAN="\033[36m"
 FAIL="\r${RED}${BOLD}×${RESET} "
 
 if [[ -z $OWNER_GROUP ]]; then
-  # Lifted from permissions.sh, used to exsure _db, uploads and plugins have correct ownership & permissions
+  # Lifted from permissions.sh, used to ensure _db, uploads and plugins have correct ownership & permissions
   # NOTE: Definiing this variable in the script is a fallback and probably deprecated or only for testing.
-  # The value should be definied from the docker call or from the docker-compose file.
+  # The value should already be defined before this script is called. (eg. the docker call or in docker-compose)
   echo -e "${GOLD}DEPRECATED: ${BOLD}\$OWNER_GROUP${RESET}${GOLD} should be defined in the environment, or from docker-compose.${RESET}"
-  echo -e "${GOLD}            Falling back to an internal definition. This will fail if \`/usr/src/site\` does not exist.${RESET}"
+  echo -e "${GOLD}            Falling back to internal definition. This run will fail if \`/usr/src/site\` does not exist. (pull.sh)${RESET}"
 
   OWNER_GROUP=$(stat -c "%u:%g" /usr/src/site)
 fi

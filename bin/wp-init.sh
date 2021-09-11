@@ -67,7 +67,7 @@ if [[ -z "$DESCRIPTION" ]]; then
 fi
 
 echo
-echo -e "${BOLD}Setting up WordPress environment${RESET}"
+echo -e "${GOLD}${BOLD}Setting up WordPress environment${RESET}"
 echo -e "Theme name: ${CYAN}${NAME}${RESET}"
 if [[ -n "$DESCRIPTION" ]]; then
   echo -e "Description: ${CYAN}${DESCRIPTION}${RESET}"
@@ -151,7 +151,7 @@ echo -e "$DONE"
 # install everything from package.json but won't rewrite package-lock.json
 if [[ ! -s /usr/src/site/package-lock.json ]]; then
   echo -ne "${DO}Creating placeholder ${CYAN}package-lock.json${RESET} file"
-  echo '{"lockfileVersion":2}' > /usr/src/site/package-lock.json
+  echo '{"lockfileVersion":2}' >/usr/src/site/package-lock.json
   sleep 0.2s
   echo -e "$DONE"
 fi

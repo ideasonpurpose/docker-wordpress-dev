@@ -24,12 +24,13 @@ if [[ -z $OWNER_GROUP ]]; then
   # be root, but on Linux it will match the active host user.
 
   echo -e "${GOLD}DEPRECATED: ${BOLD}\$OWNER_GROUP${RESET}${GOLD} should be defined in the environment, or from docker-compose.${RESET}"
-  echo -e "${GOLD}            Falling back to an internal definition. This will fail if \`/usr/src/site\` does not exist.${RESET}"
+  echo -e "${GOLD}            Falling back to internal definition. This run will fail if \`/usr/src/site\` does not exist. (permissions.sh)${RESET}"
 
   OWNER_GROUP=$(stat -c "%u:%g" /usr/src/site)
 fi
 
-echo -e "${GOLD}Resetting permissions"
+echo
+echo -e "${GOLD}${BOLD}Resetting permissions${RESET}"
 
 # This list is intentionally granular for files outside of the theme directory
 TOP_LEVEL_FILES=(
@@ -60,7 +61,7 @@ find /usr/src/boilerplate-tooling -type f -printf "%P\n" | while read f; do
   echo -ne "${DO}${GOLD} Resetting permissions: Boilerplate tooling: ${CYAN}${f}${CLEAR}\r"
   chown -f "${OWNER_GROUP}" "/usr/src/site/${f}"
   chmod -f 0664 "/usr/src/site/${f}"
-  sleep 0.8s
+  sleep 0.2s
 done
 echo -e "${DONE} Boilerplate tooling${CLEAR}"
 sleep 0.2s
@@ -89,4 +90,4 @@ find /usr/src/site/wp-content -type f -wholename '*acf-json/*.json' -exec chown 
 echo -e "${DONE} acf-json Permissions & Ownership${CLEAR}"
 sleep 0.2s
 
-echo -e "${DONE}${GREEN} Done!${CLEAR}"
+echo -e "${DONE}${GREEN} Done!${RESET}"

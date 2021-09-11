@@ -1,17 +1,22 @@
 #!/bin/bash
 
+RESET="\033[0m"
+BOLD="\033[1m"
+GOLD="\033[33m"
+
 if [[ "$1" == init ]]; then
-  /usr/local/bin/wp-init.sh
-  /usr/local/bin/permissions.sh
-  /usr/local/bin/getting-started.sh
+  OWNER_GROUP=$(stat -c "%u:%g" /usr/src/site)
+  . /usr/local/bin/wp-init.sh
+  . /usr/local/bin/permissions.sh
+  . /usr/local/bin/getting-started.sh
   exit 0
 fi
 
 # TODO: Remove once we're certain it's unused
 # This was never called. docker-compose files replace the entrypoint instead
 if [[ "$1" == permissions ]]; then
-  echo "DEPRECATED: Replace the entrypoint with /usr/local/bin/permissions"
-  echo "            or call from docker-compose."
+  echo "${GOLD}DEPRECATED: Replace the entrypoint with /usr/local/bin/permissions${RESET}"
+  echo "${GOLD}            or call from docker-compose. (docker-entrypoint.sh)${RESET}"
   /usr/local/bin/permissions.sh
   exit 0
 fi
