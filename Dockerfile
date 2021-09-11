@@ -1,7 +1,7 @@
 # Official WordPress image on DockerHub: https://hub.docker.com/_/wordpress/
 FROM wordpress:5.8.1-php7.4-apache
 
-LABEL version="0.7.16"
+LABEL version="0.7.17"
 
 # Add `wp` user and group, then add `www-data` user to `wp` group
 RUN addgroup  --gid 1000 wp \
