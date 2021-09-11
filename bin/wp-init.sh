@@ -140,9 +140,9 @@ jq -s '.[0].scripts as $defaultScripts |
   /usr/src/boilerplate-package.json /tmp/package.json | cat >/usr/src/site/package.json
 sleep 0.2s
 echo -e "$DONE"
+
 echo -ne "${DO}Sorting ${CYAN}package-lock.json${RESET}"
-# TODO: Temporarily disabled dev/null pipe to debug sort-package-json failure
-sort-package-json@1.48 /usr/src/site/package.json # &>/dev/null
+/usr/local/bin/sort-package-json /usr/src/site/package.json &>/dev/null
 echo -e "$DONE"
 
 # Create a placeholder package-lock.json file if one doesn't exist. The bootstrap
