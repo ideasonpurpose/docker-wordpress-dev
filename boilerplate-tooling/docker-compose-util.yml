@@ -1,4 +1,7 @@
 services:
+  # Utility service which exposes wp-cli. Useful for testing pre-releases
+  # Update image version with `docker run ideasonpurpose/wordpress init`
+  # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   wp-cli:
     depends_on:
       - db
@@ -16,6 +19,8 @@ services:
       - WP_CLI_DISABLE_AUTO_CHECK_UPDATE=true
     command: wp theme activate ${npm_package_name:-ioptheme}
 
+  # Utility service for running composer commands. Useful for adding tools from packagist
+  # Image from: https://hub.docker.com/_/composer
   composer:
     image: composer:2.1.6
     user: "${UID:-1000}:${GID:-1000}"
@@ -26,6 +31,8 @@ services:
       - ~/.composer:/.composer
     command: install
 
+  # Runs phpMyAdmin on port 8002
+  # Image from: https://hub.docker.com/_/phpmyadmin
   phpmyadmin:
     image: phpmyadmin:5.1.1-apache
     ports:
@@ -41,6 +48,8 @@ services:
     volumes:
       - ./_profiler:/tmp/xdebug
 
+  # Dumps the current database to _db/theme-YYYY-MM-DDTHHMMSS.sql.gz
+  # Image from: https://hub.docker.com/_/mariadb
   mysqldump:
     # image: mysql:5.7
     image: mariadb:10.6.4
@@ -64,6 +73,8 @@ services:
                chown -R $${OWNER_GROUP} /usr/src &&
                echo "Successfully dumped MySQL database to \"$${DUMPFILE}.gz\""'
 
+  # Reloads the database from the first found *.sql dumpfile in _db
+  # Image from: https://hub.docker.com/_/mariadb
   mysql-reload:
     # image: mysql:5.7
     image: mariadb:10.6.4
@@ -80,6 +91,8 @@ services:
                echo Reloading database from dumpfile &&
                mysql -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1)'
 
+  # Activates the theme directly in the database
+  # Image from: https://hub.docker.com/_/mariadb
   theme-activate:
     # image: mysql:5.7
     image: mariadb:10.6.4
@@ -109,6 +122,9 @@ services:
                  echo If this project is starting from an empty database, you can ignore this messege.
                fi'
 
+  # Repairs permissions for known project files and directories
+  # Update image version with `docker run ideasonpurpose/wordpress init`
+  # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   repair-permissions:
     # image: ideasonpurpose/wordpress:dev
     image: ideasonpurpose/wordpress:0.7.16
@@ -118,6 +134,10 @@ services:
       OWNER_GROUP: "${UID:-1000}:${GID:-1000}"
     entrypoint: /usr/local/bin/permissions.sh
 
+  # Locally mirror remote sites by pulling the database, polugins and uploads
+  # Remote connections are configured in the .env file
+  # Update image version with `docker run ideasonpurpose/wordpress init`
+  # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   pull:
     # image: ideasonpurpose/wordpress:dev
     image: ideasonpurpose/wordpress:0.7.16

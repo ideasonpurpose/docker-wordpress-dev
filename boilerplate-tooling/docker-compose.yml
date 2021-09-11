@@ -1,4 +1,7 @@
 services:
+
+  # Primary database for the local WordPress development environment.
+  # Image from: https://hub.docker.com/_/mariadb
   db:
     # image: mysql:5.7
     image: mariadb:10.6.4
@@ -16,6 +19,9 @@ services:
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
 
+  # Ideas On Purpose's local WordPress development enviornment.
+  # Update image version with `docker run ideasonpurpose/wordpress init`
+  # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   wordpress:
     depends_on:
       - db
@@ -40,6 +46,8 @@ services:
     ulimits:
       nofile: 8192
 
+  # Ideas On Purpose's development toolchain
+  # Image from: https://hub.docker.com/r/ideasonpurpose/docker-build
   tools:
     image: ideasonpurpose/docker-build:0.9.5
     # image: ideasonpurpose/docker-build:dev
