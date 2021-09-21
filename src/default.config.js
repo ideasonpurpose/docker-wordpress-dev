@@ -15,8 +15,11 @@ module.exports = {
   // enable polling on Windows (no iNotify events), does `isWindows` work?
   // This property can be a boolean or an integer > 250
   // NOTE: iNotify events sometimes stop working on macOS, restart Docker to get them back
-  usePolling: false,
+  // usePolling: false,
 
-  // OPTIONAL: Specify a Sass implementation, accepts `node-sass` (default) and `sass` (Dart Sass)
-  sass: "sass",
+  // OPTIONAL: Specify a Sass implementation, accepts `node-sass` and `sass` (Dart Sass, default)
+  // sass: "sass",
+
+  // Set the webpack devtool option for sourcemaps
+  devtool: "source-map",
 };
