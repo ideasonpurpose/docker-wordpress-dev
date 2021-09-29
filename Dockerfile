@@ -85,7 +85,7 @@ RUN pecl install xdebug \
     # && echo "xdebug.remote_port=${XDEBUG_PORT}" >> /usr/local/etc/php/conf.d/xdebug.ini \
     # && echo "xdebug.idekey=${XDEBUG_IDEKEY}" >> /usr/local/etc/php/conf.d/xdebug.ini
 
-# Remove 10 MB /usr/src/php.tar.xz file. It's iunnecesary since we're not upda5ting PHP without rebuilding.
+# Remove 10 MB /usr/src/php.tar.xz file. Unnecesary since we never update PHP without rebuilding.
 # Ref: https://github.com/docker-library/php/issues/488
 RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
 
