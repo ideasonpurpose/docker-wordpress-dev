@@ -3,21 +3,21 @@ const special = {
   groupName: "Special",
   emptyLineBefore: "threshold",
   noEmptyLineBetween: true,
-  properties: ["composes", "@import", "@extend", "@mixin", "@at-root"]
+  properties: ["composes", "@import", "@extend", "@mixin", "@at-root"],
 };
 
 const content = {
   groupName: "Content",
   emptyLineBefore: "threshold",
   noEmptyLineBetween: true,
-  properties: ["content"]
+  properties: ["content"],
 };
 
 const positioning = {
   groupName: "Positioning",
   emptyLineBefore: "threshold",
   noEmptyLineBetween: true,
-  properties: ["position", "top", "right", "bottom", "left", "z-index"]
+  properties: ["position", "top", "right", "bottom", "left", "z-index"],
 };
 
 const boxModel = {
@@ -77,8 +77,8 @@ const boxModel = {
     "padding-top",
     "padding-right",
     "padding-bottom",
-    "padding-left"
-  ]
+    "padding-left",
+  ],
 };
 
 const visual = {
@@ -157,8 +157,8 @@ const visual = {
     "filter",
     "isolation",
     "backdrop-filter",
-    "mix-blend-mode"
-  ]
+    "mix-blend-mode",
+  ],
 };
 
 const typography = {
@@ -222,8 +222,8 @@ const typography = {
     "page-break-after",
     "page-break-before",
     "page-break-inside",
-    "src"
-  ]
+    "src",
+  ],
 };
 
 const animation = {
@@ -244,8 +244,8 @@ const animation = {
     "animation-delay",
     "animation-iteration-count",
     "animation-direction",
-    "animation-fill-mode"
-  ]
+    "animation-fill-mode",
+  ],
 };
 
 const misc = {
@@ -274,20 +274,14 @@ const misc = {
     "fill",
     "fill-rule",
     "clip-rule",
-    "stroke"
-  ]
+    "stroke",
+  ],
 };
 
 module.exports = {
   plugins: ["stylelint-order", "stylelint-prettier"],
   rules: {
     "prettier/prettier": true,
-
-    // "order/order": [
-    //   {
-    //     type: "rule"
-    //   }
-    // ],
     "order/properties-order": [
       [
         special,
@@ -297,16 +291,17 @@ module.exports = {
         typography,
         visual,
         animation,
-        misc
+        misc,
       ],
       {
         emptyLineBeforeUnspecified: "threshold",
-        emptyLineMinimumPropertyThreshold: 7
-      }
+        emptyLineMinimumPropertyThreshold: 7,
+      },
     ],
     "rule-empty-line-before": [
       "always-multi-line",
-      { except: ["first-nested"], ignore: ["after-comment"] }
-    ]
-  }
+      { except: ["first-nested"], ignore: ["after-comment"] },
+    ],
+  },
+  ignoreFiles: ["**/node_modules/**/*", "**/dist/**/*", "**/*.js"],
 };
