@@ -69,6 +69,7 @@
       {
         "files": "*.php",
         "options": {
+          "phpVersion": "7.4",
           "printWidth": 100,
           "singleQuote": true,
           "tabWidth": 4,
