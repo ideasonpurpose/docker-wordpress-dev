@@ -22,7 +22,7 @@ services:
   # Utility service for running composer commands. Useful for adding tools from packagist
   # Image from: https://hub.docker.com/_/composer
   composer:
-    image: composer:2.1.6
+    image: composer:2.1.9
     user: "${UID:-1000}:${GID:-1000}"
     environment:
       COMPOSER_HOME: /.composer
