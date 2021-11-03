@@ -134,9 +134,9 @@ services:
       OWNER_GROUP: "${UID:-1000}:${GID:-1000}"
     entrypoint: /usr/local/bin/permissions.sh
 
-  # Locally mirror remote sites by pulling the database, polugins and uploads
-  # Remote connections are configured in the .env file
-  # Update image version with `docker run ideasonpurpose/wordpress init`
+  # Locally mirror remote sites by pulling the database, plugins and uploads
+  # Remote connections are configured in the project's .env file
+  # Run `docker run ideasonpurpose/wordpress init` to update the image version
   # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   pull:
     # image: ideasonpurpose/wordpress:dev
