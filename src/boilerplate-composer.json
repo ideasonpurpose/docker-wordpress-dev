@@ -9,6 +9,12 @@
       "ext-intl": "0"
     }
   },
+  "authors": [
+    {
+      "name": "Ideas On Purpose",
+      "website": "https://www.ideasonpurpose.com"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "IdeasOnPurpose\\": [
