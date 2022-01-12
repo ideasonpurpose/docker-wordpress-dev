@@ -24,30 +24,16 @@
   },
   "minimum-stability": "dev",
   "require": {
-    "ideasonpurpose/wp-svg-lib": "^1.2.0",
-    "ideasonpurpose/wp-googleanalytics": "dev-master",
-    "ideasonpurpose/wp-theme-init": "^2.4.2",
-    "ideasonpurpose/wp-vimeo-embed": "dev-master"
+    "ideasonpurpose/wp-google-analytics": "^1.0.0",
+    "ideasonpurpose/wp-svg-lib": "^2.0.0",
+    "ideasonpurpose/wp-theme-init": "^2.5.2",
+    "ideasonpurpose/wp-vimeo-embed": "dev-master",
+    "php-stubs/wordpress-stubs": "dev-master"
   },
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/ideasonpurpose/wp-theme-init",
-      "no-api": true
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/ideasonpurpose/wp-googleanalytics",
-      "no-api": true
-    },
-    {
-      "type": "vcs",
       "url": "https://github.com/ideasonpurpose/wp-vimeo-embed",
-      "no-api": true
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/ideasonpurpose/wp-svg-lib.git",
       "no-api": true
     }
   ]

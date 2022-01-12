@@ -7,7 +7,7 @@ services:
       - db
       - wordpress
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.7.17
+    image: ideasonpurpose/wordpress:0.2.1112
     user: www-data
     volumes:
       - wp_data:/var/www/html
@@ -22,7 +22,7 @@ services:
   # Utility service for running composer commands. Useful for adding tools from packagist
   # Image from: https://hub.docker.com/_/composer
   composer:
-    image: composer:2.1.9
+    image: composer:2.2.4
     user: "${UID:-1000}:${GID:-1000}"
     environment:
       COMPOSER_HOME: /.composer
@@ -52,7 +52,7 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   mysqldump:
     # image: mysql:5.7
-    image: mariadb:10.6.4
+    image: mariadb:10.6.5
     depends_on:
       - db
     volumes:
@@ -66,18 +66,18 @@ services:
     #           USE `wordpress`;
     #       to drop those lines, remove  "--databases" from the mysqldump command
     command: |
-      bash -c 'export DUMPFILE="/usr/src/'${npm_package_name:-dumpfile}'-$$(date +%FT%H%M%S).sql" &&
-               echo $${DUMPFILE} &&
-               mysqldump -hdb --default-character-set=utf8mb4 --databases $${MYSQL_DATABASE} > "$${DUMPFILE}" &&
-               gzip "$${DUMPFILE}" &&
-               chown -R $${OWNER_GROUP} /usr/src &&
-               echo "Successfully dumped MySQL database to \"$${DUMPFILE}.gz\""'
+      bash -c  'export DUMPFILE="/usr/src/'${npm_package_name:-dumpfile}'-$$(date +%FT%H%M%S).sql" &&
+                echo $${DUMPFILE} &&
+                mysqldump -hdb --default-character-set=utf8mb4 --databases $${MYSQL_DATABASE} > "$${DUMPFILE}" &&
+                gzip "$${DUMPFILE}" &&
+                chown -R $${OWNER_GROUP} /usr/src &&
+                echo "Successfully dumped MySQL database to \"$${DUMPFILE}.gz\""'
 
   # Reloads the database from the first found *.sql dumpfile in _db
   # Image from: https://hub.docker.com/_/mariadb
   mysql-reload:
     # image: mysql:5.7
-    image: mariadb:10.6.4
+    image: mariadb:10.6.5
     depends_on:
       - db
     volumes:
@@ -85,17 +85,17 @@ services:
     environment:
       MYSQL_DATABASE: wordpress
     command: |
-      bash -c 'mysqladmin -hdb -v -f drop $${MYSQL_DATABASE} &&
-               mysqladmin -hdb -v -f create $${MYSQL_DATABASE} &&
-               echo Database \"$${MYSQL_DATABASE}\" created &&
-               echo Reloading database from dumpfile &&
-               mysql -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1)'
+      bash -c  'mysqladmin -hdb -v -f drop $${MYSQL_DATABASE} &&
+                mysqladmin -hdb -v -f create $${MYSQL_DATABASE} &&
+                echo Database \"$${MYSQL_DATABASE}\" created &&
+                echo Reloading database from dumpfile &&
+                mysql -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1)'
 
   # Activates the theme directly in the database
   # Image from: https://hub.docker.com/_/mariadb
   theme-activate:
     # image: mysql:5.7
-    image: mariadb:10.6.4
+    image: mariadb:10.6.5
     depends_on:
       - db
     volumes:
@@ -103,31 +103,31 @@ services:
     environment:
       MYSQL_DATABASE: wordpress
     command: |
-      bash -c 'for i in {1..10}
-               do echo -e "⏳  \033[33mWaiting for MySQL server...\033[0m" &&
+      bash -c  'for i in {1..10}
+                do echo -e "⏳  \033[33mWaiting for MySQL server...\033[0m" &&
                   mysql -s -h db -e "exit" && break || sleep 3
-               done &&
-               sleep 2 &&
-               echo -e "✔️   \033[32mConnected to MySQL\033[0m" &&
-               if [[ $$(mysql -s -h db $${MYSQL_DATABASE} -e "SHOW TABLES LIKE \"wp_options\"") ]]
-               then
-                 echo -e "🎨  \033[36mActivating theme \033[0m\033[1m${npm_package_name:-ioptheme}\033[0m"
-                 mysql -h db $${MYSQL_DATABASE} \
-                       -e "UPDATE wp_options \
-                           SET option_value = \"'${npm_package_name:-ioptheme}'\" \
-                           WHERE option_name in (\"template\",\"stylesheet\")"
-               else
-                 echo -e "Unable to activate theme: \033[31m'\'wp_options\'' table does not exist.\033[0m"
-                 echo "To recreate an existing site, copy the site'\''s MySQL dumpfile into _db"
-                 echo If this project is starting from an empty database, you can ignore this messege.
-               fi'
+                done &&
+                sleep 2 &&
+                echo -e "✔️   \033[32mConnected to MySQL\033[0m" &&
+                if [[ $$(mysql -s -h db $${MYSQL_DATABASE} -e "SHOW TABLES LIKE \"wp_options\"") ]]
+                then
+                  echo -e "🎨  \033[36mActivating theme \033[0m\033[1m${npm_package_name:-ioptheme}\033[0m"
+                  mysql -h db $${MYSQL_DATABASE} \
+                        -e "UPDATE wp_options \
+                            SET option_value = \"'${npm_package_name:-ioptheme}'\" \
+                            WHERE option_name in (\"template\",\"stylesheet\")"
+                else
+                  echo -e "Unable to activate theme: \033[31m'\'wp_options\'' table does not exist.\033[0m"
+                  echo "To recreate an existing site, copy the site'\''s MySQL dumpfile into _db"
+                  echo If this project is starting from an empty database, you can ignore this messege.
+                fi'
 
   # Repairs permissions for known project files and directories
   # Update image version with `docker run ideasonpurpose/wordpress init`
   # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   repair-permissions:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.7.17
+    image: ideasonpurpose/wordpress:0.7.112
     volumes:
       - .:/usr/src/site
     environment:

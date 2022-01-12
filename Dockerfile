@@ -1,5 +1,5 @@
 # Official WordPress image on DockerHub: https://hub.docker.com/_/wordpress/
-FROM wordpress:5.8.1-php7.4-apache
+FROM wordpress:5.8.3-php8.0-apache
 
 LABEL version="0.7.17"
 
@@ -65,15 +65,16 @@ RUN apt-get update -yqq \
 # Install Memcached
 RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \
-      libmemcached-dev \
-      zlib1g-dev \
+        libmemcached-dev \
+        zlib1g-dev \
     && rm -rf /var/lib/apt/lists/* \
     && pecl install memcached \
     && docker-php-ext-enable memcached
 
 # Install XDebug, largly copied from:
 # https://github.com/andreccosta/wordpress-xdebug-dockerbuild
-RUN pecl install xdebug \
+# https://pecl.php.net/package/xdebug
+RUN pecl install xdebug-3.1.2 \
     && docker-php-ext-enable xdebug \
     && echo "xdebug.mode = profile" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo "xdebug.start_with_request = trigger" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
@@ -110,17 +111,17 @@ RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 # Install npm so we can run npx sort-package-json from the init script
 RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \
-      npm \
+        npm \
     && rm -rf /var/lib/apt/lists/* \
-    && npm install --global sort-package-json@1.48
+    && npm install --global sort-package-json@1.53
 
 # Install rsync, ssh-client and jq for merging tooling and package.json files
 RUN apt-get update -yqq \
-    && apt-get install -y --no-install-recommends \
-      rsync \
-      openssh-client \
-      jq \
-    && rm -rf /var/lib/apt/lists/*
+    &&  apt-get install -y --no-install-recommends \
+        rsync \
+        openssh-client \
+        jq \
+    &&  rm -rf /var/lib/apt/lists/*
 
 
 # Install acl, attempting to fix umask permissions issues
@@ -152,11 +153,11 @@ COPY boilerplate-tooling/ /usr/src/boilerplate-tooling
 # Network Debugging Tools
 # TODO: Remove or disable if not needed
 RUN apt-get update -yqq \
-    && apt-get install -y --no-install-recommends \
-      iputils-ping \
-      dnsutils \
-      vim \
-    && rm -rf /var/lib/apt/lists/*
+    &&  apt-get install -y --no-install-recommends \
+        iputils-ping \
+        dnsutils \
+        vim \
+    &&  rm -rf /var/lib/apt/lists/*
 
 # Copy scripts to /bin and make them executable
 COPY bin/*.sh /usr/local/bin/

@@ -39,21 +39,24 @@
     ]
   },
   "devDependencies": {
-    "@prettier/plugin-php": "^0.17.5",
+    "@prettier/plugin-php": "^0.17.6",
     "auto-changelog": "^2.3.0",
-    "chalk": "^4.1.2",
-    "prettier": "^2.4.1",
-    "replace-in-file": "^6.3.1",
-    "version-everything": "^0.6.4"
+    "chalk": "^5.0.0",
+    "prettier": "^2.5.1",
+    "replace-in-file": "^6.3.2",
+    "version-everything": "^0.7.3"
   },
   "auto-changelog": {
     "package": true,
     "backfillLimit": 7
   },
   "version-everything": {
+    "prefix": "ideasonpurpose/wordpress:",
     "files": [
-      "README.md",
-      "Dockerfile"
+      "boilerplate-tooling/docker-compose.yml",
+      "boilerplate-tooling/docker-compose-util.yml",
+      "Dockerfile",
+      "README.md"
     ]
   }
 }
