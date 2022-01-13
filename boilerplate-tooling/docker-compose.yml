@@ -15,7 +15,8 @@ services:
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
     command: >
-      --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
 
   # Ideas On Purpose's local WordPress development enviornment.
   # Update image version with `docker run ideasonpurpose/wordpress init`
