@@ -10,7 +10,7 @@
     "Joe Maller <joe@ideasonpurpose.com>"
   ],
   "scripts": {
-    "version": "node bump-wordpress-image.js && version-everything && auto-changelog && git add -u"
+    "version": "version-everything && auto-changelog && git add -u"
   },
   "prettier": {
     "overrides": [
@@ -41,10 +41,8 @@
   "devDependencies": {
     "@prettier/plugin-php": "^0.17.6",
     "auto-changelog": "^2.3.0",
-    "chalk": "^5.0.0",
     "prettier": "^2.5.1",
-    "replace-in-file": "^6.3.2",
-    "version-everything": "^0.7.3"
+    "version-everything": "^0.7.4"
   },
   "auto-changelog": {
     "package": true,
