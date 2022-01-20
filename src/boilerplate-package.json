@@ -82,6 +82,7 @@
     "@prettier/plugin-php": "^0.17.6",
     "chalk-cli": "^5.0.0",
     "cross-env": "^7.0.3",
+    "postcss-scss": "^4.0.3",
     "prettier": "^2.5.1",
     "sort-package-json": "^1.53.1",
     "stylelint": "^14.2.0",

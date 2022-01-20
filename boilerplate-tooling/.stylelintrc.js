@@ -280,6 +280,7 @@ const misc = {
 
 module.exports = {
   plugins: ["stylelint-order", "stylelint-prettier"],
+  customSyntax: "postcss-scss",
   rules: {
     "prettier/prettier": true,
     "order/properties-order": [
