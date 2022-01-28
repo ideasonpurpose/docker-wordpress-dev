@@ -20,7 +20,7 @@ docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:0.8.0 init
 npm run bootstrap
 ```
 
-_NOTE: If **~/.composer** dosn't exist, Docker will create it with root ownership causing the Composer task to fail. Either create this directory before running `npm run bootstrap` or reset it's ownership with `sudo chown -R $UID:$GID .composer` and then run `bootstrap` again. See [#21](https://github.com/ideasonpurpose/docker-wordpress-dev/issues/21)_
+_NOTE: If **~/.composer** doesn't exist, Docker will create it with root ownership causing the Composer task to fail. Either create this directory before running `npm run bootstrap` or reset it's ownership with `sudo chown -R $UID:$GID .composer` and then run `bootstrap` again. See [#21](https://github.com/ideasonpurpose/docker-wordpress-dev/issues/21)_
 
 ##### Windows Command Prompt
 
@@ -116,7 +116,7 @@ The important properties are:
 
 - **`SSH_LOGIN`**<br>
   This is simply the SSH connection string from WP Engine backend, something like `iop001@iop001.ssh.wpengine.net`
-  where the elements are `${SSH_USER}@${SSH_HOST}`. Each item can also be entered indivudally, individual entries
+  where the elements are `${SSH_USER}@${SSH_HOST}`. Each item can also be entered individually, individual entries
   take precedence over components extracted from SSH_CONNECT_STRING.
 
 - **`SSH_USER`**<br>
@@ -126,7 +126,7 @@ The important properties are:
   The server address to connect to.
 
 - **`SSH_WP_CONTENT_DIR`**<br> (default: sites/${SSH_USER}/wp-content)
-  The path to the wordpress wp-content folder. Most likley matches the `WP_CONTENT_DIR` WordPress constant.
+  The path to the wordpress wp-content folder. Most likely matches the `WP_CONTENT_DIR` WordPress constant.
   Does not include a trailing slash. Can relative to the SSH user home folder or an absolute path.
 
 Both `$SSH_LOGIN` and `$SSH_HOST` can be extracted from `$SSH_LOGIN`. Specifying either will override the value in `$SSH_LOGIN`.
