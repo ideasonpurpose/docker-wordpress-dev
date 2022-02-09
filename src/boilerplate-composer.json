@@ -22,11 +22,10 @@
       ]
     }
   },
-  "minimum-stability": "dev",
   "require": {
     "ideasonpurpose/wp-google-analytics": "^1.0.0",
     "ideasonpurpose/wp-svg-lib": "^2.0.0",
-    "ideasonpurpose/wp-theme-init": "^2.5.2",
+    "ideasonpurpose/wp-theme-init": "^2.5.5",
     "ideasonpurpose/wp-vimeo-embed": "dev-master",
     "php-stubs/wordpress-stubs": "dev-master"
   },
