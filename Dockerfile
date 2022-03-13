@@ -148,8 +148,17 @@ RUN echo >> /etc/ssh/ssh_config \
 
 # COPY default.config.js /usr/src/
 COPY src/* /usr/src/
+
 # COPY boilerplate-theme/ /usr/src/boilerplate-theme
 COPY boilerplate-tooling/ /usr/src/boilerplate-tooling
+
+# Setup Message Of The Day
+COPY motd motd/* /etc/update-motd.d/
+RUN chmod +x /etc/update-motd.d/*
+# Force MOTD in root bashrc
+RUN echo \
+    && echo LS_OPTIONS='--color=auto' >> /root/.bashrc \
+    && echo run-parts /etc/update-motd.d/ >> /root/.bashrc
 
 # Network Debugging Tools
 # TODO: Remove or disable if not needed

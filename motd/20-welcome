@@ -1,0 +1,22 @@
+#!/bin/bash
+
+
+# style helpers
+RESET="\033[0m"
+BOLD="\033[1m"
+RED="\033[31m"
+BLUE="\033[34m"
+CYAN="\033[36m"
+GREEN="\033[32m"
+GOLD="\033[33m"
+MAGENTA="\033[35m"
+# CLEAR="\033[K"
+
+
+echo
+echo -e "🥳 ${BOLD}${GOLD}Welcome to the Ideas On Purpose Docker WordPress environment!${RESET}"
+echo
+echo -e "🔗 ${BLUE}https://github.com/ideasonpurpose/docker-wordpress-dev${RESET}"
+echo
+echo -e "Most stuff is over in the ${CYAN}/usr/src/site${RESET} directory."
+echo
