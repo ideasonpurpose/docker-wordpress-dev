@@ -24,7 +24,7 @@ services:
     depends_on:
       - db
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.9.1
+    image: ideasonpurpose/wordpress:0.9.2
     restart: always
     volumes:
       - wp_data:/var/www/html
