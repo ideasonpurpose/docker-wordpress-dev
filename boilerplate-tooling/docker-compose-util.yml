@@ -155,6 +155,16 @@ services:
     secrets:
       - SSH_KEY
 
+  # Run the init script from ideasonpurpose/wordpress:latest (intentionally "latest")
+  # to refresh tooling and bring the project inline with our boilerplate
+  # Image from: https://hub.docker.com/r/ideasonpurpose/docker-build
+  refresh:
+    # image: ideasonpurpose/wordpress:dev
+    image: ideasonpurpose/wordpress:latest
+    volumes:
+      - .:/usr/src/site
+    command: init
+
 secrets:
   SSH_KEY:
     file: ${SSH_KEY_PATH:-~/.ssh/your_ssh_private_key}

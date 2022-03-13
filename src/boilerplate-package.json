@@ -31,6 +31,7 @@
     "permissions:repair": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm repair-permissions",
     "prephpmyadmin": "echo 🛠 \\ Starting phpMyAdmin:  http://localhost:8002 && echo",
     "phpmyadmin": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 8002:80 phpmyadmin",
+    "project:refresh": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm refresh",
     "pull": "npm run pull:db && npm run pull:plugins && npm run pull:uploads",
     "prepull:db": "npm run mysql:dump",
     "pull:db": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm pull database",
@@ -58,6 +59,12 @@
         "options": {
           "printWidth": 120,
           "tabWidth": 2
+        }
+      },
+      {
+        "files": "*.json",
+        "options": {
+          "printWidth": 120
         }
       },
       {
