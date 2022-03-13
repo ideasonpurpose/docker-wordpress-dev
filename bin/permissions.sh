@@ -3,7 +3,7 @@
 # This script is a part of the ideasonpurpose/docker-wordpress-dev project
 # https://github.com/ideasonpurpose/docker-wordpress-dev
 #
-# Version: 0.9.0
+# Version: 0.9.1
 
 # This script corrects permissions of known files in our WordPress boilerplate.
 # The script is run from Docker as root, with a $OWNER_GROUP envvar set to "$UID:$GID"
