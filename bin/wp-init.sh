@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This script is a part of the ideasonpurpose/docker-wordpress-dev project
+# https://github.com/ideasonpurpose/docker-wordpress-dev
+#
+# Version: 0.0.0
+
 # This is a WordPress specific boilerplate assembler
 # After running this script, the target directory will be fully configured for local WordPress
 # development with tooling and copy of our wordpress theme boilerplate.

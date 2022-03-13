@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This script is a part of the ideasonpurpose/docker-wordpress-dev project
+# https://github.com/ideasonpurpose/docker-wordpress-dev
+#
+# Version: 0.0.0
+
 RESET="\033[0m"
 BOLD="\033[1m"
 GOLD="\033[33m"

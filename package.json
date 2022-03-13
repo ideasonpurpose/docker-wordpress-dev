@@ -22,6 +22,12 @@
         }
       },
       {
+        "files": "*.json",
+        "options": {
+          "printWidth": 120
+        }
+      },
+      {
         "files": "*.md",
         "options": {
           "embeddedLanguageFormatting": "off"
@@ -51,8 +57,13 @@
   "version-everything": {
     "prefix": "ideasonpurpose/wordpress:",
     "files": [
-      "boilerplate-tooling/docker-compose.yml",
+      "bin/docker-entrypoint-iop.sh",
+      "bin/getting-started.sh",
+      "bin/permissions.sh",
+      "bin/pull.sh",
+      "bin/wp-init.sh",
       "boilerplate-tooling/docker-compose-util.yml",
+      "boilerplate-tooling/docker-compose.yml",
       "Dockerfile",
       "README.md"
     ]
