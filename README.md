@@ -9,6 +9,8 @@
 
 This project provides local development environments for developing WordPress websites. This includes pre-configured Docker-based MySQL and PHP servers, our [Docker-Build toolchain][docker-build] and a number of helper scripts.
 
+This builds from the official WordPress docker image, currently **[0.0.0](https://hub.docker.com/_/wordpress)**.
+
 ## Getting Started
 
 To update an existing project or start a new one, run the following commands in your working directory.
