@@ -54,7 +54,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=raw,${{ env.WP_VERSION }}-{{version}}
+            type=raw,${{ env.WP_VERSION }}-${{ env.TAG }}
             type=raw,${{ env.WP_VERSION }}
 
       - name: Login to Docker Hub
