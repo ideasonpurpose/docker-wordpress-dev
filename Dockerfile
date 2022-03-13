@@ -2,7 +2,7 @@
 # https://hub.docker.com/_/wordpress/
 FROM wordpress:5.9.1-php8.0-apache
 
-LABEL version="0.9.2"
+LABEL version="0.9.3"
 
 # Add `wp` user and group, then add `www-data` user to `wp` group
 RUN addgroup  --gid 1000 wp \
