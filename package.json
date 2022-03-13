@@ -10,7 +10,9 @@
     "Joe Maller <joe@ideasonpurpose.com>"
   ],
   "scripts": {
-    "version": "version-everything && auto-changelog && git add -u"
+    "bump": "npm run wordpress:bump",
+    "version": "version-everything && auto-changelog && git add -u",
+    "wordpress:bump": "docker-compose run --rm bump-wp"
   },
   "prettier": {
     "overrides": [

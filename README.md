@@ -7,9 +7,9 @@
 
 ## About This Project
 
-This project provides local development environments for developing WordPress websites. This includes pre-configured Docker-based MySQL and PHP servers, our [Docker-Build toolchain][docker-build] and a number of helper scripts.
+This project provides local development environments for fast iteration of existing WordPress websites. This includes pre-configured Docker-based MySQL and PHP servers, our [Docker-Build toolchain][docker-build], [Xdebug](https://xdebug.org/), [ImageMagick](http://www.imagemagick.org/) and a number of helper scripts.
 
-This builds from the official WordPress docker image, currently **[0.0.0](https://hub.docker.com/_/wordpress)**.
+The project builds on the official WordPress docker image, currently **[5.9.2](https://hub.docker.com/_/wordpress)**
 
 ## Getting Started
 
@@ -31,7 +31,8 @@ docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress:0.8.1 init
 npm run bootstrap
 ```
 
-The `init` command copies all the necessary tooling files into place and sets up the default theme directory structure. Then `npm run bootstrap` prepares the environment by installing npm and composer dependencies and reloading the database.
+- `init` command copies all the necessary tooling files into place and sets up the default theme directory structure.
+- `npm run bootstrap` prepares the environment by installing npm and composer dependencies and reloading the database.
 
 ### Setup and Prerequisites
 
@@ -43,7 +44,9 @@ In an empty directory, running `init` will prompt for the new project's name and
 
 ### Existing Projects
 
-For existing projects, running `init` reads the project's name and description from **package.json**, updates build tools and script commands to the latest versions and syncs in any missing theme files. The project should be a working Git checkout so any undesirable changes can be easily reverted.
+Recently updated project can run `npm run project:refresh` to update tooling to the latest release.
+
+Older projects should run `init` manually to update. Projects should be in a clean Git working tree so any undesirable changes can be easily reverted.
 
 #### These files will be updated:
 
@@ -64,7 +67,7 @@ After configuring your SSH key path in **.env**, the database, plugins and uploa
 
 ### Databases
 
-Copy your MySQL database dumpfiles into before calling Calling `npm run start` will tell the [MySQL Docker image](https://hub.docker.com/_/mysql#initializing-a-fresh-instance) to load all `*.sql` files from the top-level **\_db** directory in alphabetical order. Later files will overwrite earlier ones.
+All `*.sql` files from the top-level **\_db** directory will be in alphabetical order. Later files will overwrite earlier ones.
 
 ## Workflow & Commands
 
@@ -91,6 +94,7 @@ Copy your MySQL database dumpfiles into before calling Calling `npm run start` w
   - **`mysql:dump`**, **`mysqldump`** - Writes a compressed, timestamped database snapshot into the **\_db** directory
   - **`mysql:reload`** - Drops, then reloads the database from the most recent dumpfile in **\_db** then attempts to activate the development theme.
 - **`phpmyadmin`** - Starts a phpMyAdmin server at [localhost:8002](http://localhost:8002)
+- **`project:refresh`** - Update the project with the latest tooling.
 - **`pull`**<br>
   Syncs data from a remote server to the local development environment. The bare command will run these sub-commands:
   - **`pull:db`** - Syncs down the most recent mySQL dumpfile, backs up the current dev DB then reloads the DB
@@ -102,11 +106,11 @@ Copy your MySQL database dumpfiles into before calling Calling `npm run start` w
 
 ### Pulling Data from Remote Servers
 
-The `npm run pull` command brings together several sub-commands to sync remote data to the local development environment. Each command can also be called individually. Connection info needs to be configured in a **.env** file. Values are documented in the **.env.sample** file.
+The `npm run pull` command brings together several sub-commands to sync remote data to the local development environment. Each command can also be called individually. Connection info must be configured in a **.env** file. Values are documented in the **.env.sample** file.
 
 Private SSH keys are passed to the image as [Docker Secrets][docker-secrets], point `$SSH_KEY_PATH` to a local private key in **.env**.
 
-Pulling uploads, plugins and database dumps is currently supported on WP Engine and Kinsta.
+Pulling uploads, plugins and database dumps is currently supported on WP Engine and Kinsta\*.
 
 Connections must be configured on a per-machine basis using a `.env` file in the project root. For new projects, rename the `.env.example` to **.env** and update the settings.
 
@@ -132,6 +136,17 @@ The important properties are:
   Does not include a trailing slash. Can relative to the SSH user home folder or an absolute path.
 
 Both `$SSH_LOGIN` and `$SSH_HOST` can be extracted from `$SSH_LOGIN`. Specifying either will override the value in `$SSH_LOGIN`.
+
+#### Syncing Databases from Kinsta
+
+Unlike WP Engine, Kinsta does not store regular database snapshots in a site's **wp-content** directory, but they do allow cron. Set up a basic crontab task to regularly backup the database so pull scripts will work correctly. Here's an example which backs up hourly at 37 minutes after the hour:
+
+```cron
+# dump db hourly for dev mirrors
+37      *       *       *       *       mysqldump --default-character-set=utf8mb4 -udb_user -pdb_password db_name > ~/public/wp-content/mysql.sql
+```
+
+Neither Kinsta's nor WP Engine's servers will not fulfil requests for \*.sql files, and the `db_user`. `db_password` and `db_name` values are stored already stored in plaintext in **wp-config.php** so this isn't a security risk.
 
 ### Debugging
 
@@ -177,7 +192,7 @@ docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  compos
 
 _note: This no longer works for npm versions >v6. See [#29](https://github.com/ideasonpurpose/docker-wordpress-dev/issues/29)_
 
-Webpack devserver runs on port `8080` by default. Multiple projects can be run simultaneously by using `npm config` to assign different ports the the project's **package.json** `name`. For example, three projects named `csr-site`, `pro-bono` and `ar-project` could be run simultaneously on custom ports, after running these commands:
+Webpack devserver runs on port `8080` by default. ~~Multiple projects can be run simultaneously by using `npm config` to assign different ports the the project's **package.json** `name`. For example, three projects named `csr-site`, `pro-bono` and `ar-project` could be run simultaneously on custom ports, after running these commands:~~
 
 ```sh
 npm config set csr-site:port 8080
@@ -206,10 +221,6 @@ To iterate on this project locally, build the image using the same name as the D
 docker build . --tag ideasonpurpose/wordpress:dev
 ```
 
-### Dockerfile
-
-This project's Dockerfile is based on the official WordPress image. We add [Xdebug](https://xdebug.org/), the [ImageMagick](http://www.imagemagick.org/) PHP extension, SSH and enable all PHP debug settings.
-
 ### Shell Scripts
 
 All shell scripts in **bin** have been checked with [ShellCheck](https://www.shellcheck.net/) and formatted with [shfmt](https://github.com/mvdan/sh) via Docker:
@@ -234,20 +245,6 @@ The **docker-entrypoint.sh** script in the base WordPress docker image checks fo
 
 <!--
 
-#### _Edited to here..._
-
-## Goals
-
-### Local development and maintenance
-
-All sorts of WordPress-Docker projects show how to set up a fresh environment for developing a new site. But these rarely cover using Docker to maintain an existing site.
-
-_Existing site maintenance is the main goal of this project._
-
-Starting a vanilla WordPress project on Docker is not difficult, but apparently setting up a populated local development environment is. This project aims to change that.
-
-Our primary use case is to enable fast iteration for existing sites. With a cloned codebase, a database dump and cached Docker images, a cross-platform development environment can be spun up in a few seconds.
-
 ## Getting Started
 
 The **package.json** file is the Single Source of Truth for environment and configuration. Settings such as theme-name and devServer port are passed directly from `npm_package_*` environment variables.
@@ -264,8 +261,6 @@ Existing WordPress sites have three highly portable components contained in `wp-
    A copy of all the user-uploaded imagery used on the site.
 4. **The Plugins directory**
    A blob of plugin files. Most of these can be pulled from [wordpress.org/plugins](https://wordpress.org/plugins/) but it's often faster to copy the whole `wp-content/plugins` directory to dev sites.
-
-Docker Desktop should be installed. The tools should work equally well on any platform that can run Docker, we're using it in production on macOS and Windows, including and WSL 2.
 
 ### Project Directory Structure
 

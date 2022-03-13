@@ -1,6 +1,6 @@
 # Official WordPress image on DockerHub:
 # https://hub.docker.com/_/wordpress/
-FROM wordpress:5.9.0-php8.0-apache
+FROM wordpress:5.9.2-php8.0-apache
 
 LABEL version="0.8.1"
 
