@@ -58,11 +58,6 @@ RUN echo "[OPcache]" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini
 
-# Install the Intl extension
-RUN apt-get update -yqq \
-    && apt-get install -y libicu-dev \
-    && docker-php-ext-install intl
-
 # Install Memcached
 RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \
