@@ -29,12 +29,22 @@ services:
               wget -q -O- http://api.wordpress.org/core/stable-check/1.0 > /tmp/wp.json &&
               echo -e \"👀  Found $${CYAN}$$(jq -r 'length' /tmp/wp.json)$${RESET} releases.\"  &&
               jq '{wordpress: (to_entries[] | select(.value == \"latest\").key)}' /tmp/wp.json > /app/wp-version.json &&
-              echo -e \"✏️  Updating $${GOLD}Dockerfile$${RESET} to $${CYAN}v$$(jq -r '.wordpress' /app/wp-version.json)$${RESET}.\" &&
               WP_LATEST=$$(jq -r '.wordpress' /app/wp-version.json) &&
+              echo -e \"✏️  Updating $${GOLD}Dockerfile$${RESET} to $${CYAN}v$$(jq -r '.wordpress' /app/wp-version.json)$${RESET}.\" &&
               sed -i \"s/wordpress:.*-php8/wordpress:$${WP_LATEST}-php8/\" /app/Dockerfile &&
-              sed -r -i \"s/currently\\s+\\*\\*\\[[0-9.]+\]/currently **[$$WP_LATEST]/\" /app/README.md
+              echo -e \"✏️  Updating $${GOLD}README.md$${RESET} to $${CYAN}v$$(jq -r '.wordpress' /app/wp-version.json)$${RESET}.\" &&
+              sed -r -i \"s/currently\\s+\\*\\*\\[v[0-9.]+\]/currently **[v$$WP_LATEST]/\" /app/README.md
               echo -e \"✅  Done!\""
 
+
+
+# TODO: Check DockerHub for existance of the latest release beffore continuing?
+
+# https://registry.hub.docker.com/v2/repositories/library/wordpress/tags/5.9.1
+
+# unknown tags return a 404:
+
+# https://registry.hub.docker.com/v2/repositories/library/wordpress/tags/7.9.4
 
 
 # sed -E -i "s/currently\s+\*\*\[[0-9.]+]/currently **[$WP_LATEST]/" README.md
