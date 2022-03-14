@@ -1,102 +1,11 @@
 services:
   # This service bumps the WordPress verion in the Dockerfile to the latest release.
+  # See the bin/bump-wordpress.sh script for docs
   #
-  # The shell script does three things:
-  #
-  # 1. Fetch the list of stable WordPress versions from the wordpress.org API
-  #    and store it in wp-version.json. The file is just something like this:
-  #    { "wordpress": "5.9.2" }
-  # 2. Update the WordPress base image in the Dockerfile.
-  # 3. Update the WordPress version in README.md.
-  #
-  # It also defines a few styling vars and echoes progress.
-  #
-  # The wp-version.json file should be commited to Git. The push-to-dockerhub
-  # GitHub Action uses this file to generate tag names for the Docker Image.
-  #
-  # Notes: The jq image runs busybox, so sed uses a different flag for Extended Regex
-  #        Docker images names are not validated, it's possible the image hasn't
-  #        been created yet.
-  #
-  # https://hub.docker.com/r/realguess/jq
+  # https://hub.docker.com/r/jetbrainsinfra/jq
   bump-wp:
-    image: realguess/jq:1.4
+    image: jetbrainsinfra/jq:latest
     volumes:
       - ./:/app
     command: |
-      sh -c " RESET=\"\\033[0m\" RED=\"\\033[31m\" GOLD=\"\\033[33m\" CYAN=\"\\033[36m\"
-              echo -e \"💫  Fetching releases from the $${CYAN}WordPress API$${RESET}.\" &&
-              wget -q -O- http://api.wordpress.org/core/stable-check/1.0 > /tmp/wp.json &&
-              echo -e \"👀  Found $${CYAN}$$(jq -r 'length' /tmp/wp.json)$${RESET} releases.\"  &&
-              jq '{wordpress: (to_entries[] | select(.value == \"latest\").key)}' /tmp/wp.json > /app/wp-version.json &&
-              WP_LATEST=$$(jq -r '.wordpress' /app/wp-version.json) &&
-              echo -e \"✏️  Updating $${GOLD}Dockerfile$${RESET} to $${CYAN}v$$(jq -r '.wordpress' /app/wp-version.json)$${RESET}.\" &&
-              sed -i \"s/wordpress:.*-php8/wordpress:$${WP_LATEST}-php8/\" /app/Dockerfile &&
-              echo -e \"✏️  Updating $${GOLD}README.md$${RESET} to $${CYAN}v$$(jq -r '.wordpress' /app/wp-version.json)$${RESET}.\" &&
-              sed -r -i \"s/currently\\s+\\*\\*\\[v[0-9.]+\]/currently **[v$$WP_LATEST]/\" /app/README.md
-              echo -e \"✅  Done!\""
-
-
-
-# TODO: Check DockerHub for existance of the latest release beffore continuing?
-
-# https://registry.hub.docker.com/v2/repositories/library/wordpress/tags/5.9.1
-
-# unknown tags return a 404:
-
-# https://registry.hub.docker.com/v2/repositories/library/wordpress/tags/7.9.4
-
-
-# sed -E -i "s/currently\s+\*\*\[[0-9.]+]/currently **[$WP_LATEST]/" README.md
-
-
-# https://registry.hub.docker.com/v1/repositories/wordpress/tags
-
-# https://registry.hub.docker.com/v2/repositories/library/wordpress/tags?page_size=100
-
-
-
-
-# cat wp.json| jq 'to_entries[] | select(.value == "latest") | { wordpress: .key, image: (.key + "-v")}' > wp-latest.json
-# jq -s '.[0] * (.[1] | {version})' wp-latest.json package.json
-# jq -s '.[0] * .[1]  | {wordpress, image: (.wordpress + "-v" + .version)}' wp-latest.json package.json
-
-# jq -s '(.[0].to_entries[] | select(.value == "latest")) * .[1]' wp.json package.json
-
-
-# jq -s '{wordpress: .[0] | to_entries[] | select(.value == "latest").key, version: .[1].version } | {wordpress, image: (.wordpress + "-v" + .version)}' wp.json package.json
-# {
-#   "wordpress": "5.9.2",
-#   "image": "5.9.2-v0.8.1"
-# }
-
-
-
-              # jq -s '
-              #     {
-              #       wordpress: .[0]
-              #         | to_entries[]
-              #         | select(.value == \"latest\").key,
-              #       version: .[1].version
-              #     } | {
-              #         wordpress,
-              #         image: (.wordpress + \"-v\" + .version)}' \\
-              #   /tmp/wp.json /app/package.json > /app/release.json &&
-              # WP_LATEST=$$(jq -r '.wordpress' /app/release.json) &&
-
-
-
-  # 1. Fetch list of stable WordPress versions from the wordpress.org api
-  # 2. Parse the API result and generate a JSON metadata file in containing
-  #    the latest WordPress version and a full image name from the combined
-  #    WordPress version and the project's version from package.json
-  # 3. Fetches the latest WordPress release from the JSON file and updates
-  #    the base image in the DockerFile.
-  #
-  #
-  # The generated /tmp/release.json file looks like this:
-  # {
-  #   "wordpress": "5.9.2",
-  #   "image": "5.9.2-v0.8.1"
-  # }
-
+      sh /app/bin/bump-wordpress.sh

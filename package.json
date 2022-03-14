@@ -65,7 +65,6 @@
       "bin/pull.sh",
       "bin/wp-init.sh",
       "boilerplate-tooling/docker-compose-util.yml",
-      "boilerplate-tooling/docker-compose.yml",
       "Dockerfile",
       "README.md"
     ]
