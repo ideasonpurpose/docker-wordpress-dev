@@ -9,7 +9,7 @@
 
 This project provides local development environments for fast iteration of existing WordPress websites. This includes pre-configured Docker-based MySQL and PHP servers, our [Docker-Build toolchain][docker-build], [Xdebug](https://xdebug.org/), [ImageMagick](http://www.imagemagick.org/) and a number of helper scripts.
 
-The project builds on the official WordPress docker image, currently **[v5.9.1](https://hub.docker.com/_/wordpress)**
+The project builds on the official WordPress docker image, currently **[v5.9.2](https://hub.docker.com/_/wordpress)**
 
 ## Getting Started
 

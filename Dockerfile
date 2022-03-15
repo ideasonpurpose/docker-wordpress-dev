@@ -1,6 +1,6 @@
 # Official WordPress image on DockerHub:
 # https://hub.docker.com/_/wordpress/
-FROM wordpress:5.9.1-php8.0-apache
+FROM wordpress:5.9.2-php8.0-apache
 
 LABEL version="0.9.5"
 
@@ -72,23 +72,28 @@ RUN apt-get update -yqq \
 # https://pecl.php.net/package/xdebug
 RUN pecl install xdebug-3.1.2 \
     && docker-php-ext-enable xdebug \
-    && echo "xdebug.mode = profile" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo "xdebug.start_with_request = trigger" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo "xdebug.output_dir = /tmp/xdebug_profiler" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo "debug.remote_host = host.docker.internal" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo '[XDebug]' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'zend_extension=xdebug' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'xdebug.mode = debug,profile' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'xdebug.output_dir = /tmp/xdebug' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo "xdebug.start_with_request=default" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'xdebug.use_compression = false' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'xdebug.start_with_request=trigger' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'xdebug.client_port = 9003' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'debug.remote_host = host.docker.internal' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && rm -rf /tmp/pear
-    # && echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini
-    # && echo "xdebug.remote_autostart=0" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    # && echo "xdebug.remote_port=${XDEBUG_PORT}" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    # && echo "xdebug.idekey=${XDEBUG_IDEKEY}" >> /usr/local/etc/php/conf.d/xdebug.ini
+    # && echo 'xdebug.log = /tmp/xdebug/xdebug.log' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    # && echo 'xdebug.log = 10' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
 
 # Remove 10 MB /usr/src/php.tar.xz file. Unnecesary since we never update PHP without rebuilding.
 # Ref: https://github.com/docker-library/php/issues/488
 RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
 
 # Make sure the XDebug profiler directory exists and is writable by www-data
-RUN mkdir /tmp/xdebug_profiler \
-    && chown www-data:www-data /tmp/xdebug_profiler
+RUN mkdir -p /tmp/xdebug \
+    && chmod -R 777 /tmp/xdebug \
+    && chown www-data:www-data /tmp/xdebug
+
 
 # Setup alternate WordPress debug.log location in /var/log
 RUN mkdir -p /var/log/wordpress \
