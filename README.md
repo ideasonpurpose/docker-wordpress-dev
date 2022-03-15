@@ -204,6 +204,28 @@ npm config set ar-project:port 8082
 
 A PHP Info page is available at [`localhost:8080/info.php`](http://localhost:8080/info.php).
 
+## Debugging & Profiling
+
+To profile a request with [XDebug][xdebug] and [WebGrind][], add `?XDEBUG_PROFILE=1` to any request. A **cachegrind.out.nn** file will be created in webpack/xdebug. Running `npm run webgrind` will launch a webgrind server for viewing those files. The default address is <http://localhost:9004>, or change ports with `npm run webgrind --port=9123`.
+
+#### Reading Call Graphs
+
+Every profiled run can also be viewed as a call graph. These graphs are [documented in the gprof2dot project](https://github.com/jrfonseca/gprof2dot#output):
+
+```
++------------------------------+
+|        function name         |
+| total time % ( self time % ) |
+|         total calls          |
++------------------------------+
+```
+
+> where:
+>
+> - **_total time %_** is the percentage of the running time spent in this function and all its children;
+> - **_self time %_** is the percentage of the running time spent in this function alone;
+> - **_total calls_** is the total number of times this function was called (including recursive calls).
+
 ### wp-cli
 
 The default command replaces the `wp` prefix, so alternate commands would look like this:
@@ -287,35 +309,6 @@ Project Root
 
 ## Included Tools, Commands, etc.
 
-_TODO: Does this still work?_
-
-Calling `docker-compose up -d` will run everything. To discover ports afterwards, run `docker-compose ps`. To clean up and deactivate any active containers, run `docker-compose down`.
-
-### Xdebug Profiles & The WebGrind Viewer
-
-To profile a request with Xdebug, add `?XDEBUG_PROFILE=1` to the url.
-
-[WebGrind](https://github.com/jokkedk/webgrind/) is included in the utility docker compose file to help view results and identify slow code. Call `npm run webgrind` then visit [localhost:9001](http://localhost:9001) and select a profile from the top menu.
-
-Profiler files will be in a top-level directory named `_profiler`. These can be viewed with a tool like KCacheGrind, QCacheGrind, WinCacheGrind
-
-#### Reading Call Graphs
-
-Every profiled run can also be viewed as a call graph. These graphs are [documented in the gprof2dot project](https://github.com/jrfonseca/gprof2dot#output):
-
-```
-+------------------------------+
-|        function name         |
-| total time % ( self time % ) |
-|         total calls          |
-+------------------------------+
-```
-
-> where:
->
-> - **_total time %_** is the percentage of the running time spent in this function and all its children;
-> - **_self time %_** is the percentage of the running time spent in this function alone;
-> - **_total calls_** is the total number of times this function was called (including recursive calls).
 
 -->
 
@@ -333,3 +326,5 @@ Every profiled run can also be viewed as a call graph. These graphs are [documen
 [docker-build]: https://github.com/ideasonpurpose/docker-build
 [phpmyadmin]: https://www.phpmyadmin.net/
 [docker-secrets]: https://docs.docker.com/compose/compose-file/compose-file-v3/#secrets
+[xdebug]: https://xdebug.org/
+[webgrind]: https://github.com/jokkedk/webgrind

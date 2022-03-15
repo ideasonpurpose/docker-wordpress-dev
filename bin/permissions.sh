@@ -77,6 +77,12 @@ chmod -fR ug+rwx /usr/src/site/_db
 echo -e "${DONE} Database files${CLEAR}"
 sleep 0.2s
 
+echo -ne "${DO}${GOLD} Resetting permissions: Webpack cache & debug files${CLEAR}\r"
+chown -fR "${OWNER_GROUP}" /usr/src/site/webpack
+chmod -fR 777 /usr/src/site/webpack
+echo -e "${DONE} Webpack cache & debug files${CLEAR}"
+sleep 0.2s
+
 echo -ne "${DO}${GOLD} Resetting permissions: wp-content Permissions${CLEAR}}\r"
 chmod -fR 0664 /usr/src/site/wp-content
 # Reset wp-content permissions or we'll be locked out of subsequent modifications

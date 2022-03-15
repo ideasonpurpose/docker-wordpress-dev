@@ -3,7 +3,7 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   db:
     # image: mysql:5.7
-    image: mariadb:10.6.5
+    image: mariadb:10.7.3
     restart: always
     volumes:
       - db_data:/var/lib/mysql
@@ -17,7 +17,7 @@ services:
     command: >
       --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
-  # Ideas On Purpose's local WordPress development enviornment.
+  # Ideas On Purpose's local WordPress development environment.
   # Update image version with `docker run ideasonpurpose/wordpress init`
   # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   wordpress:
@@ -33,7 +33,10 @@ services:
       - ./wp-content/uploads:/var/www/html/wp-content/uploads
       - ${DATA_MODEL_PLUGIN:-/tmp/null:/tmp/DATA_MODEL_PLUGIN}
       - ${BLOCKS_PLUGIN:-/tmp/null:/tmp/BLOCKS_PLUGIN}
-
+      - ${IOP_DASHBOARD_PLUGIN:-/tmp/null:/tmp/IOP_DASHBOARD_PLUGIN}
+      - ./webpack/xdebug:/tmp/xdebug
+    expose:
+      - 9003
     environment:
       DATA_MODEL_PLUGIN:
       BLOCKS_PLUGIN:
@@ -54,8 +57,10 @@ services:
       - wordpress
     volumes:
       - .:/usr/src/site/
+    ports:
+      - "${npm_config_port:-8080}:8080"
     environment:
-      PORT: ${npm_package_config_port:-8080}
+      PORT: ${npm_config_port:-8080}
     entrypoint: npm run
     command: start
 

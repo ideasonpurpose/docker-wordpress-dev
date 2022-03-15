@@ -19,7 +19,7 @@
     "composer:require": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer require",
     "composer:update": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm composer update",
     "docker:build": "docker compose run --rm tools build",
-    "docker:start": "cross-env-shell \"docker compose run --rm -p $npm_package_config_port:8080 tools start\"",
+    "docker:start": "docker compose run --rm --service-ports tools start",
     "docker:stop": "docker compose down",
     "log:wordpress": "npm run logs:wordpress",
     "logs:wordpress": "docker compose exec wordpress tail -f /var/log/wordpress/debug.log",
@@ -30,7 +30,7 @@
     "mysqldump": "npm run mysql:dump",
     "permissions:repair": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm repair-permissions",
     "prephpmyadmin": "echo 🛠 \\ Starting phpMyAdmin:  http://localhost:8002 && echo",
-    "phpmyadmin": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 8002:80 phpmyadmin",
+    "phpmyadmin": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm --service-ports phpmyadmin",
     "project:refresh": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm refresh",
     "pull": "npm run pull:db && npm run pull:plugins && npm run pull:uploads",
     "prepull:db": "npm run mysql:dump",
@@ -46,7 +46,7 @@
     "theme:activate": "cross-env-shell \"docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm theme-activate\"",
     "version": "version-everything && git add -u",
     "postversion": "npm run build",
-    "webgrind": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm -p 9001:80 webgrind",
+    "webgrind": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm --service-ports webgrind",
     "wp-cli": "cross-env-shell \"docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm wp-cli\""
   },
   "config": {

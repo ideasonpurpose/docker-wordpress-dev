@@ -35,6 +35,7 @@ fi
 
 # Create a simple phpinfo() page at /info.php
 echo '<?php phpinfo();' >/var/www/html/info.php
+echo '<?php xdebug_info();' >/var/www/html/xdebug.php
 
 # Finally, we run the original endpoint, as intended, to kickoff the server
 exec /usr/local/bin/docker-entrypoint.sh "$@"
