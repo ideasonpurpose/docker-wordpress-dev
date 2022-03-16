@@ -3,7 +3,7 @@
 # This script is a part of the ideasonpurpose/docker-wordpress-dev project
 # https://github.com/ideasonpurpose/docker-wordpress-dev
 #
-# Version: 0.9.5
+# Version: 0.9.6
 
 # This is a WordPress specific boilerplate assembler
 # After running this script, the target directory will be fully configured for local WordPress
