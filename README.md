@@ -1,6 +1,9 @@
 # WordPress local development with Docker
 
-#### Version 0.9.5
+<h4> 
+Version 0.0.0
+- WordPress 5.9.2
+</h4>
 
 [![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)<br>
 [![Push to Docker Hub](https://github.com/ideasonpurpose/docker-wordpress-dev/workflows/Push%20to%20Docker%20Hub/badge.svg)](https://github.com/ideasonpurpose/docker-wordpress-dev)
