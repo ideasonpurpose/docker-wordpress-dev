@@ -7,7 +7,7 @@ services:
       - db
       - wordpress
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.9.6
+    image: ideasonpurpose/wordpress:0.9.7
     user: www-data
     volumes:
       - wp_data:/var/www/html
@@ -147,7 +147,7 @@ services:
   # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   repair-permissions:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.9.6
+    image: ideasonpurpose/wordpress:0.9.7
     volumes:
       - .:/usr/src/site
     environment:
@@ -160,7 +160,7 @@ services:
   # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   pull:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:0.9.6
+    image: ideasonpurpose/wordpress:0.9.7
     volumes:
       - .:/usr/src/site
     entrypoint: |
