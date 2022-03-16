@@ -51,7 +51,7 @@ services:
   # Image from: https://hub.docker.com/r/ideasonpurpose/docker-build
   tools:
     # image: ideasonpurpose/docker-build:dev
-    image: ideasonpurpose/docker-build:0.11.0
+    image: ideasonpurpose/docker-build:0.11.1
     user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - wordpress
