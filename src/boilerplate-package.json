@@ -29,7 +29,6 @@
     "postmysql:reload": "npm run theme:activate",
     "mysqldump": "npm run mysql:dump",
     "permissions:repair": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm repair-permissions",
-    "prephpmyadmin": "echo 🛠 \\ Starting phpMyAdmin:  http://localhost:8002 && echo",
     "phpmyadmin": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm --service-ports phpmyadmin",
     "project:refresh": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm refresh",
     "pull": "npm run pull:db && npm run pull:plugins && npm run pull:uploads",
@@ -48,9 +47,6 @@
     "postversion": "npm run build",
     "webgrind": "docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm --service-ports webgrind",
     "wp-cli": "cross-env-shell \"docker compose -f docker-compose.yml -f docker-compose-util.yml run --rm wp-cli\""
-  },
-  "config": {
-    "port": 8080
   },
   "prettier": {
     "overrides": [
