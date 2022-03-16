@@ -77,7 +77,7 @@ All `*.sql` files from the top-level **\_db** directory will be in alphabetical 
 ### Basic development commands
 
 - **`npm run start`**  
-   Spins up a database and php server, then serves all content through the devServer proxy at [http://localhost:8080](http://localhost:8080). Files in the project directory will be watched for changes and trigger reloads when saved. Type **control-c** to stop the local server.
+   Spins up a database and php server, then serves all content through the devServer proxy at [http://localhost:8080](http://localhost:8080). Files in the project directory will be watched for changes and trigger reloads when saved. Type **control-c** to stop the local server. Change the default port with `--port=8080`
 
 - **`npm version [major|minor|patch]`**
   Increments the version then uses [version-everything][] to update project files before calling `npm run build` which generates a production build and compresses all theme files into a versioned, ready-to-deploy zip archive.
@@ -191,17 +191,23 @@ docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  compos
 docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  composer bash
 ```
 
-### Alternate DevServer Ports
+### Serving on Alternate Ports
 
-_note: This no longer works for npm versions >v6. See [#29](https://github.com/ideasonpurpose/docker-wordpress-dev/issues/29)_
-
-Webpack devserver runs on port `8080` by default. ~~Multiple projects can be run simultaneously by using `npm config` to assign different ports the the project's **package.json** `name`. For example, three projects named `csr-site`, `pro-bono` and `ar-project` could be run simultaneously on custom ports, after running these commands:~~
+All services which provide a server can have their default ports customized with the `--port=` flag. This allows for multiple projects to be run simultaneously on the same computer.
 
 ```sh
-npm config set csr-site:port 8080
-npm config set pro-bono:port 8081
-npm config set ar-project:port 8082
+# site one
+npm run start --port=8080
+
+# site two
+npm run start --port=8081
 ```
+
+#### Default ports
+
+- webpack devserver: `8080`
+- phpMyAdmin: `8002`
+- WebGrind: `9004`
 
 ### `phpinfo()`
 
