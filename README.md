@@ -183,12 +183,12 @@ To open a shell on _any_ running Docker container, run `docker ps` to retrieve c
 The [Composer][] image can also run other, more specific commands directly from `docker-compose`:
 
 ```sh
-docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  composer update
-docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  composer require monolog/monolog
+docker-compose run --rm  composer update
+docker-compose run --rm  composer require monolog/monolog
 
 # Open a shell in the composer image
 
-docker-compose -f docker-compose.yml -f docker-compose-util.yml run --rm  composer bash
+docker-compose run --rm  composer bash
 ```
 
 ### Serving on Alternate Ports
@@ -309,7 +309,6 @@ Project Root
 │ └─┬ uploads
 │   └── ...
 ├── composer.json
-├── docker-compose-util.yml
 ├── docker-compose.yml
 └── package.json
 ```
