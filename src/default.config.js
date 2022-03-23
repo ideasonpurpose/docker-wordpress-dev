@@ -1,5 +1,5 @@
 const pkg = require("./package.json");
-const themeName = process.env.NAME || pkg.name || "ioptheme";
+const themeName = pkg.name || "ioptheme";
 
 module.exports = {
   src: `./wp-content/themes/${themeName}/src`,
