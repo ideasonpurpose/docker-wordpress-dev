@@ -32,7 +32,7 @@
     "phpmyadmin": "docker compose run --rm --service-ports phpmyadmin",
     "preproject:refresh": "docker compose pull refresh",
     "project:refresh": "docker compose run --rm refresh",
-    "postproject:refresh": "docker compose pull",
+    "postproject:refresh": "docker compose pull wordpress",
     "pull": "npm run pull:db && npm run pull:plugins && npm run pull:uploads",
     "prepull:db": "npm run mysql:dump",
     "pull:db": "docker compose run --rm pull database",
