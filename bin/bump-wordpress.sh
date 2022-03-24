@@ -42,7 +42,7 @@ WP_LATEST=$(jq -r 'to_entries[] | select(.value == "latest").key' /tmp/wp.json)
 echo -e "🎁  Latest WordPress release is ${CYAN}${WP_LATEST}${RESET}"
 
 echo -e "🔍  Checking DockerHub to see if ${CYAN}wordpress:${WP_LATEST}${RESET} tag exists..."
-wget -q -O- https://registry.hub.docker.com/v2/repositories/library/wordpress/tags/${WP_LATEST}/ >/tmp/dockerhub-check.json
+wget -q -O- "https://registry.hub.docker.com/v2/repositories/library/wordpress/tags/${WP_LATEST}/" >/tmp/dockerhub-check.json
 if [[ ! -s /tmp/dockerhub-check.json ]]; then
   echo -e "⚠️   ${RED}Tag ${WP_LATEST} not found on DockerHub, unable to bump WordPress version.${RESET}"
   exit
@@ -62,4 +62,14 @@ sed -E -i "s/WordPress\s+[0-9.]+/WordPress ${WP_LATEST}/" /app/README.md
 echo -e "✏️   Updating ${GOLD}docker-compose.yml${RESET} (boilerplate) to ${CYAN}wordpress:${WP_LATEST}${RESET}"
 sed -E -i "s/ideasonpurpose\/wordpress:[0-9.]+/ideasonpurpose\/wordpress:${WP_LATEST}/" /app/boilerplate-tooling/docker-compose.yml
 
-echo -e "✅  Done!"
+echo
+echo -e "💫  Fetching latest ${GOLD}ideasonpurpose/docker-build${RESET} tag from ${CYAN}DockerHub${RESET}..."
+DOCKER_LATEST=$(wget -q -O- https://registry.hub.docker.com/v2/repositories/ideasonpurpose/docker-build/tags | jq -r '.results[1]["name"]')
+
+echo -e "👀  Found tag ${CYAN}${DOCKER_LATEST}${RESET}"
+
+echo -e "✏️   Updating ${GOLD}boilerplate-tooling/docker-compose.yml${RESET} to ${CYAN}docker-build:${DOCKER_LATEST}${RESET}"
+sed -E -i "s/ideasonpurpose\/docker-build:[0-9.]+/ideasonpurpose\/docker-build:${DOCKER_LATEST}/" /app/boilerplate-tooling/docker-compose.yml
+
+echo
+echo -e "✅  All done!"
