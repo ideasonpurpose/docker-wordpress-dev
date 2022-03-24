@@ -21,7 +21,6 @@ MAGENTA="\033[35m"
 DO="\r${GOLD}${BOLD}⋯${RESET} "
 DONE="\r${GREEN}${BOLD}√${RESET} "
 
-
 echo
 echo -e "${BOLD}${MAGENTA}♥︎${RESET} Run this command to configure your local environment:"
 echo
