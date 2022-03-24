@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "bump": "npm run wordpress:bump",
+    "shfmt": "docker compose run --rm shfmt",
     "version": "version-everything && auto-changelog && git add -u",
     "wordpress:bump": "docker-compose run --rm bump-wp"
   },

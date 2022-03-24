@@ -9,3 +9,20 @@ services:
       - ./:/app
     command: |
       sh /app/bin/bump-wordpress.sh
+
+  # Wrapper for the shfmt docker image
+  # Simplifies formatting scripts
+  # https://hub.docker.com/r/mvdan/shfmt 
+  shfmt:
+    image: mvdan/shfmt:latest-alpine
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      - ./bin:/mnt
+    command: |
+      sh -c '
+        echo &&
+        echo -e "🧙‍  Formatting shell scripts in \033[36m./bin\033[0m with shfmt" && 
+        shfmt -l -i 2 -w /mnt && 
+        echo -e "✨  All done!" &&
+        echo'
+
