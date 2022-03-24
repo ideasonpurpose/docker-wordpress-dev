@@ -1,7 +1,7 @@
 # WordPress local development with Docker
 
 <h4> 
-Version 0.10.2
+Version 0.10.1
 - WordPress 5.9.2
 </h4>
 
@@ -21,7 +21,7 @@ To update an existing project or start a new one, run the following commands in 
 ##### macOS, Linux & Windows PowerShell
 
 ```
-docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:0.10.2 init
+docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:0.10.1 init
 npm run bootstrap
 ```
 
@@ -30,7 +30,7 @@ _NOTE: If **~/.composer** doesn't exist, Docker will create it with root ownersh
 ##### Windows Command Prompt
 
 ```
-docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress:0.10.2 init
+docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress:0.10.1 init
 npm run bootstrap
 ```
 
@@ -254,11 +254,7 @@ docker build . --tag ideasonpurpose/wordpress:dev
 
 ### Shell Scripts
 
-All shell scripts in **bin** have been checked with [ShellCheck](https://www.shellcheck.net/) and formatted with [shfmt](https://github.com/mvdan/sh) via Docker:
-
-```sh
-docker run --user "$UID" --rm -it -v "$PWD":/scripts peterdavehello/shfmt:latest shfmt -i 2 -w /scripts/bin/<FILE>.sh
-```
+All shell scripts in **bin** have been checked with [ShellCheck](https://www.shellcheck.net/) and formatted with [shfmt](https://github.com/mvdan/sh) with command: `npm run shfmt`
 
 ## Docker maintenance
 
