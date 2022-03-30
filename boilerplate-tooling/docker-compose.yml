@@ -110,6 +110,7 @@ services:
     environment:
       PMA_USER: root
       PMA_PASSWORD: ~
+      UPLOAD_LIMIT: 1G
     command: |
       bash -c  'echo &&
                 echo -e  "🛠   \033[33mStarting phpMyAdmin at\033[0m \033[36mhttp://localhost:${npm_config_port:-8002}\033[0m" &&
