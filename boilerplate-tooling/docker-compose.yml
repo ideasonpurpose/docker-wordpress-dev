@@ -3,7 +3,9 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   db:
     # image: mysql:5.7
-    image: mariadb:10.7.3
+    # NOTE: 10.7.x was corrupting NJHI and IOP imports for unknown reasons
+    # image: mariadb:10.7.3
+    image: mariadb:10.6.7
     restart: always
     volumes:
       - db_data:/var/lib/mysql
@@ -14,8 +16,8 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
-    command: >
-      --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    # command: >
+    #   --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
   # Ideas On Purpose's local WordPress development environment.
   # Update image version with `docker run ideasonpurpose/wordpress init`
@@ -142,7 +144,7 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   mysqldump:
     # image: mysql:5.7
-    image: mariadb:10.6.5
+    image: mariadb:10.6.7
     profiles: ["utility"]
     depends_on:
       - db
@@ -174,7 +176,7 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   mysql-reload:
     # image: mysql:5.7
-    image: mariadb:10.6.5
+    image: mariadb:10.6.7
     profiles: ["utility"]
     depends_on:
       - db
@@ -199,7 +201,7 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   theme-activate:
     # image: mysql:5.7
-    image: mariadb:10.6.5
+    image: mariadb:10.6.7
     profiles: ["utility"]
     depends_on:
       - db
