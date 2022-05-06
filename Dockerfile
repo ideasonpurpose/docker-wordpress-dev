@@ -5,7 +5,7 @@
 # Manual updates also must change wp-version.json
 FROM wordpress:beta-6.0-RC1-php8.0-apache
 
-LABEL version="0.10.3"
+LABEL version="0.10.4"
 
 # Add `wp` user and group, then add `www-data` user to `wp` group
 RUN addgroup  --gid 1000 wp \
