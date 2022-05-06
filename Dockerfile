@@ -1,6 +1,9 @@
 # Official WordPress image on DockerHub:
 # https://hub.docker.com/_/wordpress/
-FROM wordpress:5.9.3-php8.0-apache
+# This version is automatically updated by the wordpress:bump script
+# but can also be manually updated for tagged betas and release candidates
+# Manual updates also must change wp-version.json
+FROM wordpress:beta-6.0-RC1-php8.0-apache
 
 LABEL version="0.10.3"
 
