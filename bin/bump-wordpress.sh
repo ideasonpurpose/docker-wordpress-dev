@@ -56,8 +56,8 @@ echo -e "✏️   Updating ${GOLD}Dockerfile${RESET} to ${CYAN}wordpress:${WP_LA
 sed -i "s/wordpress:.*-php8/wordpress:${WP_LATEST}-php8/" /app/Dockerfile
 
 echo -e "✏️   Updating ${GOLD}README.md${RESET} to ${CYAN}v${WP_LATEST}${RESET}"
-sed -E -i "s/currently\s+\*\*\[v[0-9.]+\]/currently **[v${WP_LATEST}]/" /app/README.md
-sed -E -i "s/WordPress\s+[0-9.]+/WordPress ${WP_LATEST}/" /app/README.md
+sed -E -i "s/currently\s+\*\*\[v[^\\]+\]/currently **[v${WP_LATEST}]/" /app/README.md
+sed -E -i "s/^<\!-- WPVERSION -->- WordPress.+$/<\!-- WPVERSION -->- WordPress ${WP_LATEST}/" /app/README.md
 
 echo -e "✏️   Updating ${GOLD}docker-compose.yml${RESET} (boilerplate) to ${CYAN}wordpress:${WP_LATEST}${RESET}"
 sed -E -i "s/ideasonpurpose\/wordpress:[0-9.]+/ideasonpurpose\/wordpress:${WP_LATEST}/" /app/boilerplate-tooling/docker-compose.yml

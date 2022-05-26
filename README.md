@@ -2,7 +2,7 @@
 
 <h4> 
 Version 0.10.4
-- WordPress beta-6.0-RC1
+<!-- WPVERSION -->- WordPress 6.0
 </h4>
 
 [![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)<br>
@@ -12,7 +12,7 @@ Version 0.10.4
 
 This project provides local development environments for fast iteration of existing WordPress websites. This includes pre-configured Docker-based MySQL and PHP servers, our [Docker-Build toolchain][docker-build], [Xdebug](https://xdebug.org/), [ImageMagick](http://www.imagemagick.org/) and a number of helper scripts.
 
-The project builds on the official WordPress docker image, currently **[v6.0-RC1](https://hub.docker.com/_/wordpress)**
+The project builds on the official WordPress docker image, currently **[v6.0](https://hub.docker.com/_/wordpress)**
 
 ## Getting Started
 
@@ -166,6 +166,12 @@ npm run wp-cli wp core update https://wordpress.org/wordpress-5.8.1-RC1.zip
 ```
 
 Versions can be rolled back by removing the docker `*_wp` volume.
+
+#### Bumping Image Versions
+
+The `npm run bump` script will query the WordPress releases API and DockerHub, then update the docker image and readme to the latest WordPress image.
+
+To update to a pre-release image, enter a valid DockerHub tag into the wp-version.json file.
 
 ### Plugin Development
 

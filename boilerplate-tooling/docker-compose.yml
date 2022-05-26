@@ -26,7 +26,7 @@ services:
     depends_on:
       - db
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:5.9.3
+    image: ideasonpurpose/wordpress:6.0
     restart: always
     volumes:
       - wp_data:/var/www/html
@@ -74,7 +74,7 @@ services:
       - db
       - wordpress
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:5.9.3
+    image: ideasonpurpose/wordpress:6.0
     profiles: ["utility"]
     user: www-data
     volumes:
@@ -234,7 +234,7 @@ services:
   # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   repair-permissions:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:5.9.3
+    image: ideasonpurpose/wordpress:6.0
     profiles: ["utility"]
     volumes:
       - .:/usr/src/site
@@ -248,7 +248,7 @@ services:
   # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   pull:
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:5.9.3
+    image: ideasonpurpose/wordpress:6.0
     profiles: ["utility"]
     volumes:
       - .:/usr/src/site
