@@ -17,5 +17,5 @@ echo
 echo -e "🥳 ${BOLD}${CYAN}Welcome to the Ideas On Purpose Docker WordPress environment!${RESET}"
 echo -e "🔗 ${BLUE}https://github.com/ideasonpurpose/docker-wordpress-dev${RESET}"
 echo
-echo -e "Most stuff is over in the ${BOLD}/usr/src/site${RESET} directory."
+echo -e "Most stuff is over in the ${BOLD}/usr/src${RESET} directory."
 echo
