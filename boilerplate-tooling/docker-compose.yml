@@ -5,7 +5,7 @@ services:
     # image: mysql:5.7
     # NOTE: 10.7.x was corrupting NJHI and IOP imports for unknown reasons
     # image: mariadb:10.7.3
-    image: mariadb:10.6.7
+    image: mariadb:10.8.3
     restart: always
     volumes:
       - db_data:/var/lib/mysql
@@ -144,7 +144,7 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   mysqldump:
     # image: mysql:5.7
-    image: mariadb:10.6.7
+    image: mariadb:10.8.3
     profiles: ["utility"]
     depends_on:
       - db
@@ -176,7 +176,7 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   mysql-reload:
     # image: mysql:5.7
-    image: mariadb:10.6.7
+    image: mariadb:10.8.3
     profiles: ["utility"]
     depends_on:
       - db
@@ -201,7 +201,7 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   theme-activate:
     # image: mysql:5.7
-    image: mariadb:10.6.7
+    image: mariadb:10.8.3
     profiles: ["utility"]
     depends_on:
       - db
