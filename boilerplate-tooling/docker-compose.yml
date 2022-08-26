@@ -136,7 +136,9 @@ services:
       WEBGRIND_DEFAULT_TIMEZONE: America/New_York
     command: |
       bash -c  'echo &&
-                echo -e  "🔍  \033[33mStarting WebGrind server at\033[0m \033[36mhttp://localhost:${npm_config_port:-8002}\033[0m" &&
+                echo -e  "🔍  \033[33mStarting WebGrind server at\033[0m \033[36mhttp://localhost:${npm_config_port:-9004}\033[0m" &&
+                echo -e  "⏱️   Profile any request by adding \033[1;35m?XDEBUG_PROFILE=1\033[0m to the url" && 
+                echo &&
                 php -S 0.0.0.0:8080 index.php
                 '
 
