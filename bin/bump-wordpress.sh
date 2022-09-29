@@ -64,7 +64,8 @@ sed -E -i "s/ideasonpurpose\/wordpress:[0-9.]+/ideasonpurpose\/wordpress:${WP_LA
 
 echo
 echo -e "💫  Fetching latest ${GOLD}ideasonpurpose/docker-build${RESET} tag from ${CYAN}DockerHub${RESET}..."
-DOCKER_LATEST=$(wget -q -O- https://registry.hub.docker.com/v2/repositories/ideasonpurpose/docker-build/tags | jq -r '.results[1]["name"]')
+# Note: jq grabs the THIRD item returned. The first is 'latest' and the second is only the major.minor version string. We want major.minor.patch
+DOCKER_LATEST=$(wget -q -O- https://registry.hub.docker.com/v2/repositories/ideasonpurpose/docker-build/tags | jq -r '.results[2]["name"]')
 
 echo -e "👀  Found tag ${CYAN}${DOCKER_LATEST}${RESET}"
 
