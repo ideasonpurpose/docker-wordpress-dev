@@ -5,7 +5,7 @@ services:
     # image: mysql:5.7
     # NOTE: 10.7.x was corrupting NJHI and IOP imports for unknown reasons
     # image: mariadb:10.7.3
-    image: mariadb:10.9.2
+    image: mariadb:10.9.3
     restart: always
     volumes:
       - db_data:/var/lib/mysql
@@ -53,7 +53,7 @@ services:
   # Image from: https://hub.docker.com/r/ideasonpurpose/docker-build
   tools:
     # image: ideasonpurpose/docker-build:dev
-    image: ideasonpurpose/docker-build:0.12.0
+    image: ideasonpurpose/docker-build:0.13.1
     user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - wordpress
@@ -90,7 +90,7 @@ services:
   # Utility service for running composer commands. Useful for adding tools from packagist
   # Image from: https://hub.docker.com/_/composer
   composer:
-    image: composer:2.2.7
+    image: composer:2.4.2
     profiles: ["utility"]
     user: "${UID:-1000}:${GID:-1000}"
     environment:
@@ -103,7 +103,7 @@ services:
   # Runs phpMyAdmin on port 8002
   # Image from: https://hub.docker.com/_/phpmyadmin
   phpmyadmin:
-    image: phpmyadmin:5.1.3-apache
+    image: phpmyadmin:5.2.0-apache
     profiles: ["utility"]
     ports:
       - "${npm_config_port:-8002}:80"
@@ -146,7 +146,7 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   mysqldump:
     # image: mysql:5.7
-    image: mariadb:10.9.2
+    image: mariadb:10.9.3
     profiles: ["utility"]
     depends_on:
       - db
@@ -178,7 +178,7 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   mysql-reload:
     # image: mysql:5.7
-    image: mariadb:10.9.2
+    image: mariadb:10.9.3
     profiles: ["utility"]
     depends_on:
       - db
@@ -203,7 +203,7 @@ services:
   # Image from: https://hub.docker.com/_/mariadb
   theme-activate:
     # image: mysql:5.7
-    image: mariadb:10.9.2
+    image: mariadb:10.9.3
     profiles: ["utility"]
     depends_on:
       - db
