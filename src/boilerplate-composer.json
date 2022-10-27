@@ -23,9 +23,9 @@
     }
   },
   "require": {
-    "ideasonpurpose/wp-google-analytics": "^1.0.0",
-    "ideasonpurpose/wp-svg-lib": "^2.0.0",
-    "ideasonpurpose/wp-theme-init": "^2.6.0",
+    "ideasonpurpose/wp-google-analytics": "^1.1.0",
+    "ideasonpurpose/wp-svg-lib": "^2.0.1",
+    "ideasonpurpose/wp-theme-init": "^2.9.0",
     "ideasonpurpose/wp-vimeo-embed": "dev-master",
     "php-stubs/wordpress-stubs": "dev-master"
   },
