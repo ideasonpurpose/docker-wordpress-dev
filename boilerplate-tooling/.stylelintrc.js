@@ -282,7 +282,7 @@ module.exports = {
   plugins: ["stylelint-order", "stylelint-prettier"],
   customSyntax: "postcss-scss",
   rules: {
-    "prettier/prettier": true,
+    "prettier/prettier": [true, { printWidth: 120 }],
     "order/properties-order": [
       [
         special,
