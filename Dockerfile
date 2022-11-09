@@ -3,7 +3,7 @@
 # This version is automatically updated by the wordpress:bump script
 # but can also be manually updated for tagged betas and release candidates
 # Manual updates also must change wp-version.json
-FROM wordpress:6.0.3-php8.0-apache
+FROM wordpress:6.1-php8.0-apache
 
 LABEL version="0.10.11"
 
