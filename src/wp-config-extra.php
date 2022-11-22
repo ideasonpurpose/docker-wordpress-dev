@@ -27,9 +27,11 @@ if (WP_DEBUG) {
 }
 
 /**
- * Useful idea from https://roots.io/
+ * Default WP_ENVIRONMENT_TYPE to 'development' unless an environment variable is set
+ * https://developer.wordpress.org/reference/functions/wp_get_environment_type/
+ * https://make.wordpress.org/core/2020/07/24/new-wp_get_environment_type-function-in-wordpress-5-5/
  */
-define('WP_ENV', 'development');
+define('WP_ENVIRONMENT_TYPE', getenv('WP_ENVIRONMENT_TYPE') ?: 'development');
 
 /**
  * Explicitly define FS_METHOD so WordPress creates group-writeable files
