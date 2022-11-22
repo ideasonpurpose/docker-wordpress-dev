@@ -37,14 +37,14 @@ if [[ -z "$NAME" ]]; then
 
   # Check whether we're running in a TTY before trying to prompt a name
   if [[ ! -t 1 ]]; then
-    echo 'This script is not running in a TTY terminal, please add `-t` if running from Docker'
+    echo "This script is not running in a TTY terminal, please add '-t' if running from Docker"
     exit 1
   fi
 
   # Prompt for a new theme name
   while true; do
-    read -r -p "$(echo -e -n "\n${BOLD}${GOLD}Enter a theme name > ${RESET}${CYAN}")" INPUT
-    echo -e -n "$RESET"
+    read -r -p "$(echo -ne "\n${BOLD}${GOLD}Enter a theme name > ${RESET}${CYAN}")" INPUT
+    echo -ne "$RESET"
 
     if [[ "$INPUT" =~ ^[-_a-zA-Z0-9]+$ ]]; then
       # Input is clean, continue with the new $NAME
@@ -146,18 +146,22 @@ jq -s '.[0].scripts as $defaultScripts |
 sleep 0.2s
 echo -e "$DONE"
 
-echo -ne "${DO}Sorting ${CYAN}package-lock.json${RESET}"
+echo -ne "${DO}Sorting ${CYAN}package.json${RESET}"
 /usr/local/bin/sort-package-json /usr/src/site/package.json &>/dev/null
 echo -e "$DONE"
 
-# Create a placeholder package-lock.json file if one doesn't exist. The bootstrap
-# script needs one so `npm ci` will run without complaining. This only needs to be
-# a skeleton file, if `packages` and `dependencies` are missing, `npmci` will
-# install everything from package.json but won't rewrite package-lock.json
+# When package-lock.json file is missing, assume this is a new instance. Run
+# npm install to create a new package-lock.json so the bootstrap script will
+# run without complaining.
 if [[ ! -s /usr/src/site/package-lock.json ]]; then
-  echo -ne "${DO}Creating placeholder ${CYAN}package-lock.json${RESET} file"
-  echo '{"lockfileVersion":2}' >/usr/src/site/package-lock.json
-  sleep 0.2s
+  # Get user and group from package.json
+  OWNER_GROUP=$(stat -c '%u:%g' /usr/src/site/package.json)
+  echo -ne "${DO}Missing ${CYAN}package-lock.json${RESET} file, running ${GOLD}npm install${RESET}"
+  npm install --prefix /usr/src/site &>/dev/null
+  echo -e "$DONE"
+
+  echo -ne "${DO}Resetting permissions on ${CYAN}package-lock.json${RESET} and ${CYAN}node_modules${RESET}"
+  chown -R $OWNER_GROUP /usr/src/site/package-lock.json /usr/src/site/node_modules/
   echo -e "$DONE"
 fi
 

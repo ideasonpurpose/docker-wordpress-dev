@@ -112,12 +112,15 @@ RUN apt-get update -yqq \
 RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /usr/local/bin/wp \
     && chmod +x /usr/local/bin/wp
 
+# Install current node js and global install sort-package-json for the init script
 # Install npm so we can run npx sort-package-json from the init script
-RUN apt-get update -yqq \
-    && apt-get install -y --no-install-recommends \
-        npm \
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -yqq --no-install-recommends \
+        nodejs \
     && rm -rf /var/lib/apt/lists/* \
-    && npm install --global sort-package-json@1.53
+    && npm install --global \
+        npm \
+        sort-package-json
 
 # Install rsync, ssh-client and jq for merging tooling and package.json files
 RUN apt-get update -yqq \
