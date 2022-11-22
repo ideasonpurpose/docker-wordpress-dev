@@ -62,20 +62,20 @@ if [[ -z "$DESCRIPTION" ]]; then
 
   # Check whether we're running in a TTY before trying to prompt a name
   if [[ ! -t 1 ]]; then
-    echo 'This script is not running in a TTY terminal, please add `-t` if running from Docker'
+    echo "This script is not running in a TTY terminal, please add '-t' if running from Docker"
     exit 1
   fi
 
   # Prompt for a new project description
-  read -r -p "$(echo -e -n "\n${BOLD}${GOLD}Project description > ${RESET}${CYAN}")" DESCRIPTION
+  read -r -p "$(echo -ne "${BOLD}${GOLD}Project description > ${RESET}${CYAN}")" DESCRIPTION
   echo -ne "$RESET"
 fi
 
 echo
 echo -e "${GOLD}${BOLD}Setting up WordPress environment${RESET}"
-echo -e "Theme name: ${CYAN}${NAME}${RESET}"
+echo -e "  Theme name: ${CYAN}${NAME}${RESET}"
 if [[ -n "$DESCRIPTION" ]]; then
-  echo -e "Description: ${CYAN}${DESCRIPTION}${RESET}"
+  echo -e "  Description: ${CYAN}${DESCRIPTION}${RESET}"
 fi
 echo
 
