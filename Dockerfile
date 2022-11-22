@@ -161,7 +161,8 @@ RUN chmod +x /etc/update-motd.d/*
 # Force MOTD in root bashrc
 RUN echo \
     && echo LS_OPTIONS='--color=auto' >> /root/.bashrc \
-    && echo run-parts /etc/update-motd.d/ >> /root/.bashrc
+    && echo run-parts /etc/update-motd.d/ >> /root/.bashrc \
+    && echo cd /usr/src >> /root/.bashrc
 
 # Network Debugging Tools
 # TODO: Remove or disable if not needed
