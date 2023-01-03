@@ -24,6 +24,9 @@ To update an existing project or start a new one, run the following commands in 
 
 ```
 docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:1.0.0 init
+```
+Followed by:
+```
 npm run bootstrap
 ```
 
@@ -33,7 +36,6 @@ _NOTE: If **~/.composer** doesn't exist, Docker will create it with root ownersh
 
 ```
 docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress:1.0.0 init
-npm run bootstrap
 ```
 
 - `init` command copies all the necessary tooling files into place and sets up the default theme directory structure.
