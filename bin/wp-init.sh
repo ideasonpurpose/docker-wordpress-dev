@@ -30,6 +30,7 @@ DONE="\r${GREEN}${BOLD}√${RESET} "
 if [[ -s /usr/src/site/package.json ]]; then
   NAME=$(jq -r '.name // empty' /usr/src/site/package.json)
   DESCRIPTION=$(jq -r '.description // empty' /usr/src/site/package.json)
+  VERSION=$(jq -r '.version // "0.0.0"' /usr/src/site/package.json)
 fi
 
 # If $NAME is not set, prompt the user
@@ -193,16 +194,20 @@ jq -s '.[0] * .[1] |
 
 echo -e "$DONE"
 
+# Copy style.css to /tmp to prevent sed permissions errors creating temp files
 echo -ne "${DO}Updating metadata in theme ${CYAN}style.css"
-sed -i -e "s/Theme Name.*$/Theme Name:         ${NAME} - v0.0.0/" "/usr/src/site/wp-content/themes/${NAME}/style.css"
-sed -i -e "s/Description.*$/Description:        ${DESCRIPTION}/" "/usr/src/site/wp-content/themes/${NAME}/style.css"
+cp "/usr/src/site/wp-content/themes/${NAME}/style.css" "/tmp/style.css"
+sed -i -e "s/Theme Name.*$/Theme Name:         ${NAME} - v${VERSION}/" "/tmp/style.css"
+sed -i -e "s/Description.*$/Description:        ${DESCRIPTION}/" "/tmp/style.css"
+sed -i -e "s/Version.*$/Version:            ${VERSION}/" "/tmp/style.css"
+cat "/tmp/style.css" >"/usr/src/site/wp-content/themes/${NAME}/style.css"
 echo -e "$DONE"
 
 # Create a README.md file if the file doesn't exist
 if [[ ! -s /usr/src/site/README.md ]]; then
   echo -ne "${DO}Creating ${CYAN}README.md${RESET} file"
   echo -e "# ${NAME}\n" >/usr/src/site/README.md
-  echo -e '#### Version 0.0.0\n' >>/usr/src/site/README.md
+  echo -e '#### Version ${VERSION}\n' >>/usr/src/site/README.md
   echo -e "${DESCRIPTION}\n" >>/usr/src/site/README.md
   echo -e "$DONE"
 fi
