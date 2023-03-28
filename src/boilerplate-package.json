@@ -18,6 +18,7 @@
     "composer:install": "docker compose run --rm composer",
     "composer:require": "docker compose run --rm composer require",
     "composer:update": "docker compose run --rm composer update",
+    "dev": "npm run start",
     "docker:build": "docker compose run --rm tools build",
     "docker:start": "docker compose run --rm --service-ports tools start",
     "docker:stop": "docker compose down",
