@@ -1,7 +1,7 @@
 # WordPress local development with Docker
 
 <h4> 
-Version 1.0.1
+Version 1.0.2
 <!-- WPVERSION -->- WordPress 6.1.1
 </h4>
 
@@ -23,7 +23,7 @@ To update an existing project or start a new one, run the following commands in 
 ##### macOS, Linux & Windows PowerShell
 
 ```
-docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:1.0.0 init
+docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:1.0.2 init
 ```
 Followed by:
 ```
@@ -35,7 +35,7 @@ _NOTE: If **~/.composer** doesn't exist, Docker will create it with root ownersh
 ##### Windows Command Prompt
 
 ```
-docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress:1.0.0 init
+docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress:1.0.2 init
 ```
 
 - `init` command copies all the necessary tooling files into place and sets up the default theme directory structure.
