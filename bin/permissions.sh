@@ -95,9 +95,13 @@ find /usr/src/site/wp-content -type d -exec chown -f "$OWNER_GROUP" {} \+ -exec 
 echo -e "${DONE} wp-content Ownership${CLEAR}"
 sleep 0.2s
 
+# We don't know the theme name, so this just creates and updates any acf-json directories currently
+# in this environment's wp-content directory.
 echo -ne "${DO}${GOLD} Resetting permissions: acf-json Permissions & Ownership "
-find /usr/src/site/wp-content -type f -wholename '*acf-json/*.json' -exec chmod -f 0664 {} \+
-find /usr/src/site/wp-content -type f -wholename '*acf-json/*.json' -exec chown -f "$OWNER_GROUP" {} \+
+find /usr/src/site/wp-content/themes -maxdepth 1 -mindepth 1 -type d -exec mkdir -p {}/acf-json \;
+find /usr/src/site/wp-content/themes -type f -wholename '*acf-json/*.json' -exec chmod -f 0664 {} \+
+find /usr/src/site/wp-content/themes -type d -wholename '*acf-json' -exec chmod -f 0775 {} \;
+find /usr/src/site/wp-content/themes -type d -wholename '*acf-json' -exec chown -Rf "$OWNER_GROUP" {} \;
 echo -e "${DONE} acf-json Permissions & Ownership${CLEAR}"
 sleep 0.2s
 

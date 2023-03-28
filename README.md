@@ -111,6 +111,11 @@ All `*.sql` files from the top-level **\_db** directory will be in alphabetical 
 - **`logs:wordpress`** - Stream the WordPress debug.log
 - **`wp-cli`** - Runs [wp-cli](https://wp-cli.org/vc) commands. The default command re-activates the development theme.
 
+
+#### Permissions Repair on macOS
+
+On macOS hosts, modifying permissions _inside_ a mounted Docker volume will add extended attributes to the shared files on the host instead of modifying their actual mode or ownership. To see these values in the terminal, run `ls -la@` or `xattr -l <file>`. Extended attribute values are prefixed with `com.docker.grpcfuse` regardless of whether Docker is using gRPC FUSE or VirtioFS ([they're both FUSE](https://www.docker.com/blog/deep-dive-into-new-docker-desktop-filesharing-implementation/)).
+
 ### Pulling Data from Remote Servers
 
 The `npm run pull` command brings together several sub-commands to sync remote data to the local development environment. Each command can also be called individually. Connection info must be configured in a **.env** file. Values are documented in the **.env.sample** file.
