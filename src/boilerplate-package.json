@@ -85,15 +85,15 @@
     ]
   },
   "devDependencies": {
-    "@prettier/plugin-php": "^0.19.1",
-    "chalk-cli": "^5.0.0",
+    "@prettier/plugin-php": "^0.19.4",
+    "chalk-cli": "^5.0.1",
     "cross-env": "^7.0.3",
-    "postcss-scss": "^4.0.5",
-    "prettier": "^2.7.1",
-    "sort-package-json": "^2.0.0",
-    "stylelint": "^14.14.0",
-    "stylelint-order": "^5.0.0",
-    "stylelint-prettier": "^2.0.0",
+    "postcss-scss": "^4.0.6",
+    "prettier": "^2.8.7",
+    "sort-package-json": "^2.4.1",
+    "stylelint": "^15.3.0",
+    "stylelint-order": "^6.0.3",
+    "stylelint-prettier": "^3.0.0",
     "version-everything": "^0.9.1"
   },
   "version-everything": {
