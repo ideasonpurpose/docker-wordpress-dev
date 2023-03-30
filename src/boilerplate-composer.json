@@ -26,14 +26,6 @@
     "ideasonpurpose/wp-google-analytics": "^1.1.0",
     "ideasonpurpose/wp-svg-lib": "^2.0.1",
     "ideasonpurpose/wp-theme-init": "^2.11.0",
-    "ideasonpurpose/wp-vimeo-embed": "dev-master",
     "php-stubs/wordpress-stubs": "dev-master"
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/ideasonpurpose/wp-vimeo-embed",
-      "no-api": true
-    }
-  ]
+  }
 }
