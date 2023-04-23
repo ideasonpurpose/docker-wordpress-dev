@@ -50,8 +50,8 @@
   "devDependencies": {
     "@prettier/plugin-php": "^0.19.4",
     "auto-changelog": "^2.4.0",
-    "prettier": "^2.8.7",
-    "version-everything": "^0.9.1"
+    "prettier": "^2.8.8",
+    "version-everything": "^0.9.2"
   },
   "auto-changelog": {
     "package": true,
