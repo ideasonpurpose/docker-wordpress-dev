@@ -1,5 +1,5 @@
 services:
-  # This service bumps the WordPress verion in the Dockerfile to the latest release.
+  # This service bumps the WordPress version in the Dockerfile to the latest release.
   # See the bin/bump-wordpress.sh script for docs
   #
   # https://hub.docker.com/r/jetbrainsinfra/jq
