@@ -3,7 +3,7 @@
 # This version is automatically updated by the wordpress:bump script
 # but can also be manually updated for tagged betas and release candidates
 # Manual updates also must change wp-version.json
-FROM wordpress:6.2.2-php8.0-apache
+FROM wordpress:6.3-php8.2-apache
 
 LABEL version="1.0.4"
 
@@ -62,18 +62,25 @@ RUN echo "[OPcache]" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini
 
 # Install Memcached
+# Note: pecl install will fail without also installing libssl-dev
+#   @link https://serverfault.com/a/1136017/150153
 RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \
-        libmemcached-dev \
         zlib1g-dev \
+        libssl-dev \
+        libmemcached-dev \
     && rm -rf /var/lib/apt/lists/* \
     && pecl install memcached \
     && docker-php-ext-enable memcached
+    # && echo BUILDPLATFORM: $BUILDPLATFORM > /usr/info.txt \
+    # && echo BUILDARCH:  $BUILDARCH >> /usr/info.txt \
+    # && env
+
 
 # Install XDebug, largly copied from:
 # https://github.com/andreccosta/wordpress-xdebug-dockerbuild
 # https://pecl.php.net/package/xdebug
-RUN pecl install xdebug-3.1.2 \
+RUN pecl install xdebug-3.2.2 \
     && docker-php-ext-enable xdebug \
     && echo '[XDebug]' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo 'zend_extension=xdebug' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \

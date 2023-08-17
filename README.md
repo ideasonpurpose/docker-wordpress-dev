@@ -2,7 +2,7 @@
 
 <h4> 
 Version 1.0.4
-<!-- WPVERSION -->- WordPress 6.2.2
+<!-- WPVERSION -->- WordPress 6.3
 </h4>
 
 <!-- [![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)<br> -->
@@ -14,7 +14,7 @@ Version 1.0.4
 
 This project provides local development environments for fast iteration of existing WordPress websites. This includes pre-configured Docker-based MySQL and PHP servers, our [Docker-Build toolchain][docker-build], [Xdebug](https://xdebug.org/), [ImageMagick](http://www.imagemagick.org/) and a number of helper scripts.
 
-The project builds on the official WordPress docker image, currently **[v6.2.2](https://hub.docker.com/_/wordpress)**
+The project builds on the official WordPress docker image, currently **[v6.3](https://hub.docker.com/_/wordpress)**
 
 ## Getting Started
 
