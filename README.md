@@ -7,8 +7,8 @@ Version 1.1.0
 
 <!-- [![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)<br> -->
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)
-[![Push to Docker Hub](https://github.com/ideasonpurpose/docker-wordpress-dev/workflows/Push%20to%20Docker%20Hub/badge.svg)](https://github.com/ideasonpurpose/docker-wordpress-dev)
+[![Docker Pulls](https://img.shields.io/docker/pulls/ideasonpurpose/wordpress?logo=docker&logoColor=white)](https://hub.docker.com/r/ideasonpurpose/wordpress)
+[![Push to DockerHub](https://img.shields.io/github/actions/workflow/status/ideasonpurpose/docker-wordpress-dev/push-to-dockerhub.yml?logo=github&logoColor=white&label=Push%20to%20DockerHub)](https://github.com/ideasonpurpose/docker-wordpress-dev)
 
 ## About This Project
 
@@ -25,7 +25,9 @@ To update an existing project or start a new one, run the following commands in 
 ```
 docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:1.1.0 init
 ```
+
 Followed by:
+
 ```
 npm run bootstrap
 ```
@@ -110,7 +112,6 @@ All `*.sql` files from the top-level **\_db** directory will be in alphabetical 
   - **`pull:uploads-all`** - Syncs down the entire **wp-content/uploads** directory from the remote
 - **`logs:wordpress`** - Stream the WordPress debug.log
 - **`wp-cli`** - Runs [wp-cli](https://wp-cli.org/vc) commands. The default command re-activates the development theme.
-
 
 #### Permissions Repair on macOS
 
