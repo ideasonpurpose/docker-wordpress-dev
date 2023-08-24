@@ -15,43 +15,13 @@
     "version": "version-everything && auto-changelog && git add -u",
     "wordpress:bump": "docker-compose run --rm bump-wp"
   },
-  "prettier": {
-    "overrides": [
-      {
-        "files": "*.html",
-        "options": {
-          "printWidth": 120,
-          "tabWidth": 2
-        }
-      },
-      {
-        "files": "*.json",
-        "options": {
-          "printWidth": 120
-        }
-      },
-      {
-        "files": "*.md",
-        "options": {
-          "embeddedLanguageFormatting": "off"
-        }
-      },
-      {
-        "files": "*.php",
-        "options": {
-          "printWidth": 100,
-          "singleQuote": true,
-          "tabWidth": 4,
-          "trailingCommaPHP": true
-        }
-      }
-    ]
-  },
+  "prettier": "@ideasonpurpose/prettier-config",
   "devDependencies": {
-    "@prettier/plugin-php": "^0.19.5",
+    "@ideasonpurpose/prettier-config": "^0.0.4",
+    "@prettier/plugin-php": "^0.20.1",
     "auto-changelog": "^2.4.0",
-    "prettier": "^2.8.8",
-    "version-everything": "^0.9.3"
+    "prettier": "^3.0.2",
+    "version-everything": "^0.11.0"
   },
   "auto-changelog": {
     "package": true,

@@ -2,10 +2,7 @@ services:
   # Primary database for the local WordPress development environment.
   # Image from: https://hub.docker.com/_/mariadb
   db:
-    # image: mysql:5.7
-    # NOTE: 10.7.x was corrupting NJHI and IOP imports for unknown reasons
-    # image: mariadb:10.7.3
-    image: mariadb:10.9.3
+    image: &db_img mariadb:11.0.3
     restart: always
     volumes:
       - db_data:/var/lib/mysql
@@ -26,7 +23,7 @@ services:
     depends_on:
       - db
     # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:6.3
+    image: &wp_img ideasonpurpose/wordpress:6.3
     restart: always
     volumes:
       - wp_data:/var/www/html
@@ -53,7 +50,7 @@ services:
   # Image from: https://hub.docker.com/r/ideasonpurpose/docker-build
   tools:
     # image: ideasonpurpose/docker-build:dev
-    image: ideasonpurpose/docker-build:0.13.5
+    image: ideasonpurpose/docker-build:0.14.0
     user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - wordpress
@@ -66,6 +63,20 @@ services:
     entrypoint: npm run
     command: start
 
+      # Utility service for running composer commands. Useful for adding tools from packagist
+  # Image from: https://hub.docker.com/_/composer
+  composer:
+    image: composer:2.5
+    profiles: ["utility"]
+    user: "${UID:-1000}:${GID:-1000}"
+    environment:
+      COMPOSER_HOME: /.composer
+    volumes:
+      - ./:/app
+      - ~/.composer:/.composer
+    command: install
+
+
   # Utility service which exposes wp-cli. Useful for testing pre-releases
   # Update image version with `docker run ideasonpurpose/wordpress init`
   # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
@@ -73,8 +84,7 @@ services:
     depends_on:
       - db
       - wordpress
-    # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:6.3
+    image: *wp_img
     profiles: ["utility"]
     user: www-data
     volumes:
@@ -87,23 +97,10 @@ services:
       - WP_CLI_DISABLE_AUTO_CHECK_UPDATE=true
     command: wp theme activate ${npm_package_name:-ioptheme}
 
-  # Utility service for running composer commands. Useful for adding tools from packagist
-  # Image from: https://hub.docker.com/_/composer
-  composer:
-    image: composer:2.4.2
-    profiles: ["utility"]
-    user: "${UID:-1000}:${GID:-1000}"
-    environment:
-      COMPOSER_HOME: /.composer
-    volumes:
-      - ./:/app
-      - ~/.composer:/.composer
-    command: install
-
   # Runs phpMyAdmin on port 8002
   # Image from: https://hub.docker.com/_/phpmyadmin
   phpmyadmin:
-    image: phpmyadmin:5.2.0-apache
+    image: phpmyadmin:5.2.1-apache
     profiles: ["utility"]
     ports:
       - "${npm_config_port:-8002}:80"
@@ -144,9 +141,8 @@ services:
 
   # Dumps the current database to _db/theme-YYYY-MM-DDTHHMMSS.sql.gz
   # Image from: https://hub.docker.com/_/mariadb
-  mysqldump:
-    # image: mysql:5.7
-    image: mariadb:10.9.3
+  db-dump:
+    image: *db_img
     profiles: ["utility"]
     depends_on:
       - db
@@ -156,29 +152,28 @@ services:
       MYSQL_DATABASE: wordpress
       OWNER_GROUP: "${UID:-1000}:${GID:-1000}"
 
-    # NOTE: The mysqldump file will include these CREATE/USE commands:
+    # NOTE: The datbase dumpfile will include these CREATE/USE commands:
     #           CREATE DATABASE `wordpress`;
     #           USE `wordpress`;
-    #       to drop those lines, remove  "--databases" from the mysqldump command
+    #       to drop those lines, remove  "--databases" from the mariadb-dump command
     command: |
       bash -c  'for i in {1..10}
-                do echo -e "⏳  \033[33mWaiting for MySQL server...\033[0m" &&
-                  mysql -s -h db -e "exit" && break || sleep 3
+                do echo -e "⏳  \033[33mWaiting for MariaDB server...\033[0m" &&
+                  mariadb -s -h db -e "exit" && break || sleep 3
                 done &&
                 sleep 2 &&
-                echo -e "✔️   \033[32mConnected to MySQL\033[0m" &&
+                echo -e "✔️   \033[32mConnected to MariaDB\033[0m" &&
                 export DUMPFILE="/usr/src/'${npm_package_name:-dumpfile}'-$$(date +%FT%H%M%S).sql" &&
                 echo $${DUMPFILE} &&
-                mysqldump -hdb --default-character-set=utf8mb4 --databases $${MYSQL_DATABASE} > "$${DUMPFILE}" &&
+                mariadb-dump -hdb --databases $${MYSQL_DATABASE} > "$${DUMPFILE}" &&
                 gzip "$${DUMPFILE}" &&
                 chown -R $${OWNER_GROUP} /usr/src &&
-                echo "Successfully dumped MySQL database to \"$${DUMPFILE}.gz\""'
+                echo "Successfully dumped database to \"$${DUMPFILE}.gz\""'
 
   # Reloads the database from the first found *.sql dumpfile in _db
   # Image from: https://hub.docker.com/_/mariadb
-  mysql-reload:
-    # image: mysql:5.7
-    image: mariadb:10.9.3
+  db-reload:
+    image: *db_img
     profiles: ["utility"]
     depends_on:
       - db
@@ -188,22 +183,21 @@ services:
       MYSQL_DATABASE: wordpress
     command: |
       bash -c  'for i in {1..10}
-                do echo -e "⏳  \033[33mWaiting for MySQL server...\033[0m" &&
-                  mysql -s -h db -e "exit" && break || sleep 3
+                do echo -e "⏳  \033[33mWaiting for MariaDB server...\033[0m" &&
+                  mariadb -s -h db -e "exit" && break || sleep 3
                 done &&
                 sleep 2 &&
-                echo -e "✔️   \033[32mConnected to MySQL\033[0m" &&
-                mysqladmin -hdb -v -f drop $${MYSQL_DATABASE} &&
-                mysqladmin -hdb -v -f create $${MYSQL_DATABASE} &&
+                echo -e "✔️   \033[32mConnected to MariaDB\033[0m" &&
+                mariadb-admin -hdb -v -f drop $${MYSQL_DATABASE} &&
+                mariadb-admin -hdb -v -f create $${MYSQL_DATABASE} &&
                 echo Database \"$${MYSQL_DATABASE}\" created &&
                 echo Reloading database from dumpfile &&
-                mysql -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1)'
+                mariadb -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1)'
 
   # Activates the theme directly in the database
   # Image from: https://hub.docker.com/_/mariadb
   theme-activate:
-    # image: mysql:5.7
-    image: mariadb:10.9.3
+    image: *db_img
     profiles: ["utility"]
     depends_on:
       - db
@@ -213,30 +207,29 @@ services:
       MYSQL_DATABASE: wordpress
     command: |
       bash -c  'for i in {1..10}
-                do echo -e "⏳  \033[33mWaiting for MySQL server...\033[0m" &&
-                  mysql -s -h db -e "exit" && break || sleep 3
+                do echo -e "⏳  \033[33mWaiting for DB server...\033[0m" &&
+                  mariadb -s -h db -e "exit" && break || sleep 3
                 done &&
                 sleep 2 &&
-                echo -e "✔️   \033[32mConnected to MySQL\033[0m" &&
-                if [[ $$(mysql -s -h db $${MYSQL_DATABASE} -e "SHOW TABLES LIKE \"wp_options\"") ]]
+                echo -e "✔️   \033[32mConnected to MariaDB\033[0m" &&
+                if [[ $$(mariadb -s -h db $${MYSQL_DATABASE} -e "SHOW TABLES LIKE \"wp_options\"") ]]
                 then
                   echo -e "🎨  \033[36mActivating theme \033[0m\033[1m${npm_package_name:-ioptheme}\033[0m"
-                  mysql -h db $${MYSQL_DATABASE} \
+                  mariadb -h db $${MYSQL_DATABASE} \
                         -e "UPDATE wp_options \
                             SET option_value = \"'${npm_package_name:-ioptheme}'\" \
                             WHERE option_name in (\"template\",\"stylesheet\")"
                 else
                   echo -e "Unable to activate theme: \033[31m'\'wp_options\'' table does not exist.\033[0m"
-                  echo "To recreate an existing site, copy the site'\''s MySQL dumpfile into _db"
-                  echo If this project is starting from an empty database, you can ignore this messege.
+                  echo "To recreate an existing site, copy the site'\''s MariaDB dumpfile into _db"
+                  echo If this project is starting from an empty database, you can ignore this message.
                 fi'
 
   # Repairs permissions for known project files and directories
   # Update image version with `docker run ideasonpurpose/wordpress init`
   # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   repair-permissions:
-    # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:6.3
+    image: *wp_img
     profiles: ["utility"]
     volumes:
       - .:/usr/src/site
@@ -249,8 +242,7 @@ services:
   # Run `docker run ideasonpurpose/wordpress init` to update the image version
   # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   pull:
-    # image: ideasonpurpose/wordpress:dev
-    image: ideasonpurpose/wordpress:6.3
+    image: *wp_img
     profiles: ["utility"]
     volumes:
       - .:/usr/src/site

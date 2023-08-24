@@ -98,11 +98,17 @@ All `*.sql` files from the top-level **\_db** directory will be in alphabetical 
   - **`composer:install`** - Installs packages from the composer.lock file
   - **`composer:require`** - Add new packages and update composer.json
   - **`composer:update`** - Updates composer dependencies to their newest allowable version and rewrites the **composer.lock** file.
-- **`mysql`**<br>
   Opens a mysql shell to the development WordPress database
-  - **`mysql:dump`**, **`mysqldump`** - Writes a compressed, timestamped database snapshot into the **\_db** directory
-  - **`mysql:reload`** - Drops, then reloads the database from the most recent dumpfile in **\_db** then attempts to activate the development theme.
-- **`phpmyadmin`** - Starts a phpMyAdmin server at [localhost:8002](http://localhost:8002)
+- **`db:admin`** - Starts a phpMyAdmin server at [localhost:8002](http://localhost:8002) 
+- **`db:dump`** - Writes a compressed, timestamped database snapshot into the **\_db** directory
+- **`db:pull`** - Alias for `pull:db` 
+- **`db:reload`** - Drops then reloads the database from the most recent dumpfile in **\_db**, then attempts to activate the development theme
+- **`db:shell`** - Opens a shell to the development WordPress database
+- **`dev`** - Alias for `start`
+- **`mariadb`**, **`mysql`** - Aliases for `db:admin` 
+- **`mariadb-dump`**, **`db:dump`**, **`mysql:dump`**, **`mysqldump`** - Aliases for `db:dump` 
+- **`mariadb:reload`**, **`mysql:reload`** - Aliases for `db:reload`
+- **`phpmyadmin`** - Alias for  `db:admin` 
 - **`project:refresh`** - Update the project with the latest tooling.
 - **`pull`**<br>
   Syncs data from a remote server to the local development environment. The bare command will run these sub-commands:
