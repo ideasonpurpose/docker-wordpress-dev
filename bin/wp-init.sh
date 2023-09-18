@@ -186,7 +186,7 @@ jq -s '.[0] * .[1] |
        .autoload."psr-4"."IdeasOnPurpose\\" = ["wp-content/themes/'"${NAME}"'/lib"] |
        .name //= "ideasonpurpose/'"${NAME}"'" |
        .description = "'"${DESCRIPTION}"'" |
-       .repositories |= sort_by(.url) |
+       if .repositories then .repositories |= sort_by(.url) else . end |
        .require = (.require | to_entries | sort_by(.key) | from_entries) |
        {name, description, version, authors, config, autoload} * . |
        with_entries(select(.value))' \
