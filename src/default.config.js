@@ -17,7 +17,7 @@ module.exports = {
   // NOTE: iNotify events sometimes stop working on macOS, restart Docker to get them back
   // usePolling: false,
 
-  // OPTIONAL: Specify a Sass implementation, accepts `node-sass` and `sass` (Dart Sass, default)
+  // OPTIONAL: Specify a Sass implementation, defaults to sass-embedded. Override with `sass` or `node-sass`.
   // sass: "sass",
 
   // Set the webpack devtool option for sourcemaps
