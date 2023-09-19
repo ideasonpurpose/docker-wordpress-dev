@@ -35,22 +35,23 @@ fi
 # Check whether key is valid. This is passed into the container as a
 # Docker secret. Docker-compose loads a key from the path specified
 # in the .env file. SSH is pre-configured to use this key.
+# NOTE: The default key name 'id_rsa' does not have to be an RSA key
 #
 if [[ -f /run/secrets/SSH_KEY ]]; then
   echo
-  echo -e "🔑  ${GOLD}Copying key to /ssh_keys/id_key${RESET}"
-  cp /run/secrets/SSH_KEY /ssh_keys/id_key
-  chmod 0600 /ssh_keys/id_key
+  echo -e "🔑  ${GOLD}Copying key to /ssh_keys/id_rsa${RESET}"
+  cp /run/secrets/SSH_KEY /ssh_keys/id_rsa
+  chmod 0600 /ssh_keys/id_rsa
 fi
 
-if (! ssh-keygen -lv -f /ssh_keys/id_key); then
+if (! ssh-keygen -lv -f /ssh_keys/id_rsa); then
   echo
   echo -e "${FAIL}${RED}Invalid key, unable to connect.${RESET}"
   exit 1
 fi
 
 # Warn on RSA keys (no longer supported)
-if grep -q "BEGIN RSA PRIVATE KEY" /ssh_keys/id_key; then
+if grep -q "BEGIN RSA PRIVATE KEY" /ssh_keys/id_rsa; then
   echo
   echo -e "🗝️   ${RED}You're using a legacy RSA key. The ssh-rsa algorithm is no longer supported by${RESET}"
   echo -e "    ${RED}OpenSSH servers and connections will likely fail without meaningful warnings.${RESET}"
