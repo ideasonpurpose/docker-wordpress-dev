@@ -58,50 +58,19 @@
     "webgrind": "docker compose run --rm --service-ports webgrind",
     "wp-cli": "cross-env-shell \"docker compose run --rm wp-cli\""
   },
-  "prettier": {
-    "overrides": [
-      {
-        "files": "*.html",
-        "options": {
-          "printWidth": 120,
-          "tabWidth": 2
-        }
-      },
-      {
-        "files": "*.json",
-        "options": {
-          "printWidth": 120
-        }
-      },
-      {
-        "files": "*.md",
-        "options": {
-          "embeddedLanguageFormatting": "off"
-        }
-      },
-      {
-        "files": "*.php",
-        "options": {
-          "phpVersion": "8.0",
-          "printWidth": 100,
-          "singleQuote": true,
-          "tabWidth": 4,
-          "trailingCommaPHP": true
-        }
-      }
-    ]
-  },
+  "prettier": "@ideasonpurpose/prettier-config",
   "devDependencies": {
-    "@prettier/plugin-php": "^0.19.4",
+    "@ideasonpurpose/prettier-config": "^0.0.4",
+    "@prettier/plugin-php": "^0.20.1",
     "chalk-cli": "^5.0.1",
     "cross-env": "^7.0.3",
     "postcss-scss": "^4.0.6",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.3",
     "sort-package-json": "^2.4.1",
     "stylelint": "^15.6.0",
     "stylelint-order": "^6.0.3",
-    "stylelint-prettier": "^3.0.0",
-    "version-everything": "^0.9.2"
+    "stylelint-prettier": "^4.0.2",
+    "version-everything": "^0.11.0"
   },
   "version-everything": {
     "files": [
