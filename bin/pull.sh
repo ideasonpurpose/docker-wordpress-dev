@@ -38,16 +38,24 @@ fi
 #
 if [[ -f /run/secrets/SSH_KEY ]]; then
   echo
-  echo -e "🔑  ${GOLD}Copying key to /ssh_keys/id_rsa${RESET}"
-  echo
-  cp /run/secrets/SSH_KEY /ssh_keys/id_rsa
-  chmod 0600 /ssh_keys/id_rsa
+  echo -e "🔑  ${GOLD}Copying key to /ssh_keys/id_key${RESET}"
+  cp /run/secrets/SSH_KEY /ssh_keys/id_key
+  chmod 0600 /ssh_keys/id_key
 fi
 
-if (! ssh-keygen -l -f /ssh_keys/id_rsa); then
+if (! ssh-keygen -lv -f /ssh_keys/id_key); then
   echo
   echo -e "${FAIL}${RED}Invalid key, unable to connect.${RESET}"
   exit 1
+fi
+
+# Warn on RSA keys (no longer supported)
+if grep -q "BEGIN RSA PRIVATE KEY" /ssh_keys/id_key; then
+  echo
+  echo -e "🗝️   ${RED}You're using a legacy RSA key. The ssh-rsa algorithm is no longer supported by${RESET}"
+  echo -e "    ${RED}OpenSSH servers and connections will likely fail without meaningful warnings.${RESET}"
+  echo
+  echo -e "🚨  ${BOLD}Please update your SSH keys.${RESET}"
 fi
 
 #
