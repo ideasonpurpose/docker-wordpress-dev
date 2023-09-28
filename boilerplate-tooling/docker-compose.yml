@@ -2,7 +2,7 @@ services:
   # Primary database for the local WordPress development environment.
   # Image from: https://hub.docker.com/_/mariadb
   db:
-    image: &db_img mariadb:11.0.3
+    image: &db_img mariadb:11.1.2
     restart: always
     volumes:
       - db_data:/var/lib/mysql
@@ -63,10 +63,10 @@ services:
     entrypoint: npm run
     command: start
 
-      # Utility service for running composer commands. Useful for adding tools from packagist
+  # Utility service for running composer commands
   # Image from: https://hub.docker.com/_/composer
   composer:
-    image: composer:2.5
+    image: composer:2.6
     profiles: ["utility"]
     user: "${UID:-1000}:${GID:-1000}"
     environment:
