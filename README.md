@@ -98,17 +98,17 @@ All `*.sql` files from the top-level **\_db** directory will be in alphabetical 
   - **`composer:install`** - Installs packages from the composer.lock file
   - **`composer:require`** - Add new packages and update composer.json
   - **`composer:update`** - Updates composer dependencies to their newest allowable version and rewrites the **composer.lock** file.
-  Opens a mysql shell to the development WordPress database
-- **`db:admin`** - Starts a phpMyAdmin server at [localhost:8002](http://localhost:8002) 
+    Opens a mysql shell to the development WordPress database
+- **`db:admin`** - Starts a phpMyAdmin server at [localhost:8002](http://localhost:8002)
 - **`db:dump`** - Writes a compressed, timestamped database snapshot into the **\_db** directory
-- **`db:pull`** - Alias for `pull:db` 
+- **`db:pull`** - Alias for `pull:db`
 - **`db:reload`** - Drops then reloads the database from the most recent dumpfile in **\_db**, then attempts to activate the development theme
 - **`db:shell`** - Opens a shell to the development WordPress database
 - **`dev`** - Alias for `start`
-- **`mariadb`**, **`mysql`** - Aliases for `db:admin` 
-- **`mariadb-dump`**, **`db:dump`**, **`mysql:dump`**, **`mysqldump`** - Aliases for `db:dump` 
+- **`mariadb`**, **`mysql`** - Aliases for `db:admin`
+- **`mariadb-dump`**, **`db:dump`**, **`mysql:dump`**, **`mysqldump`** - Aliases for `db:dump`
 - **`mariadb:reload`**, **`mysql:reload`** - Aliases for `db:reload`
-- **`phpmyadmin`** - Alias for  `db:admin` 
+- **`phpmyadmin`** - Alias for `db:admin`
 - **`project:refresh`** - Update the project with the latest tooling.
 - **`pull`**<br>
   Syncs data from a remote server to the local development environment. The bare command will run these sub-commands:
@@ -191,10 +191,15 @@ To update to a pre-release image, enter a valid DockerHub tag into the wp-versio
 
 ### Plugin Development
 
-Projects often rely on plugins which are developed in parallel. Two placeholder environment variables can be used to directly mount plugins into the WordPress environment. This enables better version control and dependency management since the nested and .gitignored **wp-content/plugins** directory often conflicts with the parent theme.
+Projects often rely on plugins which are developed in parallel. A number of placeholder `IOP_DEV_PLUGIN_#` environment variables are provided which can be used to directly mount plugins into the WordPress environment. These enable better version control and dependency management since the nested and .gitignored **wp-content/plugins** directory often conflicts with a parent theme.
 
-- **`DATA_MODEL_PLUGIN`**
-- **`BLOCKS_PLUGIN`**
+To add a development plugin to the WordPress environment, point the plugin's local relative path to an absolute path inside the container. Here's how we would make an **example-plugin** project being developed in a sibling directory available to the current WordPress development environment:
+
+```
+   IOP_DEV_PLUGIN_1="../example-plugin:/var/www/html/wp-content/plugins/example-plugin"
+   IOP_DEV_PLUGIN_2=
+   IOP_DEV_PLUGIN_3=
+```
 
 #### Accessing running containers
 

@@ -30,19 +30,29 @@ services:
       - ./wp-content/themes/${npm_package_name:-ioptheme}:/var/www/html/wp-content/themes/${npm_package_name:-ioptheme}
       - ./wp-content/plugins:/var/www/html/wp-content/plugins
       - ./wp-content/uploads:/var/www/html/wp-content/uploads
-      - ${DATA_MODEL_PLUGIN:-/tmp/null:/tmp/DATA_MODEL_PLUGIN}
-      - ${BLOCKS_PLUGIN:-/tmp/null:/tmp/BLOCKS_PLUGIN}
-      - ${IOP_DASHBOARD_PLUGIN:-/tmp/null:/tmp/IOP_DASHBOARD_PLUGIN}
+      - ${IOP_DEV_PLUGIN_1:-/tmp/null:/tmp/IOP_DEV_PLUGIN_1}
+      - ${IOP_DEV_PLUGIN_2:-/tmp/null:/tmp/IOP_DEV_PLUGIN_2}
+      - ${IOP_DEV_PLUGIN_3:-/tmp/null:/tmp/IOP_DEV_PLUGIN_3}
+      - ${IOP_DEV_PLUGIN_4:-/tmp/null:/tmp/IOP_DEV_PLUGIN_4}
+      - ${IOP_DEV_PLUGIN_5:-/tmp/null:/tmp/IOP_DEV_PLUGIN_5}
+      - ${IOP_DEV_PLUGIN_6:-/tmp/null:/tmp/IOP_DEV_PLUGIN_6}
+      - ${IOP_DEV_PLUGIN_7:-/tmp/null:/tmp/IOP_DEV_PLUGIN_7}
+      - ${IOP_DEV_PLUGIN_8:-/tmp/null:/tmp/IOP_DEV_PLUGIN_8}
       - ./webpack/xdebug:/tmp/xdebug
     expose:
       - 9003
     environment:
-      DATA_MODEL_PLUGIN:
-      BLOCKS_PLUGIN:
-      WORDPRESS_DEBUG:
+      IOP_DEV_PLUGIN_1:
+      IOP_DEV_PLUGIN_2:
+      IOP_DEV_PLUGIN_3:
+      IOP_DEV_PLUGIN_4:
+      IOP_DEV_PLUGIN_5:
+      IOP_DEV_PLUGIN_6:
+      IOP_DEV_PLUGIN_7:
+      IOP_DEV_PLUGIN_8:
 
-        # Apache will throw errors for any ulimit value below 8192
-        # NOTE THAT THIS MIGHT BE MORE THAN THE SYSTEM OFFERS
+    # Apache will throw errors for any ulimit value below 8192
+    # NOTE THAT THIS MIGHT BE MORE THAN THE SYSTEM OFFERS
     ulimits:
       nofile: 8192
 
