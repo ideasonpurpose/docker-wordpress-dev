@@ -150,7 +150,6 @@ services:
                 '
 
   # Dumps the current database to _db/theme-YYYY-MM-DDTHHMMSS.sql.gz
-  # Image from: https://hub.docker.com/_/mariadb
   db-dump:
     image: *db_img
     profiles: ["utility"]
@@ -181,7 +180,6 @@ services:
                 echo "Successfully dumped database to \"$${DUMPFILE}.gz\""'
 
   # Reloads the database from the first found *.sql dumpfile in _db
-  # Image from: https://hub.docker.com/_/mariadb
   db-reload:
     image: *db_img
     profiles: ["utility"]
@@ -205,7 +203,6 @@ services:
                 mariadb -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1)'
 
   # Activates the theme directly in the database
-  # Image from: https://hub.docker.com/_/mariadb
   theme-activate:
     image: *db_img
     profiles: ["utility"]
@@ -236,8 +233,6 @@ services:
                 fi'
 
   # Repairs permissions for known project files and directories
-  # Update image version with `docker run ideasonpurpose/wordpress init`
-  # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   repair-permissions:
     image: *wp_img
     profiles: ["utility"]
@@ -249,8 +244,6 @@ services:
 
   # Locally mirror remote sites by pulling the database, plugins and uploads
   # Remote connections are configured in the project's .env file
-  # Run `docker run ideasonpurpose/wordpress init` to update the image version
-  # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   pull:
     image: *wp_img
     profiles: ["utility"]
@@ -270,7 +263,7 @@ services:
 
   # Run the init script from ideasonpurpose/wordpress:latest (intentionally "latest")
   # to refresh tooling and bring the project inline with our boilerplate
-  # Image from: https://hub.docker.com/r/ideasonpurpose/docker-build
+  # Project info: https://github.com/ideasonpurpose/docker-wordpress-dev
   refresh:
     # image: ideasonpurpose/wordpress:dev
     image: ideasonpurpose/wordpress:latest
