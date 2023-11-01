@@ -124,7 +124,7 @@ RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 # Install LTS node.js from nodesource:
 #     https://github.com/nodesource/distributions#installation-instructions
 #     https://github.com/nodejs/release#release-schedule
-# Also global install npm sort-package-json install so we can call them from the init script
+# Also global install npm & sort-package-json so we can call them from the init script
 ARG NODE_LTS_MAJOR=18
 RUN apt-get update \
     && apt-get install -yff --no-install-recommends ca-certificates gnupg \
