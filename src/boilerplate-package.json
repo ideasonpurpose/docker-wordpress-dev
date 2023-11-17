@@ -61,7 +61,7 @@
   "prettier": "@ideasonpurpose/prettier-config",
   "devDependencies": {
     "@ideasonpurpose/prettier-config": "^0.0.4",
-    "@prettier/plugin-php": "^0.20.1",
+    "@prettier/plugin-php": "^0.21.0",
     "chalk-cli": "^5.0.1",
     "cross-env": "^7.0.3",
     "postcss-scss": "^4.0.6",
