@@ -3,7 +3,7 @@
 # This script is a part of the ideasonpurpose/docker-wordpress-dev project
 # https://github.com/ideasonpurpose/docker-wordpress-dev
 #
-# Version: 1.5.0
+# Version: 1.6.0
 
 RESET="\033[0m"
 BOLD="\033[1m"
