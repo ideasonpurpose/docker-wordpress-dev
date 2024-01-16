@@ -28,7 +28,7 @@
     "backfillLimit": 7
   },
   "version-everything": {
-    "prefix": "ideasonpurpose/wordpress:",
+    "prefix_DISABLED": "ideasonpurpose/wordpress:",
     "files": [
       "bin/docker-entrypoint-iop.sh",
       "bin/getting-started.sh",
