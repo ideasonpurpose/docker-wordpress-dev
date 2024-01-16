@@ -22,7 +22,7 @@ services:
   wordpress:
     depends_on:
       - db
-    # image: ideasonpurpose/wordpress:dev
+    # image: &wp_img ideasonpurpose/wordpress:dev
     image: &wp_img ideasonpurpose/wordpress:6.4.2
     restart: always
     volumes:
@@ -39,8 +39,16 @@ services:
       - ${IOP_DEV_PLUGIN_7:-/tmp/null:/tmp/IOP_DEV_PLUGIN_7}
       - ${IOP_DEV_PLUGIN_8:-/tmp/null:/tmp/IOP_DEV_PLUGIN_8}
       - ./webpack/xdebug:/tmp/xdebug
+
+    # Publish port 80 to an ephemeral host port to prepare for future local build tools
+    ports:
+      - "80"
+
+    # Internally expose port 9003 for XDebug and profiling
     expose:
       - 9003
+
+    # Link external plugin projects by defining host:container path pairs in .env
     environment:
       IOP_DEV_PLUGIN_1:
       IOP_DEV_PLUGIN_2:
@@ -53,6 +61,7 @@ services:
 
     # Apache will throw errors for any ulimit value below 8192
     # NOTE THAT THIS MIGHT BE MORE THAN THE SYSTEM OFFERS
+    # TODO: Still true?
     ulimits:
       nofile: 8192
 
@@ -85,7 +94,6 @@ services:
       - ./:/app
       - ~/.composer:/.composer
     command: install
-
 
   # Utility service which exposes wp-cli. Useful for testing pre-releases
   # Update image version with `docker run ideasonpurpose/wordpress init`
