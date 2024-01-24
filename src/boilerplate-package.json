@@ -26,7 +26,7 @@
     "dev": "npm run start",
     "docker:build": "docker compose run --rm tools build",
     "docker:start": "docker compose run --rm --service-ports tools start",
-    "docker:stop": "docker compose down",
+    "docker:stop": "docker compose down --remove-orphans",
     "log:wordpress": "npm run logs:wordpress",
     "logs:wordpress": "docker compose exec wordpress tail -f /var/log/wordpress/debug.log",
     "mariadb": "npm run db:admin",
