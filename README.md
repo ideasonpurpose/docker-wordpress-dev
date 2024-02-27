@@ -343,11 +343,15 @@ Project Root
 
 -->
 
+<!-- START IOP CREDIT BLURB -->
+
 ## &nbsp;
 
 #### Brought to you by IOP
 
-<a href="https://www.ideasonpurpose.com"><img src="https://raw.githubusercontent.com/ideasonpurpose/ideasonpurpose/master/IOP_monogram_circle_512x512_mint.png" height="44" align="top" alt="IOP Logo"></a><img src="https://raw.githubusercontent.com/ideasonpurpose/ideasonpurpose/master/spacer.png" align="middle" width="4" height="54"> This project is actively developed and used in production at <a href="https://www.ideasonpurpose.com">Ideas On Purpose</a>.
+<a href="https://www.ideasonpurpose.com"><img src="https://raw.githubusercontent.com/ideasonpurpose/ideasonpurpose/master/iop-logo-white-on-black-88px.png" height="44" align="top" alt="IOP Logo"></a><img src="https://raw.githubusercontent.com/ideasonpurpose/ideasonpurpose/master/spacer.png" align="middle" width="4" height="54"> This project is actively developed and used in production at <a href="https://www.ideasonpurpose.com">Ideas On Purpose</a>.
+
+<!-- END IOP CREDIT BLURB -->
 
 [basic-wordpress-vagrant]: https://github.com/ideasonpurpose/basic-wordpress-vagrant
 [basic-wordpress-box]: https://github.com/ideasonpurpose/basic-wordpress-box
