@@ -178,7 +178,7 @@ The base image provides a specific version of WordPress, but once running that v
 wp-cli can also be used to update to [pre-release](https://wordpress.org/download/releases/#betas) version of WordPress. An example command looks like this:
 
 ```sh
-npm run wp-cli wp core update https://wordpress.org/wordpress-5.8.1-RC1.zip
+npm run wp-cli wp core update https://wordpress.org/wordpress-6.5-RC3.zip
 ```
 
 Versions can be rolled back by removing the docker `*_wp` volume.
