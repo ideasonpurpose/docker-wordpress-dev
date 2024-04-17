@@ -81,7 +81,7 @@ RUN apt-get update -yqq \
 # Install XDebug, largly copied from:
 # https://github.com/andreccosta/wordpress-xdebug-dockerbuild
 # https://pecl.php.net/package/xdebug
-RUN pecl install xdebug-3.2.2 \
+RUN pecl install xdebug-3.3.2 \
     && docker-php-ext-enable xdebug \
     && echo '[XDebug]' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo 'zend_extension=xdebug' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
