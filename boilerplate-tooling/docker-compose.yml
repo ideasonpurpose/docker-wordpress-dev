@@ -23,7 +23,7 @@ services:
     depends_on:
       - db
     # image: &wp_img ideasonpurpose/wordpress:dev
-    image: &wp_img ideasonpurpose/wordpress:6.5.2
+    image: &wp_img ideasonpurpose/wordpress:6.5.3
     restart: always
     volumes:
       - wp_data:/var/www/html
@@ -69,7 +69,7 @@ services:
   # Image from: https://hub.docker.com/r/ideasonpurpose/docker-build
   tools:
     # image: ideasonpurpose/docker-build:dev
-    image: ideasonpurpose/docker-build:0.16.0
+    image: ideasonpurpose/docker-build:0.17.0
     user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - wordpress
