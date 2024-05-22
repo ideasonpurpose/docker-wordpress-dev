@@ -5,7 +5,7 @@
 # Manual updates also must change wp-version.json
 FROM wordpress:6.5.3-php8.2-apache
 
-LABEL version="1.6.3"
+LABEL version="1.6.4"
 
 # Add `wp` user and group, then add `www-data` user to `wp` group
 RUN addgroup  --gid 1000 wp \
