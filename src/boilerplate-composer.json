@@ -1,11 +1,12 @@
 {
-  "description": "",
+  "name": "ideasonpurpose/iop-example-site",
+  "description": "Block-based hybrid theme for the Example Site.",
   "config": {
     "optimize-autoloader": true,
     "sort-packages": true,
     "vendor-dir": "wp-content/themes/THEME_NAME/vendor",
     "platform": {
-      "php": "8.0",
+      "php": "8.2",
       "ext-intl": "0"
     }
   },
@@ -23,9 +24,9 @@
     }
   },
   "require": {
+    "ideasonpurpose/wp-admin-separators": "1.0.8",
     "ideasonpurpose/wp-google-analytics": "^1.1.0",
-    "ideasonpurpose/wp-svg-lib": "^3.0.0",
-    "ideasonpurpose/wp-theme-init": "^2.11.0",
-    "php-stubs/wordpress-stubs": "dev-master"
+    "ideasonpurpose/wp-svg-lib": "dev-master",
+    "ideasonpurpose/wp-theme-init": "^2.13.2"
   }
 }

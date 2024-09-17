@@ -2,18 +2,23 @@
   "name": "site-name",
   "version": "0.0.0",
   "private": true,
-  "description": "",
+  "description": "Block-based hybrid theme for EXAMPLE SITE.",
   "repository": "",
-  "author": "",
+  "author": "Ideas On Purpose (https://www.ideasonpurpose.com/)",
   "contributors": [],
+  "type": "module",
   "scripts": {
     "_bootstrap:composer": "npm run composer:install",
     "_bootstrap:npm": "npm ci",
     "prebootstrap": "npm run permissions:repair",
     "bootstrap": "npm run _bootstrap:npm && npm run _bootstrap:composer && npm run theme:activate",
     "postbootstrap": "echo && echo '  🚀' && echo '     ✨ All set!' && echo '🌏      Run this to get started:' && chalk bold yellow  '        npm run start' && echo",
-    "build": "npm run docker:build",
+    "build": "NODE_ENV=production webpack ",
+    "postbuild": "npm run zip",
+    "zip": "iop-build-zip-archive",
     "build:debug": "cross-env-shell \"docker compose run --rm -p $npm_package_config_port:8080 -p 9229:9229 tools build:debug\"",
+    "build:docker": "npm run docker:build",
+    "build:new-in-progress": "NODE_ENV=production webpack --color --stats-errors",
     "composer": "npm run composer:install",
     "composer:install": "docker compose run --rm composer",
     "composer:require": "docker compose run --rm composer require",
@@ -29,12 +34,6 @@
     "docker:stop": "docker compose down --remove-orphans",
     "log:wordpress": "npm run logs:wordpress",
     "logs:wordpress": "docker compose exec wordpress tail -f /var/log/wordpress/debug.log",
-    "mariadb": "npm run db:admin",
-    "mariadb:dump": "npm run db:dump",
-    "mariadb:reload": "npm run db:reload",
-    "mysql": "npm run db:admin",
-    "mysql:dump": "npm run db:dump",
-    "mysql:reload": "npm run db:reload",
     "mysqldump": "npm run db:dump",
     "permissions:repair": "docker compose run --rm repair-permissions",
     "phpmyadmin": "npm run db:admin",
@@ -48,9 +47,10 @@
     "pull:plugins": "docker compose run --rm pull plugins",
     "pull:uploads": "docker compose run --rm pull uploads",
     "pull:uploads-all": "docker compose run --rm pull uploads all",
-    "start": "npm run docker:start || exit 0",
+    "prestart": "docker compose run --rm --service-ports -d wordpress && iop-build-port-reporter",
+    "start": "webpack serve",
     "poststart": "npm run stop",
-    "start:debug": "cross-env-shell \"docker compose run --rm -p $npm_package_config_port:8080 -p 9229:9229 tools start:debug\"",
+    "start:old": "npm run docker:start || exit 0",
     "stop": "npm run docker:stop",
     "theme:activate": "cross-env-shell \"docker compose run --rm theme-activate\"",
     "version": "version-everything && git add -u",
@@ -59,22 +59,24 @@
     "wp-cli": "cross-env-shell \"docker compose run --rm wp-cli\""
   },
   "prettier": "@ideasonpurpose/prettier-config",
-  "devDependencies": {
-    "@ideasonpurpose/prettier-config": "^0.0.4",
-    "@prettier/plugin-php": "^0.22.1",
-    "chalk-cli": "^5.0.1",
+  "stylelint": {
+    "extends": "@ideasonpurpose/stylelint-config"
+  },
+    "devDependencies": {
+      "@ideasonpurpose/build-tools-wordpress": "github:ideasonpurpose/build-tools-wordpress",
+      "@ideasonpurpose/prettier-config": "^0.0.6",
+      "@ideasonpurpose/stylelint-config": "^1.0.2",
+      "@prettier/plugin-php": "^0.22.2",
     "cross-env": "^7.0.3",
-    "postcss-scss": "^4.0.6",
     "prettier": "^3.0.3",
-    "sort-package-json": "^2.6.0",
     "stylelint": "^16.1.0",
-    "stylelint-order": "^6.0.3",
-    "stylelint-prettier": "^5.0.0",
     "version-everything": "^0.11.0"
   },
   "version-everything": {
     "files": [
-      "README.md"
+      "README.md",
+      "wp-content/themes/EXAMPLE-SITE/style.css"
+
     ]
   }
 }
