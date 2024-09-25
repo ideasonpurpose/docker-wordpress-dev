@@ -2,7 +2,7 @@ services:
   # Primary database for the local WordPress development environment.
   # Image from: https://hub.docker.com/_/mariadb
   db:
-    image: &db_img mariadb:11.1.2
+    image: &db_img mariadb:11.5
     restart: always
     volumes:
       - db_data:/var/lib/mysql
@@ -85,7 +85,7 @@ services:
   # Utility service for running composer commands
   # Image from: https://hub.docker.com/_/composer
   composer:
-    image: composer:2.6
+    image: composer:2.7
     profiles: ["utility"]
     user: "${UID:-1000}:${GID:-1000}"
     environment:
@@ -176,13 +176,13 @@ services:
     command: |
       bash -c  'for i in {1..10}
                 do echo -e "⏳  \033[33mWaiting for MariaDB server...\033[0m" &&
-                  mariadb -s -h db -e "exit" && break || sleep 3
+                  mariadb --skip-ssl -s -h db -e "exit" && break || sleep 3
                 done &&
                 sleep 2 &&
                 echo -e "✔️   \033[32mConnected to MariaDB\033[0m" &&
                 export DUMPFILE="/usr/src/'${npm_package_name:-dumpfile}'-$$(date +%FT%H%M%S).sql" &&
                 echo $${DUMPFILE} &&
-                mariadb-dump -hdb --databases $${MYSQL_DATABASE} > "$${DUMPFILE}" &&
+                mariadb-dump --skip-ssl -hdb --databases $${MYSQL_DATABASE} > "$${DUMPFILE}" &&
                 gzip "$${DUMPFILE}" &&
                 chown -R $${OWNER_GROUP} /usr/src &&
                 echo "Successfully dumped database to \"$${DUMPFILE}.gz\""'
@@ -200,15 +200,15 @@ services:
     command: |
       bash -c  'for i in {1..10}
                 do echo -e "⏳  \033[33mWaiting for MariaDB server...\033[0m" &&
-                  mariadb -s -h db -e "exit" && break || sleep 3
+                  mariadb --skip-ssl -s -h db -e "exit" && break || sleep 3
                 done &&
                 sleep 2 &&
                 echo -e "✔️   \033[32mConnected to MariaDB\033[0m" &&
-                mariadb-admin -hdb -v -f drop $${MYSQL_DATABASE} &&
-                mariadb-admin -hdb -v -f create $${MYSQL_DATABASE} &&
+                mariadb-admin --skip-ssl -hdb -v -f drop $${MYSQL_DATABASE} &&
+                mariadb-admin --skip-ssl -hdb -v -f create $${MYSQL_DATABASE} &&
                 echo Database \"$${MYSQL_DATABASE}\" created &&
                 echo Reloading database from dumpfile &&
-                mariadb -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1)'
+                mariadb --skip-ssl -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1)'
 
   # Activates the theme directly in the database
   theme-activate:
@@ -223,14 +223,14 @@ services:
     command: |
       bash -c  'for i in {1..10}
                 do echo -e "⏳  \033[33mWaiting for DB server...\033[0m" &&
-                  mariadb -s -h db -e "exit" && break || sleep 3
+                  mariadb --skip-ssl -s -h db -e "exit" && break || sleep 3
                 done &&
                 sleep 2 &&
                 echo -e "✔️   \033[32mConnected to MariaDB\033[0m" &&
-                if [[ $$(mariadb -s -h db $${MYSQL_DATABASE} -e "SHOW TABLES LIKE \"wp_options\"") ]]
+                if [[ $$(mariadb --skip-ssl -s -h db $${MYSQL_DATABASE} -e "SHOW TABLES LIKE \"wp_options\"") ]]
                 then
                   echo -e "🎨  \033[36mActivating theme \033[0m\033[1m${npm_package_name:-ioptheme}\033[0m"
-                  mariadb -h db $${MYSQL_DATABASE} \
+                  mariadb --skip-ssl -h db $${MYSQL_DATABASE} \
                         -e "UPDATE wp_options \
                             SET option_value = \"'${npm_package_name:-ioptheme}'\" \
                             WHERE option_name in (\"template\",\"stylesheet\")"
