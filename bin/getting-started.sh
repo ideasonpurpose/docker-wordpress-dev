@@ -3,7 +3,7 @@
 # This script is a part of the ideasonpurpose/docker-wordpress-dev project
 # https://github.com/ideasonpurpose/docker-wordpress-dev
 #
-# Version: 1.6.9
+# Version: 1.6.10
 
 # Getting Started message
 
