@@ -21,7 +21,7 @@
     "@ideasonpurpose/prettier-config": "^1.0.0",
     "@prettier/plugin-php": "^0.22.4",
     "auto-changelog": "^2.5.0",
-    "prettier": "^3.4.2",
+    "prettier": "^3.5.2",
     "version-everything": "^0.11.4"
   },
   "auto-changelog": {
