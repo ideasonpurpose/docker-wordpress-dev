@@ -77,6 +77,12 @@ RUN apt-get update -yqq \
     # && echo BUILDARCH:  $BUILDARCH >> /usr/info.txt \
     # && env
 
+# Globally install Composer & Kint
+RUN curl -L https://raw.githubusercontent.com/kint-php/kint/master/build/kint.phar -o /usr/local/lib/kint.phar \
+    && chmod +x /usr/local/lib/kint.phar \
+    && echo 'auto_prepend_file=/usr/local/lib/debug_loader.php' > /usr/local/etc/php/conf.d/z_iop-debug_loader.ini
+
+COPY src/debug_loader.php /usr/local/lib
 
 # Install XDebug, largly copied from:
 # https://github.com/andreccosta/wordpress-xdebug-dockerbuild
@@ -167,6 +173,7 @@ RUN echo >> /etc/ssh/ssh_config \
     && echo "    LogLevel QUIET" >> /etc/ssh/ssh_config
 
 # COPY default.config.js /usr/src/
+# TODO: Why are the boilerplate-*.json files being copied? Do they do anything?
 COPY src/* /usr/src/
 
 # COPY boilerplate-theme/ /usr/src/boilerplate-theme
