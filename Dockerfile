@@ -16,14 +16,6 @@ RUN addgroup  --gid 1000 wp \
     && useradd -u 1000 -d /home/wp -g wp -G www-data wp \
     && usermod -a -G wp www-data
 
-# TODO: Leaving these here for now in case something goes wrong
-# All new files should be group-writable
-# TODO: This is likely wrong. Harmless, but wrong.
-# RUN echo 'umask 002' >> /etc/profile.d/set-umask.sh
-
-# # Set global umask in /etc/bashrc
-# RUN echo && echo 'umask 002' >> /etc/bash.bashrc
-
 # Set global umask with pam_umask
 RUN echo >> /etc/pam.d/common-session \
     && echo '# Set umask so newly created files are group writeable' >> /etc/pam.d/common-session \
@@ -77,9 +69,6 @@ RUN apt-get update -yqq \
     && rm -rf /var/lib/apt/lists/* \
     && pecl install memcached \
     && docker-php-ext-enable memcached
-    # && echo BUILDPLATFORM: $BUILDPLATFORM > /usr/info.txt \
-    # && echo BUILDARCH:  $BUILDARCH >> /usr/info.txt \
-    # && env
 
 # Remove 10 MB /usr/src/php.tar.xz file. Unnecesary since we never update PHP without rebuilding.
 # Ref: https://github.com/docker-library/php/issues/488
@@ -100,8 +89,8 @@ RUN pecl install xdebug-3.3.2 \
     && echo 'xdebug.client_port = 9003' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo 'debug.remote_host = host.docker.internal' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && rm -rf /tmp/pear
-    # && echo 'xdebug.log = /tmp/xdebug/xdebug.log' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    # && echo 'xdebug.log = 10' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+# && echo 'xdebug.log = /tmp/xdebug/xdebug.log' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+# && echo 'xdebug.log = 10' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
 
 # Make sure the XDebug profiler directory exists and is writable by www-data
 RUN mkdir -p /tmp/xdebug \
@@ -116,6 +105,7 @@ RUN curl -sS https://getcomposer.org/installer | php \
     && pwd > /usr/src/pwd.txt \
     && composer require symfony/var-dumper kint-php/kint --no-interaction \
     && echo 'auto_prepend_file=/usr/src/debug_loader.php' > /usr/local/etc/php/conf.d/z_iop-debug_loader.ini
+
 
 COPY src/debug_loader.php /usr/src
 
@@ -138,7 +128,7 @@ RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 #     https://github.com/nodesource/distributions#installation-instructions
 #     https://github.com/nodejs/release#release-schedule
 # Also global install npm & sort-package-json so we can call them from the init script
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get update -yqq \
     && apt-get install -yqq --no-install-recommends \
         nodejs \
@@ -157,15 +147,6 @@ RUN apt-get update -yqq \
     && apt-get autoremove -yqq \
     &&  rm -rf /var/lib/apt/lists/*
 
-
-# Install acl, attempting to fix umask permissions issues
-# NOTE: unsupported on this filesystem??
-# RUN apt-get update -yqq \
-#     && apt-get install -y --no-install-recommends \
-#       acl \
-#     && rm -rf /var/lib/apt/lists/*
-
-
 # Setup location for wp user's SSH keys
 RUN mkdir -p /ssh_keys \
     && chmod 0700 /ssh_keys \
@@ -179,12 +160,12 @@ RUN echo >> /etc/ssh/ssh_config \
     && echo "    UserKnownHostsFile /dev/null" >> /etc/ssh/ssh_config \
     && echo "    LogLevel QUIET" >> /etc/ssh/ssh_config
 
-# COPY default.config.js /usr/src/
-# TODO: Why are the boilerplate-*.json files being copied? Do they do anything?
-COPY src/* /usr/src/
+# COPY wp-config-extra.php to /usr/src/
+COPY src/wp-config-extra.php /usr/src/
 
 # COPY boilerplate-theme/ /usr/src/boilerplate-theme
-COPY boilerplate-tooling/ /usr/src/boilerplate-tooling
+# TODO: Disabled 2025-03 no need, just bloating the image.
+# COPY boilerplate-tooling/ /usr/src/boilerplate-tooling
 
 # Setup Message Of The Day
 COPY motd motd/* /etc/update-motd.d/
