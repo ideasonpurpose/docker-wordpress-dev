@@ -1,3 +1,7 @@
+# syntax=docker/dockerfile:1
+# check=skip=SecretsUsedInArgOrEnv
+# Suppresses a Docker warning when setting the WORDPRESS_DB_PASSWORD env var
+
 # Official WordPress image on DockerHub:
 # https://hub.docker.com/_/wordpress/
 # This version is automatically updated by the wordpress:bump script
@@ -77,12 +81,9 @@ RUN apt-get update -yqq \
     # && echo BUILDARCH:  $BUILDARCH >> /usr/info.txt \
     # && env
 
-# Globally install Composer & Kint
-RUN curl -L https://raw.githubusercontent.com/kint-php/kint/master/build/kint.phar -o /usr/local/lib/kint.phar \
-    && chmod +x /usr/local/lib/kint.phar \
-    && echo 'auto_prepend_file=/usr/local/lib/debug_loader.php' > /usr/local/etc/php/conf.d/z_iop-debug_loader.ini
-
-COPY src/debug_loader.php /usr/local/lib
+# Remove 10 MB /usr/src/php.tar.xz file. Unnecesary since we never update PHP without rebuilding.
+# Ref: https://github.com/docker-library/php/issues/488
+RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
 
 # Install XDebug, largly copied from:
 # https://github.com/andreccosta/wordpress-xdebug-dockerbuild
@@ -102,15 +103,21 @@ RUN pecl install xdebug-3.3.2 \
     # && echo 'xdebug.log = /tmp/xdebug/xdebug.log' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     # && echo 'xdebug.log = 10' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
 
-# Remove 10 MB /usr/src/php.tar.xz file. Unnecesary since we never update PHP without rebuilding.
-# Ref: https://github.com/docker-library/php/issues/488
-RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
-
 # Make sure the XDebug profiler directory exists and is writable by www-data
 RUN mkdir -p /tmp/xdebug \
     && chmod -R 777 /tmp/xdebug \
     && chown www-data:www-data /tmp/xdebug
 
+# Install Composer, VarDumper and Kint
+# && composer global require symfony/var-dumper kint-php/kint --no-interaction \
+WORKDIR /usr/src
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer \
+    && pwd > /usr/src/pwd.txt \
+    && composer require symfony/var-dumper kint-php/kint --no-interaction \
+    && echo 'auto_prepend_file=/usr/src/debug_loader.php' > /usr/local/etc/php/conf.d/z_iop-debug_loader.ini
+
+COPY src/debug_loader.php /usr/src
 
 # Setup alternate WordPress debug.log location in /var/log
 RUN mkdir -p /var/log/wordpress \
