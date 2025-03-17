@@ -1,8 +1,8 @@
 services:
   # Primary database for the local WordPress development environment.
-  # Image from: https://hub.docker.com/_/mariadb
+  # Image from: https://hub.docker.com/_/mysql
   db:
-    image: &db_img mariadb:11.5
+    image: &db_img mysql:8.4
     restart: always
     volumes:
       - db_data:/var/lib/mysql
@@ -69,7 +69,7 @@ services:
   # Image from: https://hub.docker.com/r/ideasonpurpose/docker-build
   tools:
     # image: ideasonpurpose/docker-build:dev
-    image: ideasonpurpose/docker-build:0.17.1
+    image: ideasonpurpose/docker-build:0.17.2
     user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - wordpress
@@ -85,7 +85,7 @@ services:
   # Utility service for running composer commands
   # Image from: https://hub.docker.com/_/composer
   composer:
-    image: composer:2.7
+    image: composer:2.8
     profiles: ["utility"]
     user: "${UID:-1000}:${GID:-1000}"
     environment:
@@ -118,7 +118,7 @@ services:
   # Runs phpMyAdmin on port 8002
   # Image from: https://hub.docker.com/_/phpmyadmin
   phpmyadmin:
-    image: phpmyadmin:5.2.1-apache
+    image: phpmyadmin:5.2-apache
     profiles: ["utility"]
     ports:
       - "${npm_config_port:-8002}:80"
@@ -172,17 +172,17 @@ services:
     # NOTE: The datbase dumpfile will include these CREATE/USE commands:
     #           CREATE DATABASE `wordpress`;
     #           USE `wordpress`;
-    #       to drop those lines, remove  "--databases" from the mariadb-dump command
+    #       to drop those lines, remove  "--databases" from the mysqldump command
     command: |
       bash -c  'for i in {1..10}
-                do echo -e "⏳  \033[33mWaiting for MariaDB server...\033[0m" &&
-                  mariadb --skip-ssl -s -h db -e "exit" && break || sleep 3
+                do echo -e "⏳  \033[33mWaiting for DB server...\033[0m" &&
+                  mysql --ssl-mode=DISABLED -s -h db -e "exit" && break || sleep 3
                 done &&
                 sleep 2 &&
-                echo -e "✔️   \033[32mConnected to MariaDB\033[0m" &&
+                echo -e "✔️   \033[32mConnected to DB\033[0m" &&
                 export DUMPFILE="/usr/src/'${npm_package_name:-dumpfile}'-$$(date +%FT%H%M%S).sql" &&
                 echo $${DUMPFILE} &&
-                mariadb-dump --skip-ssl -hdb --databases $${MYSQL_DATABASE} > "$${DUMPFILE}" &&
+                mysqldump --ssl-mode=DISABLED -hdb --databases $${MYSQL_DATABASE} > "$${DUMPFILE}" &&
                 gzip "$${DUMPFILE}" &&
                 chown -R $${OWNER_GROUP} /usr/src &&
                 echo "Successfully dumped database to \"$${DUMPFILE}.gz\""'
@@ -199,16 +199,16 @@ services:
       MYSQL_DATABASE: wordpress
     command: |
       bash -c  'for i in {1..10}
-                do echo -e "⏳  \033[33mWaiting for MariaDB server...\033[0m" &&
-                  mariadb --skip-ssl -s -h db -e "exit" && break || sleep 3
+                do echo -e "⏳  \033[33mWaiting for DB server...\033[0m" &&
+                  mysql --ssl-mode=DISABLED -s -h db -e "exit" && break || sleep 3
                 done &&
                 sleep 2 &&
-                echo -e "✔️   \033[32mConnected to MariaDB\033[0m" &&
-                mariadb-admin --skip-ssl -hdb -v -f drop $${MYSQL_DATABASE} &&
-                mariadb-admin --skip-ssl -hdb -v -f create $${MYSQL_DATABASE} &&
+                echo -e "✔️   \033[32mConnected to DB\033[0m" &&
+                mysqladmin --ssl-mode=DISABLED -hdb -v -f drop $${MYSQL_DATABASE} &&
+                mysqladmin --ssl-mode=DISABLED -hdb -v -f create $${MYSQL_DATABASE} &&
                 echo Database \"$${MYSQL_DATABASE}\" created &&
                 echo Reloading database from dumpfile &&
-                mariadb --skip-ssl -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1)'
+                mysql --ssl-mode=DISABLED -hdb $${MYSQL_DATABASE} < $$(ls /usr/src/dumpfiles/*.sql | tail -n1)'
 
   # Activates the theme directly in the database
   theme-activate:
@@ -223,20 +223,20 @@ services:
     command: |
       bash -c  'for i in {1..10}
                 do echo -e "⏳  \033[33mWaiting for DB server...\033[0m" &&
-                  mariadb --skip-ssl -s -h db -e "exit" && break || sleep 3
+                  mysql --ssl-mode=DISABLED -s -h db -e "exit" && break || sleep 3
                 done &&
                 sleep 2 &&
-                echo -e "✔️   \033[32mConnected to MariaDB\033[0m" &&
-                if [[ $$(mariadb --skip-ssl -s -h db $${MYSQL_DATABASE} -e "SHOW TABLES LIKE \"wp_options\"") ]]
+                echo -e "✔️   \033[32mConnected to DB\033[0m" &&
+                if [[ $$(mysql --ssl-mode=DISABLED -s -h db $${MYSQL_DATABASE} -e "SHOW TABLES LIKE \"wp_options\"") ]]
                 then
                   echo -e "🎨  \033[36mActivating theme \033[0m\033[1m${npm_package_name:-ioptheme}\033[0m"
-                  mariadb --skip-ssl -h db $${MYSQL_DATABASE} \
+                  mysql --ssl-mode=DISABLED -h db $${MYSQL_DATABASE} \
                         -e "UPDATE wp_options \
                             SET option_value = \"'${npm_package_name:-ioptheme}'\" \
                             WHERE option_name in (\"template\",\"stylesheet\")"
                 else
                   echo -e "Unable to activate theme: \033[31m'\'wp_options\'' table does not exist.\033[0m"
-                  echo "To recreate an existing site, copy the site'\''s MariaDB dumpfile into _db"
+                  echo "To recreate an existing site, copy the site'\''s DB dumpfile into _db"
                   echo If this project is starting from an empty database, you can ignore this message.
                 fi'
 
