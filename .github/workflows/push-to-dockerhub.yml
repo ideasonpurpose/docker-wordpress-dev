@@ -18,6 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Read latest WordPress version from wp-version.json
+        run: |
+          echo "WP_VERSION=$(jq -r '.wordpress' wp-version.json)" >> $GITHUB_ENV
+
       - name: Create GitHub release
         if: ${{ contains(github.ref, 'refs/tags/') }}
         env:
