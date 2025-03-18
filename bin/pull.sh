@@ -3,7 +3,7 @@
 # This script is a part of the ideasonpurpose/docker-wordpress-dev project
 # https://github.com/ideasonpurpose/docker-wordpress-dev
 #
-# Version: 1.6.11
+# Version: 1.7.0
 
 # style helpers
 RESET="\033[0m"
