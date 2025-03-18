@@ -174,12 +174,21 @@ RUN chmod +x /etc/update-motd.d/*
 RUN echo \
     && echo LS_OPTIONS='--color=auto' >> /root/.bashrc \
     && echo run-parts /etc/update-motd.d/ >> /root/.bashrc \
+    && echo alias wp='wp --allow-root' \
     && echo cd /usr/src >> /root/.bashrc
+
+# Install IPTables to workaround WordPress internal requests to external ports
+# This will be used to remap Docker's entire ephemeral port range back to 80
+RUN apt-get update -yqq \
+    && apt-get install -y --no-install-recommends \
+        iptables \
+    && apt-get autoremove -yqq \
+    && rm -rf /var/lib/apt/lists/*
 
 # Network Debugging Tools
 # TODO: Remove or disable if not needed
 RUN apt-get update -yqq \
-    &&  apt-get install -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends \
         iputils-ping \
         dnsutils \
         vim \

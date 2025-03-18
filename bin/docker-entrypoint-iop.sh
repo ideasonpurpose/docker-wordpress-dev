@@ -33,10 +33,18 @@ if [[ "$1" != apache2* ]] && [ "$1" != php-fpm ]; then
   exit 0
 fi
 
+# Check if NET_ADMIN capability is present
+if ! iptables -t nat -L >/dev/null 2>&1; then
+  echo -e "${GOLD}WARNING: IPTables failed due to missing NET_ADMIN capability."
+  echo -e "         Run with --cap-add=NET_ADMIN or add 'cap_add: [NET_ADMIN]' to docker-compose.yml.${RESET}"
+fi
+# Remap Docker's entire ephemeral port range back to port 80
+iptables -t nat -A OUTPUT -p tcp -d "localhost" --dport 49153:65535 -j REDIRECT --to-port 80
+
 # Create a simple phpinfo() page at /info.php
 echo '<?php phpinfo();' >/var/www/html/info.php
 echo '<?php xdebug_info();' >/var/www/html/xdebug.php
-chown $OWNER_GROUP /var/www/html/info.php /var/www/html/xdebug.php
+chown www-data:www-data /var/www/html/info.php /var/www/html/xdebug.php
 
 # Finally, we run the original endpoint, as intended, to kickoff the server
 exec /usr/local/bin/docker-entrypoint.sh "$@"

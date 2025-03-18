@@ -62,25 +62,33 @@ services:
     # Apache will throw errors for any ulimit value below 8192
     # NOTE THAT THIS MIGHT BE MORE THAN THE SYSTEM OFFERS
     # TODO: Still true?
-    ulimits:
-      nofile: 8192
+    # TODO: Testing removal. 2025-03-18
+    # ulimits:
+    #   nofile: 8192
 
-  # Ideas On Purpose's development toolchain
-  # Image from: https://hub.docker.com/r/ideasonpurpose/docker-build
-  tools:
-    # image: ideasonpurpose/docker-build:dev
-    image: ideasonpurpose/docker-build:0.17.2
-    user: "${UID:-1000}:${GID:-1000}"
-    depends_on:
-      - wordpress
-    volumes:
-      - .:/usr/src/site/
-    ports:
-      - "${npm_config_port:-8080}:8080"
-    environment:
-      PORT: ${npm_config_port:-8080}
-    entrypoint: npm run
-    command: start
+    # Required for iptables port-mapping to work inside the Docker image
+    # This is used to fix a PHP/WordPress issue where internal requests
+    # from Site Health tried to load from external ports.
+    cap_add:
+      - NET_ADMIN
+
+  # # TODO: Deprecated and likely ready to remove 2025-03-18
+  # # Ideas On Purpose's development toolchain
+  # # Image from: https://hub.docker.com/r/ideasonpurpose/docker-build
+  # tools:
+  #   # image: ideasonpurpose/docker-build:dev
+  #   image: ideasonpurpose/docker-build:0.17.2
+  #   user: "${UID:-1000}:${GID:-1000}"
+  #   depends_on:
+  #     - wordpress
+  #   volumes:
+  #     - .:/usr/src/site/
+  #   ports:
+  #     - "${npm_config_port:-8080}:8080"
+  #   environment:
+  #     PORT: ${npm_config_port:-8080}
+  #   entrypoint: npm run
+  #   command: start
 
   # Utility service for running composer commands
   # Image from: https://hub.docker.com/_/composer
