@@ -70,7 +70,7 @@ RUN apt-get update -yqq \
     && pecl install memcached \
     && docker-php-ext-enable memcached
 
-# Remove 10 MB /usr/src/php.tar.xz file. Unnecesary since we never update PHP without rebuilding.
+# Remove 10 MB /usr/src/php.tar.xz file. Unnecessary since we never update PHP without rebuilding.
 # Ref: https://github.com/docker-library/php/issues/488
 RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
 
