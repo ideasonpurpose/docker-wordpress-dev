@@ -63,15 +63,15 @@ sed -E -i "s/ideasonpurpose\/wordpress:[^ ]+ init$/ideasonpurpose\/wordpress:${W
 echo -e "✏️   Updating ${GOLD}docker-compose.yml${RESET} (boilerplate) to ${CYAN}wordpress:${WP_LATEST}${RESET}"
 sed -E -i "s/ideasonpurpose\/wordpress:[0-9.]+/ideasonpurpose\/wordpress:${WP_LATEST}/" /app/boilerplate-tooling/docker-compose.yml
 
-echo
-echo -e "💫  Fetching latest ${GOLD}ideasonpurpose/docker-build${RESET} tag from ${CYAN}DockerHub${RESET}..."
-# Note: jq grabs the THIRD item returned. The first is 'latest' and the second is only the major.minor version string. We want major.minor.patch
-DOCKER_LATEST=$(wget -q -O- https://registry.hub.docker.com/v2/repositories/ideasonpurpose/docker-build/tags | jq -r '.results[2]["name"]')
+# echo
+# echo -e "💫  Fetching latest ${GOLD}ideasonpurpose/docker-build${RESET} tag from ${CYAN}DockerHub${RESET}..."
+# # Note: jq grabs the THIRD item returned. The first is 'latest' and the second is only the major.minor version string. We want major.minor.patch
+# DOCKER_LATEST=$(wget -q -O- https://registry.hub.docker.com/v2/repositories/ideasonpurpose/docker-build/tags | jq -r '.results[2]["name"]')
 
-echo -e "👀  Found tag ${CYAN}${DOCKER_LATEST}${RESET}"
+# echo -e "👀  Found tag ${CYAN}${DOCKER_LATEST}${RESET}"
 
-echo -e "✏️   Updating ${GOLD}boilerplate-tooling/docker-compose.yml${RESET} to ${CYAN}docker-build:${DOCKER_LATEST}${RESET}"
-sed -E -i "s/ideasonpurpose\/docker-build:[0-9.]+/ideasonpurpose\/docker-build:${DOCKER_LATEST}/" /app/boilerplate-tooling/docker-compose.yml
+# echo -e "✏️   Updating ${GOLD}boilerplate-tooling/docker-compose.yml${RESET} to ${CYAN}docker-build:${DOCKER_LATEST}${RESET}"
+# sed -E -i "s/ideasonpurpose\/docker-build:[0-9.]+/ideasonpurpose\/docker-build:${DOCKER_LATEST}/" /app/boilerplate-tooling/docker-compose.yml
 
 echo
 echo -e "✅  All done!"
