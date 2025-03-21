@@ -45,7 +45,7 @@
     "poststart": "npm run stop",
     "stop": "docker compose down --remove-orphans",
     "theme:activate": "cross-env-shell \"docker compose run --rm theme-activate\"",
-    "version": "version-everything && git add -u",
+    "version": "version-everything && auto-changelog && git add -u",
     "postversion": "npm run build",
     "webgrind": "docker compose run --rm --service-ports webgrind",
     "wp-cli": "cross-env-shell \"docker compose run --rm wp-cli\"",
