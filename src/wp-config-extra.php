@@ -22,7 +22,11 @@ define('WP_SITEURL', "{$protocol}://{$_SERVER['HTTP_HOST']}");
 if (WP_DEBUG) {
     define('WP_DEBUG_LOG', '/var/log/wordpress/debug.log');
     define('WP_DEBUG_DISPLAY', true);
-    define('WP_DEVELOPMENT_MODE', 'core');
+    /**
+     * Disable caching of theme-related *.json files
+     * @link https://github.com/ideasonpurpose/docker-wordpress-dev/issues/72
+     */
+    define('WP_DEVELOPMENT_MODE', 'theme');
     define('SCRIPT_DEBUG', true);
     define('SAVEQUERIES', true);
 }
