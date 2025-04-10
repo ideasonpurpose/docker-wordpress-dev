@@ -99,13 +99,11 @@ RUN mkdir -p /tmp/xdebug \
 
 # Install Composer, VarDumper and Kint
 # && composer global require symfony/var-dumper kint-php/kint --no-interaction \
-WORKDIR /usr/src
-RUN curl -sS https://getcomposer.org/installer | php \
+RUN cd /usr/src \
+    && curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer \
-    && pwd > /usr/src/pwd.txt \
     && composer require symfony/var-dumper kint-php/kint --no-interaction \
     && echo 'auto_prepend_file=/usr/src/debug_loader.php' > /usr/local/etc/php/conf.d/z_iop-debug_loader.ini
-
 
 COPY src/debug_loader.php /usr/src
 
