@@ -28,7 +28,7 @@
     "ideasonpurpose/wp-google-analytics": "^1.1.0",
     "ideasonpurpose/wp-svg-lib": "^3.1.0",
     "ideasonpurpose/wp-theme-i18n": "dev-main",
-    "ideasonpurpose/wp-theme-init": "^2.15.1"
+    "ideasonpurpose/wp-theme-init": "^2.16.0"
   },
   "repositories": [
     {
