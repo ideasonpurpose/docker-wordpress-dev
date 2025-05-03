@@ -7,7 +7,7 @@
 # This version is automatically updated by the wordpress:bump script
 # but can also be manually updated for tagged betas and release candidates
 # Manual updates also must change wp-version.json
-FROM wordpress:6.8-php8.2-apache
+FROM wordpress:6.8.1-php8.2-apache
 
 LABEL version="1.7.4"
 
