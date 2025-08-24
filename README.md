@@ -2,7 +2,7 @@
 
 <h4> 
 Version 1.7.5
-<!-- WPVERSION -->- WordPress 6.8.1
+<!-- WPVERSION -->- WordPress 6.8.2
 </h4>
 
 <!-- [![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)<br> -->
@@ -14,7 +14,7 @@ Version 1.7.5
 
 This project provides local development environments for fast iteration of existing WordPress websites. This includes pre-configured Docker-based MySQL and PHP servers, our [Docker-Build toolchain][docker-build], [Xdebug](https://xdebug.org/), [ImageMagick](http://www.imagemagick.org/) and a number of helper scripts.
 
-The project builds on the official WordPress docker image, currently **[v6.8.1](https://hub.docker.com/_/wordpress)**
+The project builds on the official WordPress docker image, currently **[v6.8.2](https://hub.docker.com/_/wordpress)**
 
 ## Getting Started
 
@@ -23,7 +23,7 @@ To update an existing project or start a new one, run the following commands in 
 ##### macOS, Linux & Windows PowerShell
 
 ```
-docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:6.8.1 init
+docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:6.8.2 init
 ```
 
 Followed by:
@@ -37,7 +37,7 @@ _NOTE: If **~/.composer** doesn't exist, mounting the Docker volume will create 
 ##### Windows Command Prompt
 
 ```
-docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress:6.8.1 init
+docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress:6.8.2 init
 ```
 
 - `init` command copies all the necessary tooling files into place and sets up the default theme directory structure.
