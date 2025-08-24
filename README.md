@@ -1,7 +1,7 @@
 # WordPress local development with Docker
 
 <h4> 
-Version 1.7.5
+Version 1.7.6
 <!-- WPVERSION -->- WordPress 6.8.2
 </h4>
 
