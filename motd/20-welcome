@@ -18,4 +18,5 @@ echo -e "🥳 ${BOLD}${CYAN}Welcome to the Ideas On Purpose Docker WordPress env
 echo -e "🔗 ${BLUE}https://github.com/ideasonpurpose/docker-wordpress-dev${RESET}"
 echo
 echo -e "Most stuff is over in the ${BOLD}/usr/src${RESET} directory."
+echo -e "The site is served from ${BOLD}/var/www/html${RESET}"
 echo
