@@ -39,6 +39,15 @@ if (WP_DEBUG) {
 define('WP_ENVIRONMENT_TYPE', getenv('WP_ENVIRONMENT_TYPE') ?: 'development');
 
 /**
+ * If WP_MULTISITE is defined, enable multisite constants
+ */
+if (getenv('WP_MULTISITE')) {
+    define('MULTISITE', true);      // problem?
+    define('SUBDOMAIN_INSTALL', false);     // problem? pre-defined?
+    define('DOMAIN_CURRENT_SITE', $_SERVER['HTTP_HOST']);
+}
+
+/**
  * Explicitly define FS_METHOD so WordPress creates group-writeable files
  */
 define('FS_METHOD', 'direct');
