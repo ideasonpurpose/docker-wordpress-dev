@@ -9,7 +9,7 @@
 # Manual updates also must change wp-version.json
 FROM wordpress:6.8.3-php8.4-apache
 
-LABEL version="1.7.8"
+LABEL version="1.8.0"
 
 # Add `wp` user and group, then add `www-data` user to `wp` group
 RUN addgroup  --gid 1000 wp \
