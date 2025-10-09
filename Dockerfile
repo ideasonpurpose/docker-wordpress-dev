@@ -7,7 +7,7 @@
 # This version is automatically updated by the wordpress:bump script
 # but can also be manually updated for tagged betas and release candidates
 # Manual updates also must change wp-version.json
-FROM wordpress:6.8.2-php8.2-apache
+FROM wordpress:6.8.3-php8.4-apache
 
 LABEL version="1.7.8"
 
@@ -77,7 +77,7 @@ RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
 # Install XDebug, largly copied from:
 # https://github.com/andreccosta/wordpress-xdebug-dockerbuild
 # https://pecl.php.net/package/xdebug
-RUN pecl install xdebug-3.3.2 \
+RUN pecl install xdebug-3.4.6 \
     && docker-php-ext-enable xdebug \
     && echo '[XDebug]' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo 'zend_extension=xdebug' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
