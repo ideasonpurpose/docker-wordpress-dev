@@ -7,7 +7,7 @@
 # This version is automatically updated by the wordpress:bump script
 # but can also be manually updated for tagged betas and release candidates
 # Manual updates also must change wp-version.json
-FROM wordpress:6.9-php8.4-apache
+FROM wordpress:6.9.1-php8.4-apache
 
 LABEL version="1.8.1"
 
@@ -77,7 +77,7 @@ RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
 # Install XDebug, largly copied from:
 # https://github.com/andreccosta/wordpress-xdebug-dockerbuild
 # https://pecl.php.net/package/xdebug
-RUN pecl install xdebug-3.4.6 \
+RUN pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && echo '[XDebug]' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo 'zend_extension=xdebug' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
@@ -126,7 +126,7 @@ RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 #     https://github.com/nodesource/distributions#installation-instructions
 #     https://github.com/nodejs/release#release-schedule
 # Also global install npm & sort-package-json so we can call them from the init script
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
     && apt-get update -yqq \
     && apt-get install -yqq --no-install-recommends \
         nodejs \
