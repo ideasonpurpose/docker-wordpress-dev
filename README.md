@@ -1,7 +1,7 @@
 # WordPress local development with Docker
 
 <h4> 
-Version 1.9.0
+Version 1.9.1
 <!-- WPVERSION -->- WordPress 6.9.1
 </h4>
 
