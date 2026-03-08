@@ -40,7 +40,7 @@
     "pull:plugins": "docker compose run --rm pull plugins",
     "pull:uploads": "docker compose run --rm pull uploads",
     "pull:uploads-all": "docker compose run --rm pull uploads all",
-    "prestart": "docker compose run --rm --service-ports -d wordpress && iop-build-port-reporter",
+    "prestart": "rimraf -g 'wp-content/themes/iop*/dist' && docker compose run --rm --service-ports -d wordpress && iop-build-port-reporter",
     "start": "webpack serve",
     "poststart": "npm run stop",
     "stop": "docker compose down --remove-orphans",
