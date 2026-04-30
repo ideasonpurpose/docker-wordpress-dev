@@ -6,7 +6,7 @@
     "sort-packages": true,
     "vendor-dir": "wp-content/themes/THEME_NAME/vendor",
     "platform": {
-      "php": "8.2",
+      "php": "8.3",
       "ext-intl": "0"
     }
   },
