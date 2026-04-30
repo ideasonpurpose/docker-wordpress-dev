@@ -13,8 +13,23 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
-    # command: >
-    #   --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    # Command update from https://x.com/i/grok?conversation=2009819808595165421
+    command: >
+      --disable-log-bin
+      --innodb_flush_log_at_trx_commit=2
+      --sync_binlog=0              
+      --innodb_doublewrite=0       
+      --slow-query-log=0
+      --general-log=0
+      --performance_schema=OFF   
+    # Prevent container logs from bloating on disk
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+
 
   # Ideas On Purpose's local WordPress development environment.
   # Update image version with `docker run ideasonpurpose/wordpress init`
@@ -72,28 +87,10 @@ services:
     cap_add:
       - NET_ADMIN
 
-  # # TODO: Deprecated and likely ready to remove 2025-03-18
-  # # Ideas On Purpose's development toolchain
-  # # Image from: https://hub.docker.com/r/ideasonpurpose/docker-build
-  # tools:
-  #   # image: ideasonpurpose/docker-build:dev
-  #   image: ideasonpurpose/docker-build:0.17.2
-  #   user: "${UID:-1000}:${GID:-1000}"
-  #   depends_on:
-  #     - wordpress
-  #   volumes:
-  #     - .:/usr/src/site/
-  #   ports:
-  #     - "${npm_config_port:-8080}:8080"
-  #   environment:
-  #     PORT: ${npm_config_port:-8080}
-  #   entrypoint: npm run
-  #   command: start
-
   # Utility service for running composer commands
   # Image from: https://hub.docker.com/_/composer
   composer:
-    image: composer:2.8
+    image: composer:2.9
     profiles: ["utility"]
     user: "${UID:-1000}:${GID:-1000}"
     environment:
