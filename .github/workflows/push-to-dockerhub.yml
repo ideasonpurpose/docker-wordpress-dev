@@ -11,9 +11,17 @@ on:
   push:
     tags: ["v*"]
 
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   Deploy:
     runs-on: ubuntu-24.04
+    timeout-minutes: 60
 
     steps:
       # https://github.com/marketplace/actions/checkout
@@ -26,7 +34,6 @@ jobs:
           echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
       - name: Create GitHub release
-        if: ${{ contains(github.ref, 'refs/tags/') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -81,9 +88,6 @@ jobs:
     needs: Deploy # Run only if Deploy succeeds
 
     steps:
-      # https://github.com/marketplace/actions/checkout
-      - uses: actions/checkout@v6
-
       # https://github.com/marketplace/actions/docker-hub-description
       - name: Update Docker Hub Readme
         uses: peter-evans/dockerhub-description@v5
