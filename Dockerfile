@@ -11,6 +11,11 @@ FROM wordpress:6.9.4-php8.4-apache
 
 LABEL version="1.9.3"
 
+# Remove 10 MB /usr/src/php.tar.xz file. Unnecessary since we never update PHP without rebuilding.
+# Ref: https://github.com/docker-library/php/issues/488
+# TODO: Is this still necessary?
+RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
+
 # Add `wp` user and group, then add `www-data` user to `wp` group
 RUN addgroup  --gid 1000 wp \
     && useradd -u 1000 -d /home/wp -g wp -G www-data wp \
@@ -58,27 +63,48 @@ RUN echo "[OPcache]" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini
 
 
-# Install PIE
-RUN curl -fL -o /usr/local/bin/pie https://github.com/php/pie/releases/latest/download/pie.phar \
-    && chmod +x /usr/local/bin/pie \
-    && php /usr/local/bin/pie --version
+# # Install PIE
+# RUN curl -fL -o /usr/local/bin/pie https://github.com/php/pie/releases/latest/download/pie.phar \
+#     && chmod +x /usr/local/bin/pie
 
-# Install build dependencies for memcached extension, install memcached
+# Install less for wp-cli's pager
+# Install rsync, ssh-client and jq for merging tooling and package.json files
+# Install IPTables to workaround WordPress internal requests to external ports
+# - IPTables is used to remap Docker's entire ephemeral port range back to 80
+# Install build dependencies for memcached extension
+# Install PIE
+#  - Install memcached
+#  - Install xdebug
+# Remove build dependencies and clean up
+# Remove PIE
 RUN apt-get update -yqq \
+    && curl -fL -o /usr/local/bin/pie https://github.com/php/pie/releases/latest/download/pie.phar \
+    && chmod +x /usr/local/bin/pie \
     && apt-get install -y --no-install-recommends \
+        less \
+        rsync \
+        openssh-client \
+        jq \
+        iptables \
         bison \
         libtool \
         libmemcached-dev \
         zlib1g-dev \
     && pie install php-memcached/php-memcached \
     && docker-php-ext-enable memcached \
+    && pie install xdebug/xdebug \
+    && docker-php-ext-enable xdebug \
+    && apt-get remove -yqq --purge bison libtool \
     && apt-get autoremove -yqq \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /usr/local/bin/pie \
+    && rm -rf /tmp/*
 
 
-# Install XDebug
-RUN pie install xdebug/xdebug \
-    && docker-php-ext-enable xdebug
+
+# # Install XDebug
+# RUN pie install xdebug/xdebug \
+#     && docker-php-ext-enable xdebug
 
 # Configure XDebug
 RUN echo '[XDebug]' > /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
@@ -89,13 +115,6 @@ RUN echo '[XDebug]' > /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo 'xdebug.client_port = 9003' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo 'xdebug.use_compression = false' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini
 
-# Remove 10 MB /usr/src/php.tar.xz file. Unnecessary since we never update PHP without rebuilding.
-# Ref: https://github.com/docker-library/php/issues/488
-RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
-
-
-
-
 
 # Make sure the XDebug profiler directory exists and is writable by www-data
 RUN mkdir -p /tmp/xdebug \
@@ -103,11 +122,16 @@ RUN mkdir -p /tmp/xdebug \
     && chown www-data:www-data /tmp/xdebug
 
 # Install Composer, VarDumper and Kint
+# Clean up the composer cache
 RUN cd /usr/src \
     && curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer \
     && composer require symfony/var-dumper kint-php/kint --no-interaction \
-    && echo 'auto_prepend_file=/usr/src/debug_loader.php' > /usr/local/etc/php/conf.d/z_iop-debug_loader.ini
+    && composer clear-cache \
+    && echo 'auto_prepend_file=/usr/src/debug_loader.php' > /usr/local/etc/php/conf.d/z_iop-debug_loader.ini \
+    && rm -rf /root/.composer/cache \
+    && rm -rf /usr/local/bin/composer \
+    && rm -rf /tmp/*
 
 COPY src/debug_loader.php /usr/src
 
@@ -116,11 +140,6 @@ RUN mkdir -p /var/log/wordpress \
     && touch /var/log/wordpress/debug.log \
     && chown -R www-data:www-data /var/log/wordpress
 
-# Install less for wp-cli's pager
-RUN apt-get update -yqq \
-    && apt-get install -y less \
-    && apt-get autoremove -yqq \
-    && rm -rf /var/lib/apt/lists/*
 
 # Install wp-cli since the native image is a bowl of permissions errors
 RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /usr/local/bin/wp \
@@ -138,16 +157,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
         npm \
         sort-package-json \
     && apt-get autoremove -yqq \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/*
 
-# Install rsync, ssh-client and jq for merging tooling and package.json files
-RUN apt-get update -yqq \
-    &&  apt-get install -y --no-install-recommends \
-        rsync \
-        openssh-client \
-        jq \
-    && apt-get autoremove -yqq \
-    &&  rm -rf /var/lib/apt/lists/*
+
 
 # Setup location for wp user's SSH keys
 RUN mkdir -p /ssh_keys \
@@ -164,28 +177,16 @@ RUN echo >> /etc/ssh/ssh_config \
 
 COPY src/wp-config-extra.php /usr/src/
 
-# COPY boilerplate-theme/ /usr/src/boilerplate-theme
-# TODO: Disabled 2025-03 no need, just bloating the image.
-# COPY boilerplate-tooling/ /usr/src/boilerplate-tooling
-
-
-# Install IPTables to workaround WordPress internal requests to external ports
-# This will be used to remap Docker's entire ephemeral port range back to 80
-RUN apt-get update -yqq \
-    && apt-get install -y --no-install-recommends \
-        iptables \
-    && apt-get autoremove -yqq \
-    && rm -rf /var/lib/apt/lists/*
 
 # Network Debugging Tools
 # TODO: Remove or disable if not needed
-RUN apt-get update -yqq \
-    && apt-get install -y --no-install-recommends \
-        iputils-ping \
-        dnsutils \
-        vim \
-    && apt-get autoremove -yqq \
-    &&  rm -rf /var/lib/apt/lists/*
+# RUN apt-get update -yqq \
+#     && apt-get install -y --no-install-recommends \
+#         iputils-ping \
+#         dnsutils \
+#         vim \
+#     && apt-get autoremove -yqq \
+#     &&  rm -rf /var/lib/apt/lists/*
 
 
 # Setup Message Of The Day
