@@ -57,40 +57,45 @@ RUN echo "[OPcache]" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini
 
-# Install Memcached
-# Note: pecl install will fail without also installing libssl-dev
-#   @link https://serverfault.com/a/1136017/150153
+
+# Install PIE
+RUN curl -fL -o /usr/local/bin/pie https://github.com/php/pie/releases/latest/download/pie.phar \
+    && chmod +x /usr/local/bin/pie \
+    && php /usr/local/bin/pie --version
+
+# Install build dependencies for memcached extension, install memcached
 RUN apt-get update -yqq \
     && apt-get install -y --no-install-recommends \
-        zlib1g-dev \
-        libssl-dev \
+        bison \
+        libtool \
         libmemcached-dev \
+        zlib1g-dev \
+    && pie install php-memcached/php-memcached \
+    && docker-php-ext-enable memcached \
     && apt-get autoremove -yqq \
-    && rm -rf /var/lib/apt/lists/* \
-    && pecl install memcached \
-    && docker-php-ext-enable memcached
+    && rm -rf /var/lib/apt/lists/*
+
+
+# Install XDebug
+RUN pie install xdebug/xdebug \
+    && docker-php-ext-enable xdebug
+
+# Configure XDebug
+RUN echo '[XDebug]' > /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'xdebug.mode = debug,profile' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'xdebug.output_dir = /tmp/xdebug' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'xdebug.start_with_request = trigger' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'xdebug.client_host = host.docker.internal' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'xdebug.client_port = 9003' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+    && echo 'xdebug.use_compression = false' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini
 
 # Remove 10 MB /usr/src/php.tar.xz file. Unnecessary since we never update PHP without rebuilding.
 # Ref: https://github.com/docker-library/php/issues/488
 RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
 
-# Install XDebug, largly copied from:
-# https://github.com/andreccosta/wordpress-xdebug-dockerbuild
-# https://pecl.php.net/package/xdebug
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug \
-    && echo '[XDebug]' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo 'zend_extension=xdebug' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo 'xdebug.mode = debug,profile' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo 'xdebug.output_dir = /tmp/xdebug' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo "xdebug.start_with_request=default" >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo 'xdebug.use_compression = false' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo 'xdebug.start_with_request=trigger' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo 'xdebug.client_port = 9003' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo 'debug.remote_host = host.docker.internal' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && rm -rf /tmp/pear
-# && echo 'xdebug.log = /tmp/xdebug/xdebug.log' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-# && echo 'xdebug.log = 10' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
+
+
+
 
 # Make sure the XDebug profiler directory exists and is writable by www-data
 RUN mkdir -p /tmp/xdebug \
@@ -98,7 +103,6 @@ RUN mkdir -p /tmp/xdebug \
     && chown www-data:www-data /tmp/xdebug
 
 # Install Composer, VarDumper and Kint
-# && composer global require symfony/var-dumper kint-php/kint --no-interaction \
 RUN cd /usr/src \
     && curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer \
@@ -158,22 +162,12 @@ RUN echo >> /etc/ssh/ssh_config \
     && echo "    UserKnownHostsFile /dev/null" >> /etc/ssh/ssh_config \
     && echo "    LogLevel QUIET" >> /etc/ssh/ssh_config
 
-# COPY wp-config-extra.php to /usr/src/
 COPY src/wp-config-extra.php /usr/src/
 
 # COPY boilerplate-theme/ /usr/src/boilerplate-theme
 # TODO: Disabled 2025-03 no need, just bloating the image.
 # COPY boilerplate-tooling/ /usr/src/boilerplate-tooling
 
-# Setup Message Of The Day
-COPY motd motd/* /etc/update-motd.d/
-RUN chmod +x /etc/update-motd.d/*
-# Force MOTD in root bashrc
-RUN echo \
-    && echo LS_OPTIONS='--color=auto' >> /root/.bashrc \
-    && echo run-parts /etc/update-motd.d/ >> /root/.bashrc \
-    && echo alias wp='wp --allow-root' \
-    && echo cd /usr/src >> /root/.bashrc
 
 # Install IPTables to workaround WordPress internal requests to external ports
 # This will be used to remap Docker's entire ephemeral port range back to 80
@@ -192,6 +186,18 @@ RUN apt-get update -yqq \
         vim \
     && apt-get autoremove -yqq \
     &&  rm -rf /var/lib/apt/lists/*
+
+
+# Setup Message Of The Day
+COPY motd motd/* /etc/update-motd.d/
+RUN chmod +x /etc/update-motd.d/*
+
+# Force MOTD in root bashrc
+RUN echo \
+    && echo LS_OPTIONS='--color=auto' >> /root/.bashrc \
+    && echo run-parts /etc/update-motd.d/ >> /root/.bashrc \
+    && echo alias wp='wp --allow-root' \
+    && echo cd /usr/src >> /root/.bashrc
 
 # Copy scripts to /bin and make them executable
 COPY bin/*.sh /usr/local/bin/
