@@ -12,6 +12,8 @@ Version 1.10.0
 
 ## About This Project
 
+[**ideasonpurpose/wordpress**](README.md) on DockerHub.
+
 This project provides local development environments for fast iteration of existing WordPress websites. This includes pre-configured Docker-based MySQL and PHP servers, our [Docker-Build toolchain][docker-build], [Xdebug](https://xdebug.org/), [ImageMagick](http://www.imagemagick.org/) and a number of helper scripts.
 
 The project builds on the official WordPress docker image, currently **[v6.9.4](https://hub.docker.com/_/wordpress)**
