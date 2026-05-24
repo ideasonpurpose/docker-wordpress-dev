@@ -88,6 +88,9 @@ jobs:
     needs: Deploy # Run only if Deploy succeeds
 
     steps:
+      # https://github.com/marketplace/actions/checkout
+      - uses: actions/checkout@v6
+
       # https://github.com/marketplace/actions/docker-hub-description
       - name: Update Docker Hub Readme
         uses: peter-evans/dockerhub-description@v5
