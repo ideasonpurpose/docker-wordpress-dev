@@ -18,63 +18,21 @@ This project provides local development environments for fast iteration of exist
 
 The project builds on the official WordPress docker image, currently **[v6.9.4](https://hub.docker.com/_/wordpress)**
 
-## Getting Started
+## Getting Started & Tooling
 
-To update an existing project or start a new one, run the following commands in your working directory.
+Project scaffolding and tooling updates are provided by [@ideasonpurpose/build-tools-wordpress](https://www.npmjs.com/package/@ideasonpurpose/build-tools-wordpress):
 
-##### macOS, Linux & Windows PowerShell
+```bash
+# new project
+npx @ideasonpurpose/build-tools-wordpress init
 
-```
-docker run --rm -it -v ${PWD}:/usr/src/site ideasonpurpose/wordpress:6.9.4 init
-```
-
-Followed by:
-
-```
-npm run bootstrap
+# existing project (run from project root)
+npx @ideasonpurpose/build-tools-wordpress refresh
 ```
 
-_NOTE: If **~/.composer** doesn't exist, mounting the Docker volume will create the directory with root ownership, likely causing the Composer task to fail. Either create this directory before running `npm run bootstrap` or reset it's ownership with `sudo chown -R $UID:$GID .composer` and then run `bootstrap` again. See [#21](https://github.com/ideasonpurpose/docker-wordpress-dev/issues/21)_
+`docker-wordpress-dev` is now focused exclusively on the tuned WordPress runtime image. The only Docker-based utility kept in generated projects is `pull` (remote content sync for DB/plugins/uploads via SSH).
 
-##### Windows Command Prompt
-
-```
-docker run --rm -it -v %cd%:/usr/src/site ideasonpurpose/wordpress:6.9.4 init
-```
-
-- `init` command copies all the necessary tooling files into place and sets up the default theme directory structure.
-- `npm run bootstrap` prepares the environment by installing npm and composer dependencies and reloading the database.
-
-### Setup and Prerequisites
-
-[**Docker**](https://www.docker.com/products/docker-desktop) and **npm** ([node.js](https://nodejs.org/en/download/)) should be installed. The development server runs from Docker images and all workflow commands are called from npm scripts.
-
-### New Projects
-
-In an empty directory, running `init` will prompt for the new project's name and description, then build out a complete environment with a basic theme skeleton.
-
-### Existing Projects
-
-Recently updated project can run `npm run project:refresh` to update tooling to the latest release.
-
-Older projects should run `init` manually to update. Projects should be in a clean Git working tree so any undesirable changes can be easily reverted.
-
-#### These files will be updated:
-
-- Docker-compose files will be updated to the latest versions.
-- Default package.json scripts will be merged onto existing scripts.
-- DevDependencies, Scripts and Prettier properties will be copied onto existing package.json values.
-- Default composer.json packages and metadata will be copied onto existing composer.json values.
-- Update .gitignore from [gist](https://gist.github.com/joemaller/4f7518e0d04a82a3ca16)
-- Basic theme folder-structure will be non-destructively refreshed with missing folders added.
-- Missing ideasonpurpose.config.js files will be created.
-- Permissions will be reset for the theme directory and known tooling files.
-
-Before calling `npm run start`, copy a database snapshot into the top-level **\_db** directory, add any required plugins to **Plugins** and mirror media files to **Uploads**.
-
-Plugins and Uploads folders should not be committed to Git, but should be mirrored from production sites so the local environment works as expected.
-
-After configuring your SSH key path in **.env**, the database, plugins and uploads be can be synced down from a remote server with the `npm run pull` command. The **.env.sample** file documents the required credentials.
+See the build-tools package for bootstrap/start commands, `.env` setup and boilerplate files (`docker-compose.yml`, webpack config, etc).
 
 ### Databases
 

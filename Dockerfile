@@ -149,16 +149,16 @@ RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 #     https://github.com/nodesource/distributions#installation-instructions
 #     https://github.com/nodejs/release#release-schedule
 # Also global install npm & sort-package-json so we can call them from the init script
-RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
-    && apt-get update -yqq \
-    && apt-get install -yqq --no-install-recommends \
-        nodejs \
-    && npm install --global \
-        npm \
-        sort-package-json \
-    && apt-get autoremove -yqq \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/*
+# RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+#     && apt-get update -yqq \
+#     && apt-get install -yqq --no-install-recommends \
+#         nodejs \
+#     && npm install --global \
+#         npm \
+#         sort-package-json \
+#     && apt-get autoremove -yqq \
+#     && rm -rf /var/lib/apt/lists/* \
+#     && rm -rf /tmp/*
 
 
 

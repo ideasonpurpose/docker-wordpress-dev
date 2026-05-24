@@ -60,17 +60,6 @@ done
 echo -e "${DONE} Top-level tooling files${CLEAR}"
 sleep 0.2s
 
-# echo -ne "${DO}Resetting permissions: Boilerplate tooling "
-TOOLING=$(ls -C /usr/src/boilerplate-tooling)
-find /usr/src/boilerplate-tooling -type f -printf "%P\n" | while read f; do
-  echo -ne "${DO}${GOLD} Resetting permissions: Boilerplate tooling: ${CYAN}${f}${CLEAR}\r"
-  chown -f "${OWNER_GROUP}" "/usr/src/site/${f}"
-  chmod -f 0664 "/usr/src/site/${f}"
-  sleep 0.2s
-done
-echo -e "${DONE} Boilerplate tooling${CLEAR}"
-sleep 0.2s
-
 echo -ne "${DO}${GOLD} Resetting permissions: Database files${CLEAR}\r"
 chown -fR "${OWNER_GROUP}" /usr/src/site/_db
 chmod -fR ug+rwx /usr/src/site/_db
