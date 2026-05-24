@@ -83,18 +83,3 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  Update-Readme:
-    runs-on: ubuntu-24.04
-    needs: Deploy # Run only if Deploy succeeds
-
-    steps:
-      # https://github.com/marketplace/actions/checkout
-      - uses: actions/checkout@v6
-
-      # https://github.com/marketplace/actions/docker-hub-description
-      - name: Update Docker Hub Readme
-        uses: peter-evans/dockerhub-description@v5
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          repository: ${{ secrets.DOCKER_REPO_NAME }}
