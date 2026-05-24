@@ -1,8 +1,8 @@
 # WordPress local development with Docker
 
 <h4> 
-Version 1.10.0
-<!-- WPVERSION -->- WordPress 6.9.4
+Version 2.0.0
+<!-- WPVERSION -->- WordPress 7.0
 </h4>
 
 <!-- [![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)<br> -->
@@ -16,7 +16,7 @@ Version 1.10.0
 
 This project provides local development environments for fast iteration of existing WordPress websites. This includes pre-configured Docker-based MySQL and PHP servers, our [Docker-Build toolchain][docker-build], [Xdebug](https://xdebug.org/), [ImageMagick](http://www.imagemagick.org/) and a number of helper scripts.
 
-The project builds on the official WordPress docker image, currently **[v6.9.4](https://hub.docker.com/_/wordpress)**
+The project builds on the official WordPress docker image, currently **[v7.0](https://hub.docker.com/_/wordpress)**
 
 ## Getting Started & Tooling
 
@@ -69,7 +69,6 @@ All `*.sql` files from the top-level **\_db** directory will be in alphabetical 
 - **`mariadb-dump`**, **`db:dump`**, **`mysql:dump`**, **`mysqldump`** - Aliases for `db:dump`
 - **`mariadb:reload`**, **`mysql:reload`** - Aliases for `db:reload`
 - **`phpmyadmin`** - Alias for `db:admin`
-- **`project:refresh`** - Update the project with the latest tooling.
 - **`pull`**<br>
   Syncs data from a remote server to the local development environment. The bare command will run these sub-commands:
   - **`pull:db`** - Syncs down the most recent mySQL dumpfile, backs up the current dev DB then reloads the DB
@@ -138,7 +137,7 @@ The base image provides a specific version of WordPress, but once running that v
 wp-cli can also be used to update to [pre-release](https://wordpress.org/download/releases/#betas) version of WordPress. An example command looks like this:
 
 ```sh
-npm run wp-cli wp core update https://wordpress.org/wordpress-6.5-RC3.zip
+npm run wp-cli wp core update --version=7.0-RC4
 ```
 
 Versions can be rolled back by removing the docker `*_wp` volume.

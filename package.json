@@ -32,10 +32,8 @@
     "prefix_DISABLED": "ideasonpurpose/wordpress:",
     "files": [
       "bin/docker-entrypoint-iop.sh",
-      "bin/getting-started.sh",
       "bin/permissions.sh",
       "bin/pull.sh",
-      "bin/wp-init.sh",
       "Dockerfile",
       "README.md"
     ]
