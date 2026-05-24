@@ -9,7 +9,7 @@
 # Manual updates also must change wp-version.json
 FROM wordpress:7.0-php8.4-apache
 
-LABEL version="1.10.0"
+LABEL version="2.0.0"
 
 # Remove 10 MB /usr/src/php.tar.xz file. Unnecessary since we never update PHP without rebuilding.
 # Ref: https://github.com/docker-library/php/issues/488
