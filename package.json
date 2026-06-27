@@ -13,15 +13,14 @@
     "path": "echo $PATH",
     "bump": "npm run wordpress:bump",
     "shfmt": "docker compose run --rm shfmt",
-    "version": "version-everything && auto-changelog && git add -u",
+    "version": "version-everything && git add -u",
     "wordpress:bump": "docker compose run --rm bump-wp"
   },
   "prettier": "@ideasonpurpose/prettier-config",
   "devDependencies": {
-    "@ideasonpurpose/prettier-config": "^1.1.0",
+    "@ideasonpurpose/prettier-config": "^1.1.1",
     "@prettier/plugin-php": "^0.25.0",
-    "auto-changelog": "^2.5.0",
-    "prettier": "^3.8.3",
+    "prettier": "^3.9.0",
     "version-everything": "^0.12.2"
   },
   "auto-changelog": {

@@ -63,10 +63,6 @@ RUN echo "[OPcache]" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini
 
 
-# # Install PIE
-# RUN curl -fL -o /usr/local/bin/pie https://github.com/php/pie/releases/latest/download/pie.phar \
-#     && chmod +x /usr/local/bin/pie
-
 # Install less for wp-cli's pager
 # Install rsync, ssh-client and jq for merging tooling and package.json files
 # Install IPTables to workaround WordPress internal requests to external ports
