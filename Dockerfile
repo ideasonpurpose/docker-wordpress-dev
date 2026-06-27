@@ -9,7 +9,7 @@
 # Manual updates also must change wp-version.json
 FROM wordpress:7.0-php8.4-apache
 
-LABEL version="2.0.0"
+LABEL version="2.0.1"
 
 # Add `wp` user and group, then add `www-data` user to `wp` group
 RUN addgroup  --gid 1000 wp \
