@@ -162,19 +162,19 @@ To add a development plugin to the WordPress environment, point the plugin's loc
 
 #### Accessing running containers
 
-To open a shell on _any_ running Docker container, run `docker ps` to retrieve container IDs or Names, then run `docker exec -it <name or ID> bash`. Some containers may use `sh` instead of bash. To open a shell on the running WordPress instance, run `docker-compose exec wordpress bash`.
+To open a shell on _any_ running Docker container, run `docker ps` to retrieve container IDs or Names, then run `docker exec -it <name or ID> bash`. Some containers may use `sh` instead of bash. To open a shell on the running WordPress instance, run `docker compose exec wordpress bash`.
 
 #### Other composer commands
 
-The [Composer][] image can also run other, more specific commands directly from `docker-compose`:
+The [Composer][] image can also run other, more specific commands directly from `docker compose`:
 
 ```sh
-docker-compose run --rm  composer update
-docker-compose run --rm  composer require monolog/monolog
+docker compose run --rm  composer update
+docker compose run --rm  composer require monolog/monolog
 
 # Open a shell in the composer image
 
-docker-compose run --rm  composer bash
+docker compose run --rm  composer bash
 ```
 
 ### Serving on Alternate Ports
@@ -246,7 +246,7 @@ All shell scripts in **bin** have been checked with [ShellCheck](https://www.she
 
 While not specific to this project, here are a few useful docker commands for keeping Docker running.
 
-- `docker-compose down` tears down the containers
+- `docker compose down` tears down the containers
 - `docker system prune` Clean up unused containers and images
 - `docker system prune -a` Clean everything, will need to download stuff again
 - `docker ps` List running containers

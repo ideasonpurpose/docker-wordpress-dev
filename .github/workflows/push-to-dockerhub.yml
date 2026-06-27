@@ -25,7 +25,7 @@ jobs:
 
     steps:
       # https://github.com/marketplace/actions/checkout
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Put new versions into environment variables
         id: get_versions
@@ -41,12 +41,12 @@ jobs:
 
       # https://github.com/docker/setup-qemu-action
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
 
       # https://github.com/docker/setup-buildx-action
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Available platforms
         run: echo ${{ steps.buildx.outputs.platforms }}

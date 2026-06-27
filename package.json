@@ -23,12 +23,7 @@
     "prettier": "^3.9.0",
     "version-everything": "^0.12.2"
   },
-  "auto-changelog": {
-    "package": true,
-    "backfillLimit": 7
-  },
   "version-everything": {
-    "prefix_DISABLED": "ideasonpurpose/wordpress:",
     "files": [
       "bin/docker-entrypoint-iop.sh",
       "bin/permissions.sh",

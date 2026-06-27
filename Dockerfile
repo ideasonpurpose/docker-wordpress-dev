@@ -11,11 +11,6 @@ FROM wordpress:7.0-php8.4-apache
 
 LABEL version="2.0.0"
 
-# Remove 10 MB /usr/src/php.tar.xz file. Unnecessary since we never update PHP without rebuilding.
-# Ref: https://github.com/docker-library/php/issues/488
-# TODO: Is this still necessary?
-RUN rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
-
 # Add `wp` user and group, then add `www-data` user to `wp` group
 RUN addgroup  --gid 1000 wp \
     && useradd -u 1000 -d /home/wp -g wp -G www-data wp \
@@ -59,9 +54,7 @@ RUN echo "[OPcache]" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.memory_consumption=192" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
     && echo "opcache.max_wasted_percentage=10" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
-    && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini \
-    && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini
-
+    && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/z_iop-opcache.ini
 
 # Install less for wp-cli's pager
 # Install rsync, ssh-client and jq for merging tooling and package.json files
@@ -73,6 +66,9 @@ RUN echo "[OPcache]" > /usr/local/etc/php/conf.d/z_iop-opcache.ini \
 #  - Install xdebug
 # Remove build dependencies and clean up
 # Remove PIE
+# Remove php.tar.xz (10MB) — done here so PIE extension installs can use it
+#   Ref: https://github.com/docker-library/php/issues/488
+#   Ref: https://github.com/docker-library/php/issues/1487
 RUN apt-get update -yqq \
     && curl -fL -o /usr/local/bin/pie https://github.com/php/pie/releases/latest/download/pie.phar \
     && chmod +x /usr/local/bin/pie \
@@ -94,13 +90,8 @@ RUN apt-get update -yqq \
     && apt-get autoremove -yqq \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /usr/local/bin/pie \
-    && rm -rf /tmp/*
-
-
-
-# # Install XDebug
-# RUN pie install xdebug/xdebug \
-#     && docker-php-ext-enable xdebug
+    && rm -rf /tmp/* \
+    && rm /usr/src/php.tar.xz /usr/src/php.tar.xz.asc
 
 # Configure XDebug
 RUN echo '[XDebug]' > /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
@@ -108,9 +99,7 @@ RUN echo '[XDebug]' > /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo 'xdebug.output_dir = /tmp/xdebug' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo 'xdebug.start_with_request = trigger' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
     && echo 'xdebug.client_host = host.docker.internal' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo 'xdebug.client_port = 9003' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini \
-    && echo 'xdebug.use_compression = false' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini
-
+    && echo 'xdebug.client_port = 9003' >> /usr/local/etc/php/conf.d/z_iop-xdebug.ini
 
 # Make sure the XDebug profiler directory exists and is writable by www-data
 RUN mkdir -p /tmp/xdebug \
@@ -136,27 +125,9 @@ RUN mkdir -p /var/log/wordpress \
     && touch /var/log/wordpress/debug.log \
     && chown -R www-data:www-data /var/log/wordpress
 
-
 # Install wp-cli since the native image is a bowl of permissions errors
 RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /usr/local/bin/wp \
     && chmod +x /usr/local/bin/wp
-
-# Install LTS node.js from nodesource:
-#     https://github.com/nodesource/distributions#installation-instructions
-#     https://github.com/nodejs/release#release-schedule
-# Also global install npm & sort-package-json so we can call them from the init script
-# RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
-#     && apt-get update -yqq \
-#     && apt-get install -yqq --no-install-recommends \
-#         nodejs \
-#     && npm install --global \
-#         npm \
-#         sort-package-json \
-#     && apt-get autoremove -yqq \
-#     && rm -rf /var/lib/apt/lists/* \
-#     && rm -rf /tmp/*
-
-
 
 # Setup location for wp user's SSH keys
 RUN mkdir -p /ssh_keys \
@@ -186,7 +157,7 @@ COPY src/wp-config-extra.php /usr/src/
 
 
 # Setup Message Of The Day
-COPY motd motd/* /etc/update-motd.d/
+COPY motd/ /etc/update-motd.d/
 RUN chmod +x /etc/update-motd.d/*
 
 # Force MOTD in root bashrc
