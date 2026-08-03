@@ -1,238 +1,178 @@
 # WordPress local development with Docker
 
-<h4> 
+<h4>
 Version 2.0.1
 <!-- WPVERSION -->- WordPress 7.0.2
 </h4>
 
-<!-- [![dockeri.co](https://dockeri.co/image/ideasonpurpose/wordpress)](https://hub.docker.com/r/ideasonpurpose/wordpress)<br> -->
-
 [![Docker Pulls](https://img.shields.io/docker/pulls/ideasonpurpose/wordpress?logo=docker&logoColor=white)](https://hub.docker.com/r/ideasonpurpose/wordpress)
 [![Push to DockerHub](https://img.shields.io/github/actions/workflow/status/ideasonpurpose/docker-wordpress-dev/push-to-dockerhub.yml?logo=github&logoColor=white&label=Push%20to%20DockerHub)](https://github.com/ideasonpurpose/docker-wordpress-dev/actions/workflows/push-to-dockerhub.yml)
 
-## About This Project
+## About
 
-[**ideasonpurpose/wordpress**](https://hub.docker.com/r/ideasonpurpose/wordpress) on DockerHub.
+A very-fast, tuned WordPress runtime image, built on the official WordPress image, currently **[v7.0.2](https://hub.docker.com/_/wordpress)** (PHP 8.4 / Apache). Designed to spin up quickly for a better local development experience.
 
-This project provides local development environments for fast iteration of existing WordPress websites. This includes pre-configured Docker-based MySQL and PHP servers, our [Docker-Build toolchain][docker-build], [Xdebug](https://xdebug.org/), [ImageMagick](http://www.imagemagick.org/) and a number of helper scripts.
+This image is part of a larger development toolchain. Project scaffolding, `docker-compose`, webpack, and npm workflow scripts (`start`, bootstrap, database commands, etc.) are provided by the companion package [@ideasonpurpose/build-tools-wordpress](https://www.npmjs.com/package/@ideasonpurpose/build-tools-wordpress).
 
-The project builds on the official WordPress docker image, currently **[v7.0.2](https://hub.docker.com/_/wordpress)**
+Avalable as [**ideasonpurpose/wordpress**](https://hub.docker.com/r/ideasonpurpose/wordpress) from DockerHub.
 
-## Getting Started & Tooling
+## Getting Started
 
-Project scaffolding and tooling updates are provided by [@ideasonpurpose/build-tools-wordpress](https://www.npmjs.com/package/@ideasonpurpose/build-tools-wordpress):
+Create or update a project with the build-tools package:
 
 ```bash
-# new project
-npx @ideasonpurpose/build-tools-wordpress init
-
-# existing project (run from project root)
-npx @ideasonpurpose/build-tools-wordpress refresh
+npx @ideasonpurpose/build-tools-wordpress init        # new project
+npx @ideasonpurpose/build-tools-wordpress refresh     # update existing project
 ```
 
-`docker-wordpress-dev` is now focused exclusively on the tuned WordPress runtime image. The only Docker-based utility kept in generated projects is `pull` (remote content sync for DB/plugins/uploads via SSH).
+See that package's documentation for environment setup, `docker-compose.yml`, database commands, webpack config, and all development workflows.
 
-See the build-tools package for bootstrap/start commands, `.env` setup and boilerplate files (`docker-compose.yml`, webpack config, etc).
+## What’s in the Image
 
-### Databases
+### PHP & Extensions
 
-All `*.sql` files from the top-level **\_db** directory will be in alphabetical order. Later files will overwrite earlier ones.
+- **Xdebug** — debug and profile modes, triggered by `XDEBUG_PROFILE` / `XDEBUG_TRIGGER` cookies/params
+- **Memcached** — installed and enabled
+- **OPcache** — enabled with development-friendly settings (`validate_timestamps=1`, `revalidate_freq=0`)
 
-## Workflow & Commands
+### PHP Configuration
 
-### Basic development commands
+| Setting               | Value |
+| --------------------- | ----- |
+| `upload_max_filesize` | 100M  |
+| `post_max_size`       | 100M  |
+| `max_execution_time`  | 600   |
+| `memory_limit`        | 512M  |
+| `display_errors`      | on    |
 
-- **`npm run start`**  
-   Spins up a database and php server, then serves all content through the devServer proxy at [http://localhost:8080](http://localhost:8080). Files in the project directory will be watched for changes and trigger reloads when saved. Type **control-c** to stop the local server. Change the default port with `--port=8080`
+### Debugging Tools
 
-- **`npm version [major|minor|patch]`**
-  Increments the version then uses [version-everything][] to update project files before calling `npm run build` which generates a production build and compresses all theme files into a versioned, ready-to-deploy zip archive.
+- **[wp-cli](https://wordpress.org/cli/)**
+- **[Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.html)** and **[Kint](https://kint-php.github.io/kint/)** — auto-loaded via `debug_loader.php` for rich `dump()` output
+- **`info.php`** — `phpinfo()` at `/info.php`
+- **`xdebug.php`** — `xdebug_info()` at `/xdebug.php`
+- **Debug log** — written to `/var/log/wordpress/debug.log`
 
-### Additional Commands and helpers
+### Users & Permissions
 
-- **`bootstrap`**<br>
-  A helper script for starting projects. This will install npm and composer dependencies, reload the MySQL database, activate the development theme and sort the package.json file.
-- **`build`** - Generate a production-ready build in a zip archive. Ready-to-deploy.
-- **`composer`**<br>
-  Runs `composer install` from Docker.
-  - **`composer:install`** - Installs packages from the composer.lock file
-  - **`composer:require`** - Add new packages and update composer.json
-  - **`composer:update`** - Updates composer dependencies to their newest allowable version and rewrites the **composer.lock** file.
-    Opens a mysql shell to the development WordPress database
-- **`db:admin`** - Starts a phpMyAdmin server at [localhost:8002](http://localhost:8002)
-- **`db:dump`** - Writes a compressed, timestamped database snapshot into the **\_db** directory
-- **`db:pull`** - Alias for `pull:db`
-- **`db:reload`** - Drops then reloads the database from the most recent dumpfile in **\_db**, then attempts to activate the development theme
-- **`db:shell`** - Opens a shell to the development WordPress database
-- **`dev`** - Alias for `start`
-- **`mariadb`**, **`mysql`** - Aliases for `db:admin`
-- **`mariadb-dump`**, **`db:dump`**, **`mysql:dump`**, **`mysqldump`** - Aliases for `db:dump`
-- **`mariadb:reload`**, **`mysql:reload`** - Aliases for `db:reload`
-- **`phpmyadmin`** - Alias for `db:admin`
-- **`pull`**<br>
-  Syncs data from a remote server to the local development environment. The bare command will run these sub-commands:
-  - **`pull:db`** - Syncs down the most recent mySQL dumpfile, backs up the current dev DB then reloads the DB
-  - **`pull:plugins`** - Syncs down **wp-content/plugins** from the remote
-  - **`pull:uploads <$YEAR>`** - Syncs down the current year's **wp-content/uploads/$YEAR** from the remote. Sync specific years with the optional year argument.
-  - **`pull:uploads-all`** - Syncs down the entire **wp-content/uploads** directory from the remote
-- **`logs:wordpress`** - Stream the WordPress debug.log
-- **`wp-cli`** - Runs [wp-cli](https://wp-cli.org/vc) commands. The default command re-activates the development theme.
+A `wp` user (UID 1000) is created and added to the `www-data` group. Both Apache and PHP are configured with `umask 002` so new files are group-writable.
 
-#### Permissions Repair on macOS
+### IPTables Workaround
 
-On macOS hosts, modifying permissions _inside_ a mounted Docker volume will add extended attributes to the shared files on the host instead of modifying their actual mode or ownership. To see these values in the terminal, run `ls -la@` or `xattr -l <file>`. Extended attribute values are prefixed with `com.docker.grpcfuse` regardless of whether Docker is using gRPC FUSE or VirtioFS ([they're both FUSE](https://www.docker.com/blog/deep-dive-into-new-docker-desktop-filesharing-implementation/)).
+WordPress internal requests to external ports can fail in Docker. The entrypoint remaps the ephemeral port range (49153–65535) back to port 80. This requires `NET_ADMIN` capability (`cap_add: [NET_ADMIN]` in compose).
 
-### Pulling Data from Remote Servers
+### SSH & rsync
 
-The `npm run pull` command brings together several sub-commands to sync remote data to the local development environment. Each command can also be called individually. Connection info must be configured in a **.env** file. Values are documented in the **.env.sample** file.
+OpenSSH client and rsync are installed for the `pull` script (see below). SSH is configured to use `/ssh_keys/id_rsa` with strict host key checking disabled.
 
-Private SSH keys are passed to the image as [Docker Secrets][docker-secrets], point `$SSH_KEY_PATH` to a local private key in **.env**.
+## Environment Variables
 
-Pulling uploads, plugins and database dumps is currently supported on WP Engine and Kinsta\*.
+### WordPress Runtime
 
-Connections must be configured on a per-machine basis using a `.env` file in the project root. For new projects, rename the `.env.example` to **.env** and update the settings.
+| Variable                | Default     | Description        |
+| ----------------------- | ----------- | ------------------ |
+| `WORDPRESS_DB_HOST`     | `db:3306`   | Database host      |
+| `WORDPRESS_DB_USER`     | `wordpress` | Database user      |
+| `WORDPRESS_DB_PASSWORD` | `wordpress` | Database password  |
+| `WORDPRESS_DB_NAME`     | `wordpress` | Database name      |
+| `WORDPRESS_DEBUG`       | `1`         | Enables `WP_DEBUG` |
 
-The important properties are:
+### WordPress Config (via `wp-config-extra.php`)
 
-- **`SSH_KEY_PATH`**<br>
-  Local path to your private key. If you uploaded a `id_rsa_wpengine.pub` key to your WP Engine account,
-  point this to the pair's matching private key: `~/.ssh/id_rsa_wpengine`
+| Variable              | Effect                                                         |
+| --------------------- | -------------------------------------------------------------- |
+| `WP_ENVIRONMENT_TYPE` | Sets `WP_ENVIRONMENT_TYPE` (default: `development`)            |
+| `WP_MULTISITE`        | Enables multisite constants (`MULTISITE`, `SUBDOMAIN_INSTALL`) |
 
-- **`SSH_LOGIN`**<br>
-  This is simply the SSH connection string from WP Engine backend, something like `iop001@iop001.ssh.wpengine.net`
-  where the elements are `${SSH_USER}@${SSH_HOST}`. Each item can also be entered individually, individual entries
-  take precedence over components extracted from SSH_CONNECT_STRING.
+When `WP_DEBUG` is enabled, additional constants are set: `WP_DEBUG_LOG`, `WP_DEBUG_DISPLAY`, `WP_DEVELOPMENT_MODE` (`theme`), `SCRIPT_DEBUG`, and `SAVEQUERIES`.
 
-- **`SSH_USER`**<br>
-  The user account which connects to the server.
+### SSH / Pull
 
-- **`SSH_HOST`**<br>
-  The server address to connect to.
+| Variable             | Description                                                           |
+| -------------------- | --------------------------------------------------------------------- |
+| `SSH_LOGIN`          | Connection string (`user@host` or `user@host -p port`)                |
+| `SSH_USER`           | Overrides user from `SSH_LOGIN`                                       |
+| `SSH_HOST`           | Overrides host from `SSH_LOGIN`                                       |
+| `SSH_PORT`           | Overrides port from `SSH_LOGIN` (default: 22)                         |
+| `SSH_WP_CONTENT_DIR` | Path to remote `wp-content` (default: `sites/${SSH_USER}/wp-content`) |
+| `SSH_KEY_PATH`       | Local path to private key, passed as a Docker secret                  |
 
-- **`SSH_WP_CONTENT_DIR`**<br> (default: sites/${SSH_USER}/wp-content)
-  The path to the wordpress wp-content folder. Most likely matches the `WP_CONTENT_DIR` WordPress constant.
-  Does not include a trailing slash. Can relative to the SSH user home folder or an absolute path.
-
-Both `$SSH_LOGIN` and `$SSH_HOST` can be extracted from `$SSH_LOGIN`. Specifying either will override the value in `$SSH_LOGIN`.
-
-#### Syncing Databases from Kinsta
-
-Unlike WP Engine, Kinsta does not store regular database snapshots in a site's **wp-content** directory, but they do allow cron. Set up a basic crontab task to regularly backup the database so pull scripts will work correctly. Here's an example which backs up hourly at 37 minutes after the hour:
-
-```cron
-# dump db hourly for dev mirrors
-37      *       *       *       *       mysqldump --default-character-set=utf8mb4 -udb_user -pdb_password db_name > ~/public/wp-content/mysql.sql
-```
-
-Neither Kinsta's nor WP Engine's servers will not fulfil requests for \*.sql files, and the `db_user`. `db_password` and `db_name` values are stored already stored in plaintext in **wp-config.php** so this isn't a security risk.
-
-### Debugging
-
-`WP_DEBUG` is enabled by default, and can be toggled by setting the `WORDPRESS_DEBUG` variable in the **.env** config file.
-
-### Updating WordPress
-
-The base image provides a specific version of WordPress, but once running that version can be upgraded using the wp-admin dashboard, just like any other site.
-
-wp-cli can also be used to update to [pre-release](https://wordpress.org/download/releases/#betas) version of WordPress. An example command looks like this:
-
-```sh
-npm run wp-cli wp core update --version=7.0-RC4
-```
-
-Versions can be rolled back by removing the docker `*_wp` volume.
-
-#### Bumping Image Versions
-
-The `npm run bump` script will query the WordPress releases API and DockerHub, then update the docker image and readme to the latest WordPress image.
-
-To update to a pre-release image, enter a valid DockerHub tag into the wp-version.json file.
-
-### Plugin Development
-
-Projects often rely on plugins which are developed in parallel. A number of placeholder `IOP_DEV_PLUGIN_#` environment variables are provided which can be used to directly mount plugins into the WordPress environment. These enable better version control and dependency management since the nested and .gitignored **wp-content/plugins** directory often conflicts with a parent theme.
-
-To add a development plugin to the WordPress environment, point the plugin's local relative path to an absolute path inside the container. Here's how we would make an **example-plugin** project being developed in a sibling directory available to the current WordPress development environment:
-
-```
-   IOP_DEV_PLUGIN_1="../example-plugin:/var/www/html/wp-content/plugins/example-plugin"
-   IOP_DEV_PLUGIN_2=
-   IOP_DEV_PLUGIN_3=
-```
-
-#### Accessing running containers
-
-To open a shell on _any_ running Docker container, run `docker ps` to retrieve container IDs or Names, then run `docker exec -it <name or ID> bash`. Some containers may use `sh` instead of bash. To open a shell on the running WordPress instance, run `docker compose exec wordpress bash`.
-
-#### Other composer commands
-
-The [Composer][] image can also run other, more specific commands directly from `docker compose`:
-
-```sh
-docker compose run --rm  composer update
-docker compose run --rm  composer require monolog/monolog
-
-# Open a shell in the composer image
-
-docker compose run --rm  composer bash
-```
-
-### Serving on Alternate Ports
-
-All services which provide a server can have their default ports customized with the `--port=` flag. This allows for multiple projects to be run simultaneously on the same computer.
-
-```sh
-# site one
-npm run start --port=8080
-
-# site two
-npm run start --port=8081
-```
-
-#### Default ports
-
-- webpack devserver: `8080`
-- phpMyAdmin: `8002`
-- WebGrind: `9004`
-
-### `phpinfo()`
-
-A PHP Info page is available at [`localhost:8080/info.php`](http://localhost:8080/info.php).
-
-## Debugging & Profiling
-
-To profile a request with [XDebug][xdebug] and [WebGrind][], add `?XDEBUG_PROFILE=1` to any request. A **cachegrind.out.nn** file will be created in webpack/xdebug. Running `npm run webgrind` will launch a webgrind server for viewing those files. The default address is <http://localhost:9004>, or change ports with `npm run webgrind --port=9123`.
-
-#### Reading Call Graphs
-
-Every profiled run can also be viewed as a call graph. These graphs are [documented in the gprof2dot project](https://github.com/jrfonseca/gprof2dot#output):
-
-```
-+------------------------------+
-|        function name         |
-| total time % ( self time % ) |
-|         total calls          |
-+------------------------------+
-```
-
-> where:
->
-> - **_total time %_** is the percentage of the running time spent in this function and all its children;
-> - **_self time %_** is the percentage of the running time spent in this function alone;
-> - **_total calls_** is the total number of times this function was called (including recursive calls).
+Secrets are passed to the container as `/run/secrets/SSH_KEY`. The entrypoint copies the key to `/ssh_keys/id_rsa`.
 
 ### wp-cli
 
-The default command replaces the `wp` prefix, so alternate commands would look like this:
+| Variable            | Default             |
+| ------------------- | ------------------- |
+| `WP_CLI_CACHE_DIR`  | `/tmp/wp-cli-cache` |
+| `WP_CLI_ALLOW_ROOT` | `1`                 |
 
-- `npm run wp-cli transient delete --all`
-- `npm run wp-cli user list`
+## In-Image Utilities
 
-[wp-cli Command Reference](https://developer.wordpress.org/cli/commands/)
+### pull
+
+Syncs data from a remote server. Called with a subcommand:
+
+```
+pull database     Sync remote mysql.sql to _db/
+pull plugins      Sync remote wp-content/plugins/
+pull uploads       Sync current year's uploads (or specify year)
+pull uploads all   Sync all uploads
+```
+
+Requires SSH credentials configured via the environment variables above. Private keys are handled as [Docker Secrets](https://docs.docker.com/compose/compose-file/compose-file-v3/#secrets) — set `SSH_KEY_PATH` in `.env` to a local private key.
+
+Works with WP Engine and Kinsta. For Kinsta, database dumps must be created manually via cron (Kinsta doesn't store regular snapshots in wp-content):
+
+```cron
+37 * * * * mysqldump --default-character-set=utf8mb4 -udb_user -pdb_password db_name > ~/public/wp-content/mysql.sql
+```
+
+Kinsta and WP Engine nginx configurations will not serve `*.sql` files to web requests. The `db_user`, `db_password`, and `db_name` values are already in `wp-config.php`.
+
+### permissions
+
+Corrects ownership and permissions for known project files. Called with `OWNER_GROUP` set to `"$UID:$GID"`. Iterates over top-level tooling files, `_db`, `wp-content`, and ACF JSON directories.
+
+#### macOS Note
+
+On macOS hosts, Docker volume permission changes add extended attributes (`com.docker.grpcfuse.*`) rather than modifying actual file modes. Run `ls -la@` or `xattr -l <file>` to inspect them.
+
+## Debugging
+
+### Debug Log
+
+With `WP_DEBUG` enabled, the log is written to `/var/log/wordpress/debug.log`. From a compose project, view it with `docker compose exec wordpress tail -f /var/log/wordpress/debug.log`.
+
+### Xdebug
+
+Xdebug is configured for both debug and profile modes, triggered by `XDEBUG_PROFILE` or `XDEBUG_TRIGGER` cookies/query parameters.
+
+- **IDE debugging** — client host is `host.docker.internal`, port `9003`
+- **Profiling** — add `XDEBUG_PROFILE=1` to any request. Output files go to `/tmp/xdebug` in the container
+
+## Updating WordPress
+
+The base image provides a specific WordPress version, but running sites can upgrade via the wp-admin dashboard or wp-cli, including [pre-release](https://wordpress.org/download/releases/#betas) versions:
+
+```sh
+wp core update --version=7.1-beta4
+```
+
+Versions can be rolled back by removing the Docker `*_wp` volume.
+
+### Bumping the Image Version
+
+To update this image to the latest stable WordPress:
+
+```sh
+npm run bump
+```
+
+This queries the WordPress releases API and Docker Hub, then updates `wp-version.json`, the Dockerfile, and the README. To target a pre-release, manually edit `wp-version.json`.
 
 ## Local Development
 
-To iterate on this project locally, build the image using the same name as the Docker Hub remote. Docker will use the local copy. Specify `dev` if you're using using versions.
+Build the image locally (Docker will use the local copy over the remote):
 
 ```sh
 docker build . --tag ideasonpurpose/wordpress:dev
@@ -240,86 +180,34 @@ docker build . --tag ideasonpurpose/wordpress:dev
 
 ### Shell Scripts
 
-All shell scripts in **bin** have been checked with [ShellCheck](https://www.shellcheck.net/) and formatted with [shfmt](https://github.com/mvdan/sh) with command: `npm run shfmt`
+Scripts in `bin/` are checked with [ShellCheck](https://www.shellcheck.net/) and formatted with [shfmt](https://github.com/mvdan/sh):
 
-## Docker maintenance
-
-While not specific to this project, here are a few useful docker commands for keeping Docker running.
-
-- `docker compose down` tears down the containers
-- `docker system prune` Clean up unused containers and images
-- `docker system prune -a` Clean everything, will need to download stuff again
-- `docker ps` List running containers
-- `docker exec -it <container> bash` Open a shell on a running container
-
-### Additional Notes
-
-The **docker-entrypoint.sh** script in the base WordPress docker image checks for a WordPress installation by checking for **index.php** and **wp-includes/version.php**.
-
-<!--
-
-## Getting Started
-
-The **package.json** file is the Single Source of Truth for environment and configuration. Settings such as theme-name and devServer port are passed directly from `npm_package_*` environment variables.
-
-### Existing Projects
-
-Existing WordPress sites have three highly portable components contained in `wp-content`:
-
-1. **A theme directory**
-   All files related to appearance and non-plugin functionality live here.
-2. **A MySQL dumpfile**
-   All the user-authored content and settings from the site
-3. **The uploads directory**
-   A copy of all the user-uploaded imagery used on the site.
-4. **The Plugins directory**
-   A blob of plugin files. Most of these can be pulled from [wordpress.org/plugins](https://wordpress.org/plugins/) but it's often faster to copy the whole `wp-content/plugins` directory to dev sites.
-
-### Project Directory Structure
-
-Non-wordpress project files should be parallel to the wp-content directory. Something like this:
-
-```
-Project Root
-├─┬ _db
-│ └── project.sql
-├─┬ wp-content
-│ ├─┬ themes
-│ │ └── project-theme-directory
-│ ├─┬ plugins
-│ │ └── ...
-│ └─┬ uploads
-│   └── ...
-├── composer.json
-├── docker-compose.yml
-└── package.json
+```sh
+npm run shfmt
 ```
 
-## What's in here
+### CI/CD
 
-## Included Tools, Commands, etc.
+- **`push-to-dockerhub.yml`** — On version tags (`v*`), builds multi-arch images (`linux/amd64`, `linux/arm64`) and pushes to Docker Hub. Tags include semver, WordPress version, and SHA.
+- **`update-dockerhub-readme.yml`** — On version tags, syncs this README to Docker Hub.
 
+## Docker Maintenance
 
--->
+Useful commands when working with this image:
 
-<!-- START IOP CREDIT BLURB -->
+- `docker compose down` — Tear down containers
+- `docker system prune` — Remove unused containers and images
+- `docker system prune -a` — Full cleanup (requires re-downloading images)
+- `docker ps` — List running containers
+- `docker exec -it <container> bash` — Open a shell on a running container
+
+<!-- START IOP CREDIT BLURB 2026-07-->
 
 ## &nbsp;
 
 #### Brought to you by IOP
 
-| <a href="https://www.ideasonpurpose.com"><img src="https://raw.githubusercontent.com/ideasonpurpose/ideasonpurpose/master/iop-logo-white-on-black-88px.png" height="44" align="top" alt="IOP Logo"></a>    | This project is actively developed and used in production at <a href="https://www.ideasonpurpose.com">Ideas On Purpose</a>. | 
-|-------|------|
+| <a href="https://www.ideasonpurpose.com"><img src="https://raw.githubusercontent.com/ideasonpurpose/ideasonpurpose/master/iop-logo-white-on-black-88px.png" width="44" height="44" align="top" alt="IOP Logo"></a> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | This project is actively developed and used in production at <a href="https://www.ideasonpurpose.com">Ideas On Purpose</a>. <br>&nbsp; |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 
 <!-- END IOP CREDIT BLURB -->
-
-[basic-wordpress-vagrant]: https://github.com/ideasonpurpose/basic-wordpress-vagrant
-[basic-wordpress-box]: https://github.com/ideasonpurpose/basic-wordpress-box
-[env-file]: https://docs.docker.com/compose/compose-file/#env_file
-[version-everything]: https://github.com/joemaller/version-everything
-[composer]: https://getcomposer.org/
-[docker-build]: https://github.com/ideasonpurpose/docker-build
-[phpmyadmin]: https://www.phpmyadmin.net/
-[docker-secrets]: https://docs.docker.com/compose/compose-file/compose-file-v3/#secrets
-[xdebug]: https://xdebug.org/
-[webgrind]: https://github.com/jokkedk/webgrind

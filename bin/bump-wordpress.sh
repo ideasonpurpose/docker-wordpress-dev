@@ -14,9 +14,8 @@
 # If the version has a matching tag on DockerHub:
 # - Store the version in wp-version.json. The file is just something like this:
 #       { "wordpress": "5.9.2" }
-# - Update the WordPress base image in the Dockerfile.
+# - Update the WordPress version in the Dockerfile.
 # - Update the WordPress version in README.md.
-# - Update the WordPress version in the boilerplate-tooling docker-compose files
 #
 # The wp-version.json file should be commited to Git. The push-to-dockerhub
 # GitHub Action uses this file to generate tag names for the Docker Image.
@@ -58,7 +57,6 @@ sed -i "s/wordpress:.*-php8/wordpress:${WP_LATEST}-php8/" /app/Dockerfile
 echo -e "✏️   Updating ${GOLD}README.md${RESET} to ${CYAN}v${WP_LATEST}${RESET}"
 sed -E -i "s/currently\s+\*\*\[v[^\\]+\]/currently **[v${WP_LATEST}]/" /app/README.md
 sed -E -i "s/^<\!-- WPVERSION -->- WordPress.+$/<\!-- WPVERSION -->- WordPress ${WP_LATEST}/" /app/README.md
-sed -E -i "s/ideasonpurpose\/wordpress:[^ ]+ init$/ideasonpurpose\/wordpress:${WP_LATEST} init/" /app/README.md
 
 echo
 echo -e "✅  All done!"
