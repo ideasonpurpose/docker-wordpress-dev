@@ -155,7 +155,7 @@ Xdebug is configured for both debug and profile modes, triggered by `XDEBUG_PROF
 The base image provides a specific WordPress version, but running sites can upgrade via the wp-admin dashboard or wp-cli, including [pre-release](https://wordpress.org/download/releases/#betas) versions:
 
 ```sh
-wp core update --version=7.1-beta4
+wp core update --version=7.1-RC2
 ```
 
 Versions can be rolled back by removing the Docker `*_wp` volume.
