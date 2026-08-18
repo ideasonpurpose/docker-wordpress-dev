@@ -2,7 +2,7 @@
 
 <h4>
 Version 2.0.1
-<!-- WPVERSION -->- WordPress 7.0.2
+<!-- WPVERSION -->- WordPress 7.0.4
 </h4>
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/ideasonpurpose/wordpress?logo=docker&logoColor=white)](https://hub.docker.com/r/ideasonpurpose/wordpress)
@@ -10,7 +10,7 @@ Version 2.0.1
 
 ## About
 
-A very-fast, tuned WordPress runtime image, built on the official WordPress image, currently **[v7.0.2](https://hub.docker.com/_/wordpress)** (PHP 8.4 / Apache). Designed to spin up quickly for a better local development experience.
+A very-fast, tuned WordPress runtime image, built on the official WordPress image, currently **[v7.0.4](https://hub.docker.com/_/wordpress)** (PHP 8.4 / Apache). Designed to spin up quickly for a better local development experience.
 
 This image is part of a larger development toolchain. Project scaffolding, `docker-compose`, webpack, and npm workflow scripts (`start`, bootstrap, database commands, etc.) are provided by the companion package [@ideasonpurpose/build-tools-wordpress](https://www.npmjs.com/package/@ideasonpurpose/build-tools-wordpress).
 
@@ -155,7 +155,7 @@ Xdebug is configured for both debug and profile modes, triggered by `XDEBUG_PROF
 The base image provides a specific WordPress version, but running sites can upgrade via the wp-admin dashboard or wp-cli, including [pre-release](https://wordpress.org/download/releases/#betas) versions:
 
 ```sh
-wp core update --version=7.1-RC2
+wp core update --version=7.1-RC4
 ```
 
 Versions can be rolled back by removing the Docker `*_wp` volume.
