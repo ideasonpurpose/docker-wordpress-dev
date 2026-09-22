@@ -12,7 +12,7 @@ Version 2.0.2
 
 A very-fast, tuned WordPress runtime image, built on the official WordPress image, currently **[v7.1](https://hub.docker.com/_/wordpress)** (PHP 8.4 / Apache). Designed to spin up quickly for a better local development experience.
 
-This image is part of a larger development toolchain. Project scaffolding, `docker-compose`, webpack, and npm workflow scripts (`start`, bootstrap, database commands, etc.) are provided by the companion package [@ideasonpurpose/build-tools-wordpress](https://www.npmjs.com/package/@ideasonpurpose/build-tools-wordpress).
+This image is part of a larger development toolchain. Project scaffolding, `docker-compose`, webpack, and package.json workflow scripts (`start`, bootstrap, database commands, etc.) are provided by the companion package [@ideasonpurpose/build-tools-wordpress](https://www.npmjs.com/package/@ideasonpurpose/build-tools-wordpress).
 
 Avalable as [**ideasonpurpose/wordpress**](https://hub.docker.com/r/ideasonpurpose/wordpress) from DockerHub.
 
@@ -165,7 +165,7 @@ Versions can be rolled back by removing the Docker `*_wp` volume.
 To update this image to the latest stable WordPress:
 
 ```sh
-npm run bump
+pnpm run bump
 ```
 
 This queries the WordPress releases API and Docker Hub, then updates `wp-version.json`, the Dockerfile, and the README. To target a pre-release, manually edit `wp-version.json`.
@@ -183,7 +183,7 @@ docker build . --tag ideasonpurpose/wordpress:dev
 Scripts in `bin/` are checked with [ShellCheck](https://www.shellcheck.net/) and formatted with [shfmt](https://github.com/mvdan/sh):
 
 ```sh
-npm run shfmt
+pnpm run shfmt
 ```
 
 ### CI/CD
