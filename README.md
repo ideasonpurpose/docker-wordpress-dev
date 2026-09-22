@@ -2,7 +2,7 @@
 
 <h4>
 Version 2.0.2
-<!-- WPVERSION -->- WordPress 7.1
+<!-- WPVERSION -->- WordPress 7.1.2
 </h4>
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/ideasonpurpose/wordpress?logo=docker&logoColor=white)](https://hub.docker.com/r/ideasonpurpose/wordpress)
@@ -10,7 +10,7 @@ Version 2.0.2
 
 ## About
 
-A very-fast, tuned WordPress runtime image, built on the official WordPress image, currently **[v7.1](https://hub.docker.com/_/wordpress)** (PHP 8.4 / Apache). Designed to spin up quickly for a better local development experience.
+A very-fast, tuned WordPress runtime image, built on the official WordPress image, currently **[v7.1.2](https://hub.docker.com/_/wordpress)** (PHP 8.4 / Apache). Designed to spin up quickly for a better local development experience.
 
 This image is part of a larger development toolchain. Project scaffolding, `docker-compose`, webpack, and package.json workflow scripts (`start`, bootstrap, database commands, etc.) are provided by the companion package [@ideasonpurpose/build-tools-wordpress](https://www.npmjs.com/package/@ideasonpurpose/build-tools-wordpress).
 
